@@ -1,0 +1,17 @@
+{
+  "name": "DumaAdmin",
+  "version": "1.0.0",
+  "authors": [
+  "Mathew Godia <mgodia@kcb.co.ke>"
+  ],
+  "description": "Duma Admin App",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+  "**/.*",
+  "node_modules",
+  "bower_components",
+  "test",
+  "tests"
+  ]
+}

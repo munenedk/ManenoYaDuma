@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="DumaAdmin">
+<head>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+	<link rel="stylesheet" href="css/bootstrap.css"/>
+	<link rel="stylesheet" href="css/angular-material.css"/>
+	<link rel="stylesheet" href="css/ng-table.css"/>
+	<link rel="stylesheet" href="css/font-awesome.css"/>
+	<link rel="stylesheet" href="css/bundle.css"/>
+</head>
+<body layout="column" ng-controller="MainController">
+	<md-toolbar layout="row">
+	<button ng-click="toggleSideNav('left')" hide-gt-sm class="menuBtn">
+		<span class="visually-hidden">Menu</span>
+	</button>
+	<h1>Duma Admin</h1>
+</md-toolbar>
+
+<div layout="row" flex>
+	<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$media('gt-sm')">
+	<md-toolbar class="md-accent" layout="row" layout-align="center center">
+	<!-- <h1 class="md-toolbar-tools">Menu</h1> -->
+	<h1>Menu</h1>
+</md-toolbar>
+<md-content>
+<md-list>
+<md-item ng-repeat="item in menuItems">
+<md-item-content>
+<div class="md-tile-content">
+	<div class="md-primary">
+		<a href="{{item.url}}" style="text-decoration: none;font-weight: bold"><h3 >{{item.name}}</h3></a>
+	</div>
+</div>
+</md-item-content>
+<md-divider ng-if="!$last"></md-divider>
+</md-item>
+</md-list>
+</md-content>
+</md-sidenav>
+<div layout="column" flex id="content">
+	<md-content ng-view layout="column" flex class="md-padding"><md-content>
+</div>
+</div>
+<!-- Main Content -->
+
+
+<!--===JAVASCRIPTS====-->
+
+<!--JS Bundle-->
+<script src="scripts/bundle.js"></script>
+<script src="linked_scripts/jquery.js"></script>
+<script src="linked_scripts/bootstrap.js"></script>
+<script src="linked_scripts/ng-table.js"></script>
+<script src="linked_scripts/ng-table.min.js.map"></script>
+</body>
+</html>

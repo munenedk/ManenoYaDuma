@@ -1,0 +1,51 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="start center">
+		<a href="#/customers">
+			<md-button class="md-fab" aria-label="New Customer">
+			<icon class="fa fa-chevron-left" style="color:white"></icon>
+		</md-button>
+	</a>
+</section>
+</div>
+<md-card>
+<md-card-content>
+
+<md-subheader class="md-primary" ng-model="customer.customerName"></md-subheader>
+
+<!-- Customer ID -->
+<md-input-container>
+<label>National ID</label>
+<input ng-model="customer.customerID" required type="text">
+	<!-- 	<div ng-messages="studentForm.studentName.$error">
+			<div ng-message="required">This Field is Mandatory</div>
+		</div> -->
+	</md-input-container>
+
+	<!-- Customer MISDN -->
+	<md-input-container>
+	<label>Customer MISDN</label>
+	<input ng-model="customer.customerMISDN" required type="text">
+</md-input-container>
+
+<!-- Customer DOB -->
+<md-input-container>
+<label>Date Of Birth</label>
+<input ng-model="customer.customerDOB" required type="text">
+</md-input-container>
+
+<!-- Customer Gender -->
+<md-input-container>
+<label>Gender</label>
+<input ng-model="customer.customerGender" required type="text">
+</md-input-container>
+
+<!-- Customer Status -->
+<md-input-container>
+<label>Status</label>
+<input ng-model="customer.customerStatus" required type="text">
+</md-input-container>
+
+</md-card-content>
+</md-card>
+</md-content>
