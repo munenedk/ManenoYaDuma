@@ -1,5 +1,5 @@
-var CustomerService = function($http){
-	var apiUrl = "http://localhost:8080/api/v1/customers";
+var CustomerService = function($http,dumaSettings){
+	var apiUrl = dumaSettings.backendUrl+"customers";
 
 	//Get All Customers
 	var getCustomers = function(params){

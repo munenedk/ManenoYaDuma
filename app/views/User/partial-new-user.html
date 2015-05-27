@@ -1,0 +1,75 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="start center">
+		<a href="#/users">
+			<md-button class="md-fab" aria-label="New User">
+			<icon class="fa fa-chevron-left" style="color:white"></icon>
+		</md-button>
+	</a>
+</section>
+</div>
+
+<md-card>
+<md-card-content>
+<h5 class="md-title md-primary">New User</h5>
+<md-tabs md-selected="selectedTab" md-dynamic-height md-border-bottom class="md-accent">
+
+<!-- Tab One -->
+<md-tab label="User Details" ng-disabled="userDetailsTabDisabled">
+<md-content class="md-padding">
+<form name="form.userForm" style="padding:24px" class="duma-form">
+	<!-- Name -->
+	<md-input-container class="md-icon-float">
+	<label><icon class="fa fa-user"></icon>&emsp;Name</label>
+	<input ng-model="user.usrName" required type="text">
+</md-input-container>
+
+<!-- Email -->
+<md-input-container>
+<label><icon class="fa fa-envelope"></icon>&emsp;Email</label>
+<input ng-model="user.usrEmail" required type="text">
+</md-input-container>
+<!-- Submit Button -->
+<div layout="row" layout-align="end center">
+	<md-button class="md-raised md-padding" ng-click="resetForm();">Clear</md-button>&emsp;
+	<md-button class="md-raised md-accent md-padding" ng-click="setUser(user);">Next</md-button>
+</div>
+</form>
+</md-content>
+</md-tab>
+
+<!-- Tab Two -->
+<md-tab label="User Roles" ng-disabled="userRolesTabDisabled">
+<md-content class="md-padding">
+<div loading-container="roleTableParams.settings().$loading">
+	<table ng-table="roleTableParams" show-filter="true" class="table responsive-table bordered striped hoverable">
+		<tbody>
+			<tr ng-repeat="role in $data">
+				<td filter="{'name':'text'}" data-title="'Role Name'">{{role.roleName}}</td>
+				<td data-title="'Description'">{{role.roleDescription}}</td>
+        <td data-title="'Select'">
+         <md-checkbox ng-checked="{{selectedRoles.indexOf(role) > -1}}" ng-click="toggleSelectedRole(role)" aria-label="Select"></md-checkbox>
+       </td>
+     </tr>
+   </tbody>
+ </table>
+</div>
+</md-content>
+<!-- <pre>{{selectedPermissions|json}}</pre> -->
+
+<div class="divider"></div>
+<md-content class="md-padding">
+<div layout="row" layout-align="end center">
+	<md-button class="md-raised md-padding" ng-click="restart();">Cancel</md-button>&emsp;
+	<md-button class="md-raised md-primary md-padding" ng-click="save();" style="color:white">Submit</md-button>
+</div>
+</md-content>
+
+</md-tab>
+</md-tabs>
+
+<md-progress-linear md-mode="indeterminate" ng-show="showSaveProgress"></md-progress-linear><br/>
+</md-card-content>
+
+</md-card>
+</md-content>

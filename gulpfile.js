@@ -17,7 +17,7 @@ esnext = require('gulp-esnext'),
 del =  require('del'),
 path = require('path'),
 runSequence =  require('run-sequence'),
-expressPort = 4000,
+expressPort = 8081,
 expressRoot = ('./dist/'),
 liverReloadPort = 35729;
 
@@ -55,6 +55,12 @@ gulp.task('fonts',function(){
 	// .pipe(notify({message: 'Fonts task completed'}));
 });
 
+gulp.task('font',function(){
+	return gulp.src([
+		'node_modules/materialize-css/font/**'])
+	.pipe(gulp.dest('dist/font'));
+});
+
 
 //Styles Task
 gulp.task('styles',function(){
@@ -72,10 +78,12 @@ gulp.task('styles',function(){
 gulp.task('linked_styles',function(){
 	return gulp.src(['node_modules/angular-material/angular-material.css',
 		"bower_components/ng-table/dist/ng-table.css",
-		"bower_components/bootstrap/dist/css/bootstrap.css",
-		"bower_components/bootstrap/dist/css/bootstrap.css.map",
+		// "bower_components/bootstrap/dist/css/bootstrap.css",
+		// "bower_components/bootstrap/dist/css/bootstrap.css.map",
 		"bower_components/font-awesome/css/font-awesome.css",
-		"bower_components/font-awesome/css/font-awesome.css.map"])
+		"bower_components/font-awesome/css/font-awesome.css.map",
+		"node_modules/materialize-css/bin/materialize.css",
+		"node_modules/v-accordion/dist/v-accordion.css"])
 	.pipe(gulp.dest('dist/css'));
 });
 
@@ -84,8 +92,11 @@ gulp.task('linked_scripts',function(){
 	gulp.src(['app/linked_scripts/**/*.js',
 		'bower_components/ng-table/dist/ng-table.js',
 		'bower_components/ng-table/dist/ng-table.min.js.map',
-		'bower_components/bootstrap/dist/js/bootstrap.js',
-		'node_modules/jquery/dist/jquery.js'])
+		// 'bower_components/bootstrap/dist/js/bootstrap.js',
+		'bower_components/angular-file-upload/angular-file-upload.js',
+		'node_modules/jquery/dist/jquery.js',
+		'node_modules/materialize-css/bin/materialize.js',
+		'node_modules/v-accordion/dist/v-accordion.js'])
 	.pipe(gulp.dest('dist/linked_scripts'));
 });
 
@@ -113,7 +124,7 @@ gulp.task('images',function(){
 
 gulp.task('build',function(done){
 	runSequence('clean',
-		['styles','linked_styles','scripts','images','fonts','html','views'],
+		['styles','linked_styles','scripts','images','fonts','font','html','views'],
 		'copy_to_cordova',
 		'express',
 		'watch',
