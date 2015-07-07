@@ -1,0 +1,76 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="start center">
+		<a href="#/roles">
+			<md-button class="md-fab" aria-label="Roles">
+			<icon class="fa fa-chevron-left" style="color:white"></icon>
+		</md-button>
+	</a>
+</section>
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">New Role</h5>
+<md-tabs md-selected="selectedTab" md-dynamic-height md-border-bottom class="md-accent">
+
+<!-- Tab One -->
+<md-tab label="Role Details" ng-disabled="roleDetailsTabDisabled">
+<md-content class="md-padding">
+
+<form name="form.roleForm">
+
+	<!-- Name -->
+	<md-input-container>
+	<label>Role Name</label>
+	<input ng-model="role.roleName" required type="text"/>
+</md-input-container>
+
+<!-- Description -->
+<md-input-container>
+<label>Role Descritpiton</label>
+<input ng-model="role.roleDescription" required type="text"/>
+</md-input-container>
+
+<!-- Clear and Next Button -->
+<div layout="row" layout-align="end center">
+	<md-button class="md-raised md-padding" ng-click="resetForm();">Clear</md-button>&emsp;
+	<md-button class="md-raised md-accent md-padding" ng-click="setRole(role);">Next</md-button>
+</div>
+
+</form>
+
+</md-content>
+</md-tab>
+
+<!-- Tab Two -->
+<md-tab label="Role Permissions" ng-disabled="permissionTabDisabled">
+<md-content class="md-padding">
+<div loading-container="permissionTableParams.settings().$loading">
+	<table ng-table="permissionTableParams" show-filter="true" class="table responsive-table bordered striped hoverable">
+		<tbody>
+			<tr ng-repeat="permission in $data">
+				<td filter="{'permissionName':'text'}" data-title="'Permission Name'">{{permission.permissionName}}</td>
+				<td data-title="'Description'">{{permission.permissionDescription}}</td>
+				<td data-title="'Select'">
+					<md-checkbox ng-checked="{{selectedPermissions.indexOf(permission) > -1}}" ng-click="toggleSelectedPermission(permission)" aria-label="Select"></md-checkbox>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</md-content>
+<!-- <pre>{{selectedPermissions|json}}</pre> -->
+<div class="divider"></div>
+<md-content class="md-padding">
+<div layout="row" layout-align="end center">
+	<md-button class="md-raised md-padding" ng-click="restart();">Cancel</md-button>&emsp;
+	<md-button class="md-raised md-primary md-padding" ng-click="save();" style="color:white">Submit</md-button>
+</div>
+
+</md-content>
+</md-tab>
+</md-tabs>
+
+</md-card-content>
+</md-card>
+</md-content>

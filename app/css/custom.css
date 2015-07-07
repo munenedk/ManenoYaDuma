@@ -46,3 +46,52 @@ https://github.com/google/material-design-icons
   -ms-user-select: none;
   user-select: none;
 }
+
+.sideNav-list .md-button {
+  color: inherit;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+}
+.sideNav-list .selected {
+  color: #03a9f4;
+}
+
+.duma-menu icon{
+  padding:18px;
+  font-size: 18px;
+}
+
+.duma-form icon{
+  font-size:18px;
+}
+
+h5{
+  color:#26A69A;
+}
+
+/*Font Icons*/
+/*md-icon {
+  padding:40px;
+}
+
+.s64 {
+  font-size:64px;
+}
+
+.s32 {
+  
+  font-size:48px;
+
+}
+
+
+md-icon.fa {
+  display:block;
+  padding-left:0px;
+}
+
+md-icon.s32 span {
+  padding-left:8px;*/
+  /*}*/
+/*Font Icons*/

@@ -3,34 +3,38 @@
 <head>
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1" />
 	<link rel="stylesheet" href="css/bootstrap.css"/>
-	<link rel="stylesheet" href="css/angular-material.css"/>
-	<link rel="stylesheet" href="css/ng-table.css"/>
-	<link rel="stylesheet" href="css/font-awesome.css"/>
-	<link rel="stylesheet" href="css/bundle.css"/>
+  <link rel="stylesheet" href="css/angular-material.css"/>
+  <link rel="stylesheet" href="css/ng-table.css"/>
+  <link rel="stylesheet" href="css/font-awesome.css"/>
+  <link rel="stylesheet" href="css/materialize.css"/>
+  <link rel="stylesheet" href="css/bundle.css"/>
 </head>
 <body layout="column" ng-controller="MainController">
 	<md-toolbar layout="row">
-	<button ng-click="toggleSideNav('left')" hide-gt-sm class="menuBtn">
+	<!-- hide-gt-sm  -->
+	<button ng-click="toggleSideNav('left')" class="menuBtn" ng-show="hamburgerAvailable">
 		<span class="visually-hidden">Menu</span>
 	</button>
-	<h1>Duma Admin</h1>
+	<h1 style="color:white">Duma Admin</h1>
+	<md-button style="color:white" ng-show="authenticated"><i class="fa fa-user"></i> {{loggedInUser}}</md-button>
 </md-toolbar>
 
 <div layout="row" flex>
-	<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$media('gt-sm')">
+	<!-- md-is-locked-open="$media('gt-sm')" -->
+	<!-- md-is-locked-open="false" -->
+	<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="menuAvailable">
 	<md-toolbar class="md-accent" layout="row" layout-align="center center">
 	<!-- <h1 class="md-toolbar-tools">Menu</h1> -->
 	<h1>Menu</h1>
 </md-toolbar>
 <md-content>
-<md-list>
+<md-list class="sideNav-list">
 <md-item ng-repeat="item in menuItems">
 <md-item-content>
-<div class="md-tile-content">
-	<div class="md-primary">
-		<a href="{{item.url}}" style="text-decoration: none;font-weight: bold"><h3 >{{item.name}}</h3></a>
-	</div>
-</div>
+<md-button ng-click="navigateTo(item.url);" class="duma-menu">
+<icon class="{{item.icon}}" style="color:{{item.ic_color}}"></icon> 
+{{item.name}}
+</md-button>
 </md-item-content>
 <md-divider ng-if="!$last"></md-divider>
 </md-item>
@@ -47,10 +51,13 @@
 <!--===JAVASCRIPTS====-->
 
 <!--JS Bundle-->
-<script src="scripts/bundle.js"></script>
 <script src="linked_scripts/jquery.js"></script>
-<script src="linked_scripts/bootstrap.js"></script>
+<script src="scripts/bundle.js"></script>
+<script src="linked_scripts/materialize.js"></script>
+<!-- <script src="linked_scripts/bootstrap.js"></script> -->
 <script src="linked_scripts/ng-table.js"></script>
 <script src="linked_scripts/ng-table.min.js.map"></script>
+<script src="linked_scripts/angular-file-upload.js"></script>
+<script src="linked_scripts/v-accordion.js"></script>
 </body>
 </html>

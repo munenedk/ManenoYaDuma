@@ -1,0 +1,53 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="start center">
+		<a href="#/users">
+			<md-button class="md-fab" aria-label="User">
+			<icon class="fa fa-chevron-left" style="color:white"></icon>
+		</md-button>
+	</a>&emsp;
+	<legend class="md-primary">Edit User</legend>
+</section>
+</div><br/>
+<md-card>
+<md-card-content>
+<form name="userForm" style="padding:24px">
+	<!-- Name -->
+	<md-input-container>
+	<label>Name</label>
+	<input ng-model="user.usrName" required type="text">
+</md-input-container>
+
+<!-- Email -->
+<md-input-container>
+<label>Email</label>
+<input ng-model="user.usrEmail" required type="text">
+</md-input-container>
+
+<!-- Date Created -->
+<md-input-container>
+<label>Date Created</label>
+<input ng-model="user.usrDateCreated" required type="text">
+</md-input-container>
+
+<!-- Last Password Change-->
+<md-input-container>
+<label>Last Password Change</label>
+<input ng-model="user.usrLastPasswordChange" required type="text">
+</md-input-container>
+
+<!-- User Status -->
+<md-input-container>
+<label>Status</label>
+<input ng-model="user.usrStatus" required type="text">
+</md-input-container>
+
+<!-- Submit Button -->
+<div layout="row" layout-align="end center">
+	<md-button class="md-raised md-padding" ng-click="clear();">Clear</md-button>&emsp;
+	<md-button class="md-raised md-primary md-padding" ng-click="save(user);">Submit</md-button>
+</div>
+</form>
+</md-card-content>
+</md-card>
+</md-content>

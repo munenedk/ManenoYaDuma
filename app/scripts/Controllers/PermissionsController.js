@@ -1,22 +1,24 @@
 /*jslint node: true */
 /* global angular: false */
 
-var CustomerController = function($scope,$rootScope,$mdDialog,$mdToast,ngTableParams,CustomerService,$routeParams){
+var PermissionsController = function($scope,$rootScope,$mdDialog,$mdToast,ngTableParams,PermissionsService){
 
 	$rootScope.hamburgerAvailable = true;
 	$rootScope.menuAvailable=true;
 
-	//Inject Service methods to scope
-	$scope.getCustomers = CustomerService.list();
-	$scope.getCustomer =  CustomerService.find();
+	//Inject Services To Scope
+	$scope.getPermissions = PermissionsService.list();
+	$scope.getPermission =  PermissionsService.find();
+	$scope.savePermission = PermissionsService.save();
 
-	//Toast Position
-	$scope.toastPosition = {
-		bottom:false,
-		top:true,
-		left:false,
-		right:true
-	};
+
+//Toast Position
+$scope.toastPosition = {
+	bottom:false,
+	top:true,
+	left:false,
+	right:true
+};
 
 	//Get Toast
 	$scope.getToastPosition = function() {
@@ -50,54 +52,60 @@ var CustomerController = function($scope,$rootScope,$mdDialog,$mdToast,ngTablePa
 		);
 	};
 
+		//Save Role
+		$scope.save = function save(permission){
+			if($scope.permissionForm.$valid){
+				$scope.savePermission(permission)
+				.success(function(data,status,headers,config){
+					$scope.showToast(data.message);
+					$scope.resetForm();
+				}).error(function(data,status,headers,config){
+					$scope.showAlert(status,data.message);
+				});
+			}
 
-	//Table
-	$scope.tableParams = new ngTableParams({
+		};
+
+		//Reset Permissions Form
+		$scope.resetForm = function(){
+			$scope.permission = {
+				permissionId:'',
+				permissionName:'',
+				permissionDescription:'',
+			};
+		};
+
+
+		//Table
+		$scope.tableParams = new ngTableParams({
 	page: 1,			//Show first page
 	count: 10,			//count per page
 },{
 	total:0,
 	getData:function($defer,params){
 		//ajax request to api
-		$scope.getCustomers(params)
+		$scope.getPermissions(params)
 		.success(function(data,status,headers,config){
 			var rData = {};
 			rData = data.payload;
 			// console.log(JSON.stringify(rData));
 
-			var customers = rData.content;
-			// console.log(customers);
+			var permissions = rData.content;
 
 			params.total(rData.totalElements);
 			//set New data
-			$defer.resolve(customers);
+			$defer.resolve(permissions);
 		})
 		.error(function(data,status,headers,config){
 			var msg = "N/A";
 			if(data !== null){
-				msg = data.error+" : "+data.message;
+					msg = data.error+" : "+data.message;
 			}
 			$scope.showAlert(status,msg);
 		});
 	}
 });
 
-	$scope.selectedCustomer = function(){
-		var customerId = $routeParams.customerId;
-		// console.log("Customer ID: "+customerId);
-		$scope.getCustomer(customerId)
-		.success(function(data,status,headers,config){
-			$scope.showToast(data.message);
-			$scope.customer = data.payload;
-		}).error(function(data,status,headers,config){
-			$scope.showAlert(status,data.message);
-		});
 	};
 
-};
-
-
-
-
-
-module.exports = CustomerController;
+	module.exports = PermissionsController;

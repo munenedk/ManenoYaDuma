@@ -1,0 +1,51 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="start center">	
+		<a href="#/mpesaRecon">
+			<md-button class="md-fab" aria-label="Reconciliation File">
+			<icon class="fa fa-chevron-left" style="color:white"></icon>
+		</md-button>
+	</a>
+</section>
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">Mpesa Reconciliation Requests</h5>
+<div loading-container="requestsParams.settings().$loading">
+	<table ng-table="requestsParams" show-filter="true" class="table responsive-table bordered striped hoverable">
+		<tbody>
+			<tr ng-repeat="request in $data">
+        <td data-title="'Orig Conv Id'" filter="{'origConvId':'text'}">{{request.mrMpesaTxId.originatorconversationid}}</td>
+        <td data-title="'Receipt Number'" filter="{'recieptNum':'text'}">{{request.mrMpesaTxId.safaricomtxnreference}}</td>
+        <td data-title="'Requested By'">{{request.mrMakerId.usrName}}</td>
+        <td data-title="'Amount'">{{request.mrMpesaTxId.amount}}</td>
+        <td data-title="'Date Requested'">{{request.mrDateCreated}}</td>        
+        <td data-title="'File Name'">{{request.mrUploadId.mruFileName}}</td>
+        <td data-title="select" header="'ng-table/headers/checkbox.html'">
+          <md-checkbox 
+          value="{{request.mrId}}"
+          ng-model= "selectAllRequests"
+          ng-checked="{{selectedRequestes.indexOf(request) > -1}}"
+          ng-click="toggleSelectedRequests(request)" 
+          aria-label="Select">
+        </md-checkbox> 
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<br/><br/><br/>
+<div class="divider"></div>
+<md-content class="md-padding">
+<div layout="row" layout-align="end center">
+  <button class="btn grey" ng-click="restart();">Cancel</button>&emsp;
+  <button class="btn" ng-click="approveRequests();" style="color:white">Submit</button>
+</div>
+</md-content>
+</md-card-content>
+</md-card>
+</md-content>
+
+<script type="text/ng-template" id="ng-table/headers/checkbox.html">
+  <md-checkbox aria-label="Select All" ng-click="toggleSelectAllRequests();"></md-checkbox>
+</script>
