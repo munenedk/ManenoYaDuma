@@ -1,63 +1,72 @@
 <!DOCTYPE html>
-<html ng-app="DumaAdmin">
-<head>
-	<meta name="viewport" content="initial-scale=1, maximum-scale=1" />
-	<link rel="stylesheet" href="css/bootstrap.css"/>
-  <link rel="stylesheet" href="css/angular-material.css"/>
-  <link rel="stylesheet" href="css/ng-table.css"/>
-  <link rel="stylesheet" href="css/font-awesome.css"/>
-  <link rel="stylesheet" href="css/materialize.css"/>
-  <link rel="stylesheet" href="css/bundle.css"/>
-</head>
-<body layout="column" ng-controller="MainController">
-	<md-toolbar layout="row">
-	<!-- hide-gt-sm  -->
-	<button ng-click="toggleSideNav('left')" class="menuBtn" ng-show="hamburgerAvailable">
-		<span class="visually-hidden">Menu</span>
-	</button>
-	<h1 style="color:white">Duma Admin</h1>
-	<md-button style="color:white" ng-show="authenticated"><i class="fa fa-user"></i> {{loggedInUser}}</md-button>
-</md-toolbar>
-
-<div layout="row" flex>
-	<!-- md-is-locked-open="$media('gt-sm')" -->
-	<!-- md-is-locked-open="false" -->
-	<md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="menuAvailable">
-	<md-toolbar class="md-accent" layout="row" layout-align="center center">
-	<!-- <h1 class="md-toolbar-tools">Menu</h1> -->
-	<h1>Menu</h1>
-</md-toolbar>
-<md-content>
-<md-list class="sideNav-list">
-<md-item ng-repeat="item in menuItems">
-<md-item-content>
-<md-button ng-click="navigateTo(item.url);" class="duma-menu">
-<icon class="{{item.icon}}" style="color:{{item.ic_color}}"></icon> 
-{{item.name}}
-</md-button>
-</md-item-content>
-<md-divider ng-if="!$last"></md-divider>
-</md-item>
-</md-list>
-</md-content>
-</md-sidenav>
-<div layout="column" flex id="content">
-	<md-content ng-view layout="column" flex class="md-padding"><md-content>
-</div>
-</div>
-<!-- Main Content -->
-
-
-<!--===JAVASCRIPTS====-->
-
-<!--JS Bundle-->
-<script src="linked_scripts/jquery.js"></script>
-<script src="scripts/bundle.js"></script>
-<script src="linked_scripts/materialize.js"></script>
-<!-- <script src="linked_scripts/bootstrap.js"></script> -->
-<script src="linked_scripts/ng-table.js"></script>
-<script src="linked_scripts/ng-table.min.js.map"></script>
-<script src="linked_scripts/angular-file-upload.js"></script>
-<script src="linked_scripts/v-accordion.js"></script>
-</body>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="css/angular-material.min.css"/>
+    <link rel="stylesheet" href="css/ng-table.css"/>
+    <link rel="stylesheet" href="css/font-awesome.css"/>
+    <link rel="stylesheet" href="css/materialize.css"/>
+    <link rel="stylesheet" href="css/angular-chart.css"/>
+    <link rel="stylesheet" href="css/bundle.css"/>
+  </head>
+  <body layout="column" ng-controller="MainController" id="ng-app" ng-app="DumaAdmin">
+    <md-toolbar layout="row">
+    <!-- hide-gt-sm  -->
+    <button ng-click="toggleSideNav('left')" class="menuBtn" ng-show="hamburgerAvailable">
+    <span class="visually-hidden">Menu</span>
+    </button>
+    <h1 style="color:white"><img ng-src="img/kcb_lion.png" width="50px" height="60px" align="center"/>Duma Admin</h1>
+    <md-button
+    class="dropdown-button"
+    style="color:white"
+    data-activates="loggedInDropDown"
+    ng-show="authenticated">
+    <span style="font-size: 18px; padding:20px"> <icon class="fa fa-user"></icon> {{loggedInUser}}</span>
+    </md-button>
+    <ul id='loggedInDropDown' class="dropdown-content">
+      <li><a ng-click="logout();"><icon class="fa fa-power-off"></icon> Log Out</a></li>
+      <li><a ng-click="changePassword();"><icon class="fa fa-lock"></icon> Change Password</a></li>
+    </ul>
+    </md-toolbar>
+    <div layout="row" flex>
+      <!-- md-is-locked-open="$media('gt-sm')" -->
+      <!-- md-is-locked-open="false" -->
+      <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="menuAvailable">
+      <md-toolbar class="md-accent" layout="row" layout-align="center center">
+      <!-- <h1 class="md-toolbar-tools">Menu</h1> -->
+      <h1>Menu</h1>
+      </md-toolbar>
+      <md-content>
+      <md-list class="sideNav-list">
+      <md-list-item ng-repeat="item in menuItems" ng-show="item.visible">
+      <md-item-content>
+      <button
+      ng-click="navigateTo(item.url);"
+      class="btn btn-flat col">
+      <icon class="{{item.icon}}" style="color:{{item.ic_color}}"></icon>&nbsp;
+      {{item.name}}
+      </button>
+      </md-item-content>
+      <md-divider ng-if="!$last"></md-divider>
+      </md-list-item>
+      </md-list>
+      </md-content>
+      </md-sidenav>
+      <div layout="column" flex id="content">
+        <md-content ng-view layout="column" flex class="md-padding"><md-content>
+      </div>
+    </div>
+    <!-- Main Content -->
+    <!--===JAVASCRIPTS====-->
+    <!--JS Bundle-->
+    <script src="linked_scripts/jquery.js"></script>
+    <script src="scripts/bundle.js"></script>
+    <script src="linked_scripts/angular-material.min.js"></script>
+    <script src="linked_scripts/materialize.js"></script>
+    <script src="linked_scripts/ng-table.js"></script>
+    <script src="linked_scripts/ng-table.min.js.map"></script>
+    <script src="linked_scripts/angular-file-upload.js"></script>
+    <script src="linked_scripts/Chart.min.js"></script>
+    <script src="linked_scripts/angular-chart.js"></script>
+  </body>
 </html>

@@ -1,0 +1,178 @@
+<md-content class="md-padding">
+<div>
+<<<<<<< HEAD
+  <section layout="row" layout-sm="column" layout-align="start center"> 
+    <a href="#/mpesaRecon">
+      <md-button class="md-fab" aria-label="Reconciliation File">
+      <icon class="fa fa-chevron-left" style="color:white"></icon>
+    </md-button>
+  </a>
+</section>
+</div>
+<md-card>
+<md-card-content>
+<h5>Mpesa Reconcilliation</h5>
+<form name="c2bFileForm" style="padding:24px">
+
+	<!-- File Upload -->
+	<md-input-container>
+	<input type="file" nv-file-select="" uploader="uploader"/>
+</md-input-container>
+
+
+<div class="col m9" style="margin-bottom: 40px">
+
+	<h3>Upload queue</h3>
+	<p>Queue length: {{ uploader.queue.length }}</p>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th width="50%">Name</th>
+				<th ng-show="uploader.isHTML5">Size</th>
+				<th ng-show="uploader.isHTML5">Progress</th>
+				<th>Status</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="item in uploader.queue">
+				<td><strong>{{ item.file.name }}</strong></td>
+				<td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+				<td ng-show="uploader.isHTML5">
+					<div class="progress" style="margin-bottom: 0;">
+						<!-- <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div> -->
+						<div class="determinate" ng-style="{ 'width': item.progress + '%' }"></div>
+					</div>
+				</td>
+				<td class="text-center">
+					<span ng-show="item.isSuccess"><i class="fa fa-check"></i></span>
+					<span ng-show="item.isCancel"><i class="fa fa-ban"></i></span>
+					<span ng-show="item.isError"><i class="fa fa-remove"></i></span>
+				</td>
+				<td nowrap>
+					<button type="button" class="btn" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+						<span class="fa fa-upload"></span> Upload
+					</button>
+					<button type="button" class="btn orange lighten-1" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+						<span class="fa fa-ban"></span> Cancel
+					</button>
+					<button type="button" class="btn" ng-click="item.remove()">
+						<span class="fa fa-trash"></span> Remove
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div>
+		<div>
+			Queue progress:
+			<div class="progress" style="">
+				<!-- <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div> -->
+				<div class="determinate" ng-style="{'width':uploader.progress + '%'}"></div>
+			</div>
+		</div>
+		<button type="button" class="btn" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+			<span class="fa fa-upload"></span> Upload all
+		</button>
+		<button type="button" class="btn md-accent" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+			<span class="fa fa-ban"></span> Cancel all
+		</button>
+		<button type="button" class="btn red" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+			<span class="fa fa-trash"></span> Remove all
+		</button>
+	</div>
+</div>
+</form>
+=======
+	<section layout="row" layout-sm="column" layout-align="start center">
+		<a href="#/mpesaRecon/{{reconType}}">
+			<md-button class="md-fab" aria-label="Reconciliation File">
+			<icon class="fa fa-chevron-left" style="color:white"></icon>
+			</md-button>
+		</a>
+	</section>
+</div>
+<md-card>
+<md-card-content>
+<h5>{{reconType.toUpperCase()}} Mpesa Reconcilliation Upload</h5>
+<form name="c2bFileForm" style="padding:24px" ng-show="showFileUpload">
+	<!-- File Upload -->
+	<md-input-container>
+	<input type="file" nv-file-select="" uploader="uploader"/>
+	</md-input-container>
+	<div class="col m9" style="margin-bottom: 40px">
+		<h3>Upload queue</h3>
+		<p>Queue length: {{ uploader.queue.length }}</p>
+		<table class="table">
+			<thead>
+				<tr>
+					<th width="50%">Name</th>
+					<th ng-show="uploader.isHTML5">Size</th>
+					<th ng-show="uploader.isHTML5">Progress</th>
+					<th>Status</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in uploader.queue">
+					<td><strong>{{ item.file.name }}</strong></td>
+					<td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+					<td ng-show="uploader.isHTML5">
+						<div class="progress" style="margin-bottom: 0;">
+							<!-- <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div> -->
+							<div class="determinate" ng-style="{ 'width': item.progress + '%' }"></div>
+						</div>
+					</td>
+					<td class="text-center">
+						<span ng-show="item.isSuccess"><i class="fa fa-check"></i></span>
+						<span ng-show="item.isCancel"><i class="fa fa-ban"></i></span>
+						<span ng-show="item.isError"><i class="fa fa-remove"></i></span>
+					</td>
+					<td nowrap>
+						<button type="button" class="btn" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+						<span class="fa fa-upload"></span> Upload
+						</button>
+						<button type="button" class="btn orange lighten-1" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+						<span class="fa fa-ban"></span> Cancel
+						</button>
+						<button type="button" class="btn" ng-click="item.remove()">
+						<span class="fa fa-trash"></span> Remove
+						</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div>
+			<div>
+				Queue progress:
+				<div class="progress" style="">
+					<!-- <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div> -->
+					<div class="determinate" ng-style="{'width':uploader.progress + '%'}"></div>
+				</div>
+			</div>
+			<button type="button" class="btn" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+			<span class="fa fa-upload"></span> Upload all
+			</button>
+			<button type="button" class="btn md-accent" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading">
+			<span class="fa fa-ban"></span> Cancel all
+			</button>
+			<button type="button" class="btn red" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+			<span class="fa fa-trash"></span> Remove all
+			</button>
+		</div>
+	</div>
+</form>
+<!-- Processing Div -->
+<div ng-show="showFileProcessing">
+<div class="divider"></div>
+	<br/>
+	<p class="md-accent">Processing File. Please wait...</p>
+	<div class="progress z-depth-3">
+		<div class="indeterminate"></div>
+	</div>
+</div>
+</md-card-content>
+</md-card>
+>>>>>>> d/paybill

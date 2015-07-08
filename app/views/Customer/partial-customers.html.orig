@@ -1,0 +1,59 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="end center">	
+		<a href="#/customer">
+			<md-button class="md-fab" aria-label="New Customer">
+			<icon class="fa fa-plus" style="color:white"></icon>
+			</md-button>
+		</a>
+	</section>
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">Customers</h5>
+<div loading-container="tableParams.settings().$loading">
+<<<<<<< HEAD
+	<table ng-table="tableParams" show-filter="true" class="table responsive-table bordered striped hoverable">
+		<tbody>
+			<tr ng-repeat="customer  in $data">
+				<!-- <td data-title="'Customer Code'">{{customer.customerCode}}</td> -->
+				<td filter="{'customerName':'text'}" data-title="'Name'">{{customer.customerName}}</td>
+				<td filter="{'customerId':'text'}"data-title="'ID'">{{customer.customerId}}</td>
+				<td data-title="'MISDN'">{{customer.customerMISDN}}</td>
+				<td data-title="'DOB'">{{customer.customerDOB}}</td>
+				<td data-title="'Gender'">{{customer.customerGender}}</td>
+				<td data-title="'Status'">{{customer.customerStatus}}</td>
+				<td data-title="'Action'">
+					<a href="#customer/{{customer.customerCode}}"
+					<icon class="fa fa-eye" style="color:#333"></icon></a>
+					<!-- <icon class="fa fa-trash"></icon> -->
+				</td>
+			</tr>
+		</tbody>
+	</table>
+=======
+	<div class="responsive-table">
+		<table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
+			<tbody>
+				<tr ng-repeat="customer  in $data">
+					<!-- <td data-title="'Customer Code'">{{customer.customerCode}}</td> -->
+					<td filter="{'customerName':'text'}" data-title="'Name'">{{customer.customerName}}</td>
+					<td filter="{'customerId':'text'}"data-title="'ID'">{{customer.customerId}}</td>
+					<td data-title="'MISDN'">{{customer.customerMISDN}}</td>
+					<td data-title="'DOB'">{{customer.customerDOB}}</td>
+					<td data-title="'Gender'">{{customer.customerGender}}</td>
+					<td data-title="'Status'">{{customer.customerStatus}}</td>
+					<td data-title="'Action'">
+						<a href="#customer/{{customer.customerCode}}"
+						<icon class="fa fa-eye" style="color:#333"></icon></a>
+						<!-- <icon class="fa fa-trash"></icon> -->
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+>>>>>>> d/paybill
+</div>
+</md-card-content>
+</md-card>
+</md-content>

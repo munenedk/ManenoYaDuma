@@ -11,7 +11,6 @@ var CustomerService = function($http,dumaSettings){
 			headers:{'Content-Type':'application/json'},
 			params: {"page":params.page()-1,"size":params.count(),"filter":params.filter()}
 		});
-
 	};
 	
 	//get One customer

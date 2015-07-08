@@ -1,0 +1,83 @@
+<div class="section">
+  <div class="row">
+    <div class="col s12 m6">
+      <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+          <span class="card-title">Top Staff</span>
+          <table ng-table class="table">
+            <tbody>
+              <tr ng-repeat="amb in ambassadors">
+                <td data-title="'Name'">{{amb.name}}</td>
+                <td data-title="'Branch'">{{amb.branch}}</td>
+                <td data-title="'Transactions'">{{amb.txs}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--  <div class="card-action">
+          <a href="#">This is a link</a>
+          <a href='#'>More</a>
+        </div> -->
+      </div>
+    </div>
+    <!-- Regional Performance -->
+    <div class="col s12 m6">
+      <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+          <span class="card-title">Regional Perfomance</span>
+          <table ng-table="regionParams" class="table">
+            <tbody>
+              <tr ng-repeat="region in regions">
+                <td data-title="'Name'">{{region.name}}</td>
+                <td data-title="'Transactions'">{{region.txs}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--  <div class="card-action">
+          <a href="#">This is a link</a>
+          <a href='#'>This is a link</a>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+<div class="duma-clear"></div>
+<div class="divider"></div>
+<!-- Charts -->
+<div class="section">
+  <div class="row">
+    <!-- Top Staff Chart -->
+    <div class="col s12 m6">
+      <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+          <span class="card-title white-text">Top Staff Chart</span>
+          <div class="divider"></div>
+          <div class="dash-graph">
+            <canvas id="doughnut"
+            legend="true"
+            class="chart chart-doughnut"
+            data="topAmbassadorsData"
+            labels="topAmbassadorsLabels"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Top Regions -->
+    <div class="col s12 m6">
+      <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+          <span class="card-title white-text">Top Regions</span>
+          <div class="divider"></div>
+          <div class="dash-graph">
+            <canvas id="doughnut"
+            legend="true"
+            class="chart chart-doughnut"
+            data="topRegionsData"
+            labels="topRegionsLabels"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
