@@ -1,0 +1,116 @@
+<md-content class="md-padding">
+<div class="row">
+	<span class="left">
+		<a href="#/mk-ambassadors">
+			<md-button class="md-fab" aria-label="New Customer">
+			<icon class="fa fa-chevron-left" style="color:white"></icon>
+			</md-button>
+		</a>
+	</span>
+	<span class="right">
+		<!-- Download Button -->
+		<a id="fileDownload" target="_self">
+			<md-button class="md-fab" aria-label="Reconciliation File" ng-click="downloadFile();">
+			<icon class="fa fa-download" style="color:white"></icon>
+			<md-tooltip>Download File</md-tooltip>
+			</md-button>
+		</a>
+	</span>
+	<span class="right">
+		<!-- Admin Menu -->
+		<md-fab-speed-dial md-direction="left" class="md-fling">
+		<md-fab-trigger>
+		<md-button aria-label="menu" class="md-fab">
+		<icon class="fa fa-bars"></icon>
+		</md-button>
+		</md-fab-trigger>
+		<md-fab-actions>
+		<!-- All Staff -->
+		<md-button aria-label="all" class="md-fab md-raised md-mini" ng-click="toggleSearchAccounts('all')">
+		<icon class="fa fa-users"></icon>
+		<md-tooltip>All Staff</md-tooltip>
+		</md-button>
+		<!-- Search By Date -->
+		<md-button aria-label="all" class="md-fab md-raised md-mini" ng-click="toggleSearchAccounts('date')">
+		<icon class="fa fa-calendar"></icon>
+		<md-tooltip>Date Range</md-tooltip>
+		</md-button>
+		<!-- One Staff -->
+		<md-button aria-label="all" class="md-fab md-raised md-mini" ng-click="toggleSearchAccounts('staffId')">
+		<icon class="fa fa-user"></icon>
+		<md-tooltip>Staff Number</md-tooltip>
+		</md-button>
+		</md-fab-actions>
+		</md-fab-speed-dial>
+	</span>
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">Mts Sales Admin Dashboard</h5>
+<!-- Search by Staff Number -->
+<div class="row" ng-show="showSearchByStaffId">
+	<form class="col s12">
+		<div class="row">
+			<div class="input-field col m8">
+				<input id="staffId" type="text" class="validate" ng-model="staffId">
+				<label for="first_name">Staff ID</label>
+			</div>
+			<div class="input-field col m4">
+				<button class="btn waves-effect waves-light" ng-click="searchStaffUploads(staffId);">Search
+				<icon class="fa fa-search"></icon>
+				</button>
+			</div>
+		</div>
+	</form>
+</div>
+<!-- Search By Date -->
+<div class="row" ng-show="showSearchByDate">
+	<!-- <div class="row" ng-show="false"> -->
+	<form class="col m12">
+		<span class="col m5">
+			<label class="fromDate">From</label>
+			<input type="date" class="datepicker" ng-model="dt.fromDate">
+		</span>
+		<span class="col m5">
+			<label class="fromDate">To</label>
+			<input type="date" class="datepicker" ng-model="dt.toDate">
+		</span>
+		<div class="input-field col m2">
+			<button class="btn waves-effect waves-light" ng-click="searchByDate(dt);">Search
+			<icon class="fa fa-search"></icon>
+			</button>
+		</div>
+	</form>
+</div>
+<div ng-show="showSearchProgress">
+	<p class="md-accent">Searching...</p>
+	<div class="progress z-depth-3">
+		<div class="indeterminate"></div>
+	</div>
+</div>
+<div class="divider"></div>
+<!-- Opened Accounts Table -->
+<div loading-container="openedAccountsParams.settings().$loading">
+	<div class="responsive-table">
+		<table ng-table="openedAccountsParams" class="table bordered striped hoverable">
+			<tbody>
+				<tr ng-repeat="acc in $data">
+					<td data-title="'Staff Name'">{{acc.staffName}}</td>
+					<td data-title="'Staff Code'">{{acc.staffCode}}</td>
+					<td data-title="'Staff Mobile'">{{acc.staffMobile}}</td>
+					<td data-title="'Br DAO'">{{acc.brDao}}</td>
+					<td data-title="'Br Name'">{{acc.brDaoName}}</td>
+					<td data-title="'Cust Name'">{{acc.cusName}}</td>
+					<td data-title="'Cust Mobile'">{{acc.cusMobile}}</td>
+					<td data-title="'Status'"
+						ng-style="{{acc.status}} == '0'?{'color':'green'}:{{acc.status}} == '1'?{'color':'orange'} : {'color':'red'}">
+						{{acc.statusDescription}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</md-card-content>
+</md-card>
+</md-content>

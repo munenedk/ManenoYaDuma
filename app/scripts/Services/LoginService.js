@@ -1,28 +1,35 @@
-var LoginService = function($http,dumaSettings){
+var LoginService = function($http, dumaSettings,$rootScope) {
 
-	var apiUrl = dumaSettings.backendUrl+"login";
+	var apiUrl = dumaSettings.backendUrl + "login";
 
 	//Login
-	var login = function(user){
-		// console.log(apiUrl);
-		// console.log(JSON.stringify(user));
+	var login = function(user) {
 		var credentials = JSON.stringify(user);
 		return $http({
-			method:"POST",
-			url:apiUrl,
-			headers:{'Content-Type':'text/plain;charset=UTF-8'},
-			// data:{"email":user.email,"password":user.password}
-			data:JSON.stringify(user)
+			method: "POST",
+			url: apiUrl,
+			headers: {
+				'Content-Type': 'text/plain;charset=UTF-8'
+			},
+			data: JSON.stringify(user)
 		});
 	};
 
-
-		//Return Values
-		return{
-			login:function(){
-				return login;
-			}
-		};
+	//Menu Change
+	var getUserMenu = function() {
+		$rootScope.$broadcast('changeMenu');
 	};
 
-	module.exports = LoginService;
+
+	//Return Values
+	return {
+		login: function() {
+			return login;
+		},
+		loadMenu: function() {
+			return getUserMenu;
+		}
+	};
+};
+
+module.exports = LoginService;

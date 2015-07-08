@@ -1,0 +1,33 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="end center">
+		<a href="#/new-bizNo">
+			<md-button class="md-fab" aria-label="New Business Number">
+			<icon class="fa fa-plus" style="color:white"></icon>
+			</md-button>
+		</a>
+	</section>
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">Business Numbers</h5>
+<div loading-container="tableParams.settings().$loading">
+	<div class="responsive-table">
+		<table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
+			<tbody>
+				<tr ng-repeat="biz in $data">
+					<td filter="{'bizNo':'text'}" data-title="'Business Number'">{{biz.businessNumber}}</td>
+					<td filter="{'bizName':'text'}"data-title="'Business Name'">{{biz.accountName}}</td>
+					<td data-title="'Action'">
+						<a href="#">
+						<icon class="fa fa-pencil" style="color:#333"></icon>
+					</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</md-card-content>
+</md-card>
+</md-content>

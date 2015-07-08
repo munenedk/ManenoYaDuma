@@ -4,15 +4,15 @@
 		<a href="#/new-user">
 			<md-button class="md-fab" aria-label="New User">
 			<icon class="fa fa-plus" style="color:white"></icon>
-		</md-button>
-	</a>
-</section>
+			</md-button>
+		</a>
+	</section>
 </div>
 <md-card>
 <md-card-content>
 <h5 class="md-title md-primary">Users</h5>
-<div class="responsive-table">
-	<div loading-container="tableParams.settings().$loading">
+<div loading-container="tableParams.settings().$loading">
+	<div class="responsive-table">
 		<table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
 			<tbody>
 				<tr ng-repeat="user in $data">
@@ -20,10 +20,10 @@
 					<td data-title="'Email'">{{user.usrEmail}}</td>
 					<td data-title="'Date Created'">{{user.usrDateCreated}}</td>
 					<td data-title="'Last Password Change'">{{user.usrLastPasswordChange}}</td>
-					<td data-title="'status'">{{user.usrStatus}}</td>
+					<td data-title="'status'" ng-style="{{user.usrStatus}} == 1?{'color':'green'}:{{user.usrStatus}} == 0 ? {'color':'blue'} : {'color':'red'}">
+						{{user.usrStatus == 1 ? 'Active' : user.usrStatus == 0 ? 'New' : user.usrStatus == 2 ? 'Locked' : 'Error'}}
+					</td>
 					<td data-title="'Action'">
-						<a href="#/user"
-						<icon class="fa fa-eye" style="color:#333"></icon></a>&nbsp;
 						<a href="#/user/{{user.usrId}}">
 							<icon class="fa fa-pencil" style="color:#333"></icon>
 						</a>
@@ -34,6 +34,6 @@
 		</table>
 	</div>
 </div>
-</md-card>
 </md-card-content>
+</md-card>
 </md-content>

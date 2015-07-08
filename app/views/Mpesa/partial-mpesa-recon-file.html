@@ -1,44 +1,88 @@
 <md-content class="md-padding">
 <div>
-	<section layout="row" layout-sm="column" layout-align="start center">	
-		<a href="#/mpesaRecon">
-			<md-button class="md-fab" aria-label="Reconciliation File">
-			<icon class="fa fa-chevron-left" style="color:white"></icon>
-		</md-button>
-	</a>
-</section>
+  <section layout="row" layout-sm="column" layout-align="start center">
+    <a href="#/mpesaRecon/{{reconType}}">
+      <md-button class="md-fab" aria-label="Reconciliation File">
+      <icon class="fa fa-chevron-left" style="color:white"></icon>
+      </md-button>
+    </a>
+  </section>
 </div>
 <md-card>
 <md-card-content>
-<h5 class="md-title">Mpesa Reconciliation File</h5>
-<div loading-container="reconParams.settings().$loading">
-	<table ng-table="reconParams" show-filter="true" class="table responsive-table bordered striped hoverable">
-		<tbody>
-			<tr ng-repeat="recon in $data">
-				<td data-title="'Orig Conv Id'" filter="{'origConvId':'text'}">{{recon.origConvId}}</td>
-				<td data-title="'Receipt Number'" filter="{'recieptNum':'text'}">{{recon.recieptNum}}</td>
-        <td data-title="'Phone Number'">{{recon.phoneNo}}</td>
-        <td data-title="'Transaction Date'">{{recon.tranDate}}</td>
-        <td data-title="'Details'">{{recon.details}}</td>
-        <td data-title="'Name'" filter="{'name':'text'}">{{recon.name}}</td>
-        <td data-title="'Amount'">{{recon.amount}}</td>
-        <td data-title="'Status'" 
-        ng-style="{{recon.processingStatus}} == 1 ? {color:'green'} : {{recon.processingStatus}} == 0 ? {color:'orange'} : {color:'red'}">
-        {{recon.processingStatus == 1 ? 'Valid' : recon.processingStatus == 0 ? 'Invalid Transaction': 'Not Found'}}
-      </td>
-      <td data-title="select" header="'ng-table/headers/checkbox.html'">
-        <md-checkbox 
-        value="{{recon.Id}}"
-        ng-model= "recon.processingStatus == 1 && selectAllRecons"
-        ng-checked="{{selectedRecons.indexOf(recon) > -1}}"
-        ng-click="toggleSelectedRecons(recon)" 
-        aria-label="Select"
-        ng-disabled="{{recon.processingStatus}} == 0 ? true : {{recon.processingStatus == 2 }} ? true : false">
-      </md-checkbox> 
-    </td>
-  </tr>
-</tbody>
-</table>
+<h5 class="md-title">{{reconType.toUpperCase()}} Mpesa Reconciliation File</h5>
+<!-- C2B Transactions -->
+<div loading-container="reconParams.settings().$loading" ng-show="showFileDetails" ng-if="reconType == 'c2b'">
+  <div class="responsive-table">
+    <table ng-table="reconParams" show-filter="true" class="table bordered striped hoverable">
+      <tbody>
+        <tr ng-repeat="recon in $data">
+          <td data-title="'Orig Conv Id'" filter="{'origConvId':'text'}">{{recon.origConvId}}</td>
+          <td data-title="'Receipt Number'" filter="{'recieptNum':'text'}">{{recon.recieptNum}}</td>
+          <td data-title="'Phone Number'">{{recon.phoneNo}}</td>
+          <td data-title="'Transaction Date'">{{recon.tranDate}}</td>
+          <td data-title="'Details'">{{recon.details}}</td>
+          <td data-title="'Name'" filter="{'name':'text'}">{{recon.name}}</td>
+          <td data-title="'Amount'">{{recon.amount}}</td>
+          <td data-title="'Status'"
+            ng-style="{{recon.processingStatus}} == 1 ? {color:'green'} : {{recon.processingStatus}} == 0 ? {color:'orange'} : {color:'red'}">
+            {{recon.processingStatus == 1 ? 'Valid' : recon.processingStatus == 0 ? 'Invalid Transaction': 'Not Found'}}
+          </td>
+          <td data-title="select" header="'ng-table/headers/checkbox.html'">
+            <!-- ng-model= "recon.processingStatus == 1 && selectAllRecons"  -->
+            <md-checkbox
+            value="{{recon.Id}}"
+            ng-model="chckbox[recon.id]"
+            ng-checked="{{selectedRecons.indexOf(recon) > -1}}"
+            ng-click="toggleSelectedRecons(recon)"
+            aria-label="Select"
+            ng-disabled="{{recon.processingStatus}} == 0 ? true : {{recon.processingStatus == 2 }} ? true : false">
+            </md-checkbox>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- B2C Body-->
+<div loading-container="reconParams.settings().$loading" ng-show="showFileDetails" ng-if="reconType == 'b2c'">
+  <div class="responsive-table">
+    <table ng-table="reconParams" show-filter="true" class="table bordered striped hoverable">
+      <tbody>
+        <tr ng-repeat="recon in $data">
+          <td data-title="'Orig Conv Id'" filter="{'origConvId':'text'}">{{recon.orginatorConversationId}}</td>
+          <td data-title="'Phone Number'" filter="{'phoneNo':'text'}">{{recon.phoneNo}}</td>
+          <td data-title="'Debit Account'">{{recon.debitAccount}}</td>
+          <td data-title="'Credit Account'">{{recon.creditAccount}}</td>
+          <td data-title="'Amount'">{{recon.amount}}</td>
+          <td data-title="'Date'">{{recon.timeStamp}}</td>
+          <td data-title="'Status'"
+            ng-style="{{recon.processingStatus}} == 1 ? {color:'green'} : {{recon.processingStatus}} == 0 ? {color:'orange'} : {color:'red'}">
+            {{recon.processingStatus == 1 ? 'Valid' : recon.processingStatus == 0 ? 'Invalid Transaction': 'Not Found'}}
+          </td>
+          <td data-title="select" header="'ng-table/headers/checkbox.html'">
+            <md-checkbox
+            value="{{recon.Id}}"
+            ng-model="chckbox[recon.id]"
+            ng-checked="{{selectedRecons.indexOf(recon) > -1}}"
+            ng-click="toggleSelectedRecons(recon)"
+            aria-label="Select"
+            ng-disabled="{{recon.processingStatus}} == 0 ? true : {{recon.processingStatus == 2 }} ? true : false">
+            </md-checkbox>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- Processing Div -->
+<div ng-show="showProcessing">
+  <div class="divider"></div>
+  <br/>
+  <p class="md-accent">Processing. This may take a while, please wait...</p>
+  <div class="progress z-depth-3">
+    <div class="indeterminate"></div>
+  </div>
 </div>
 <br/><br/><br/>
 <div class="divider"></div>
@@ -51,7 +95,6 @@
 </md-card-content>
 </md-card>
 </md-content>
-
 <script type="text/ng-template" id="ng-table/headers/checkbox.html">
-  <md-checkbox aria-label="Select All" ng-click="toggleSelectAllRecons();"></md-checkbox>
+<md-checkbox aria-label="Select All" ng-click="toggleSelectAllRecons();"></md-checkbox>
 </script>

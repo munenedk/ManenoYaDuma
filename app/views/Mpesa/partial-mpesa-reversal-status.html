@@ -1,0 +1,62 @@
+<md-content class="md-padding">
+<div class="row">
+  <span class="left">
+    <a href="#/mpesaRecon/{{reconType}}">
+      <md-button class="md-fab" aria-label="Reconciliation File">
+      <icon class="fa fa-chevron-left" style="color:white"></icon>
+      </md-button>
+    </a>
+  </span>
+  <span class="right">
+    <a id="fileDownload" target="_self">
+      <md-button class="md-fab" aria-label="Reconciliation File" ng-click="downloadFile();">
+      <icon class="fa fa-download" style="color:white"></icon>
+      <md-tooltip>Download File</md-tooltip>
+      </md-button>
+    </a>
+  </span>
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">{{reconType.toUpperCase()}} Mpesa Reversal Status</h5>
+<div loading-container="reversalStatusParams.settings().$loading" ng-if="reconType == 'c2b'">
+  <div class="responsive-table">
+    <table ng-table="reversalStatusParams" show-filter="true" class="table bordered striped hoverable" >
+      <tbody>
+        <tr ng-repeat="reversal in $data" >
+          <td data-title="'Orig Conv Id'" filter="{'origConvId':'text'}">{{reversal.originatorConversationId}}</td>
+          <td data-title="'Receipt Number'" filter="{'recieptNum':'text'}">{{reversal.recieptNum}}</td>
+          <td data-title="'Amount'">{{reversal.amount}}</td>
+          <td data-title="'Phone Number'">{{reversal.phoneNo}}</td>
+          <td data-title="'Status'">{{reversal.status}}</td>
+          <td data-title="'Description'" ng-style="{{reversal.status}} == 12 ? {color:'green'} : {{reversal.status}} == 11 ? {color:'blue'} : {{reversal.status}} == 10 ? {color:'purple'} : {color:'red'}">{{reversal.description}}</td>
+          <td data-title="'Name'">{{reversal.name}}</td>
+          <td data-title="'Tran Date'">{{reversal.tranDate}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- B2C Files -->
+<div loading-container="reversalStatusParams.settings().$loading" ng-if="reconType == 'b2c'">
+  <div class="responsive-table">
+    <table ng-table="reversalStatusParams" show-filter="true" class="table bordered striped hoverable">
+      <tbody>
+        <tr ng-repeat="reversal in $data">
+          <td data-title="'Orig Conv Id'" filter="{'origConvId':'text'}">{{reversal.origConvId}}</td>
+          <td data-title="'Phone Number'">{{reversal.phoneNo}}</td>
+          <td data-title="'Debit A/C'">{{reversal.debitAcc}}</td>
+          <td data-title="'Credit A/C'">{{reversal.creditAcc}}</td>
+          <td data-title="'Amount'">{{reversal.amount}}</td>
+          <td data-title="'CM Response'">{{reversal.cmResponse}}</td>
+          <td data-title="'Status'">{{reversal.status}}</td>
+          <td data-title="'Description'" ng-style="{{reversal.status}} == 2?{color:'green'} : red">{{reversal.description}}</td>
+          <td data-title="'Duma A/C'">{{reversal.dumaAcc}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</md-card-content>
+</md-card>
+</md-content>

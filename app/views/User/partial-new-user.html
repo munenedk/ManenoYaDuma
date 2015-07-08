@@ -4,72 +4,103 @@
 		<a href="#/users">
 			<md-button class="md-fab" aria-label="New User">
 			<icon class="fa fa-chevron-left" style="color:white"></icon>
-		</md-button>
-	</a>
-</section>
+			</md-button>
+		</a>
+	</section>
 </div>
-
 <md-card>
 <md-card-content>
 <h5 class="md-title md-primary">New User</h5>
 <md-tabs md-selected="selectedTab" md-dynamic-height md-border-bottom class="md-accent">
-
 <!-- Tab One -->
 <md-tab label="User Details" ng-disabled="userDetailsTabDisabled">
 <md-content class="md-padding">
-<form name="form.userForm" style="padding:24px" class="duma-form">
+<!-- ng-controller="UserController as ctrl" -->
+<form name="form.userForm" style="padding:24px" class="duma-form" >
 	<!-- Name -->
-	<md-input-container class="md-icon-float">
+	<md-input-container>
 	<label><icon class="fa fa-user"></icon>&emsp;Name</label>
 	<input ng-model="user.usrName" required type="text">
-</md-input-container>
-
-<!-- Email -->
-<md-input-container>
-<label><icon class="fa fa-envelope"></icon>&emsp;Email</label>
-<input ng-model="user.usrEmail" required type="text">
-</md-input-container>
-<!-- Submit Button -->
-<div layout="row" layout-align="end center">
-	<md-button class="md-raised md-padding" ng-click="resetForm();">Clear</md-button>&emsp;
-	<md-button class="md-raised md-accent md-padding" ng-click="setUser(user);">Next</md-button>
-</div>
+	</md-input-container>
+	<!-- ID Number -->
+	<md-input-container>
+	<label><icon class="fa fa-credit-card"></icon>&emsp;Staff Id</label>
+	<input ng-model="user.usrStaffId" required type="text">
+	</md-input-container>
+	
+	<!-- Phone Number -->
+	<md-input-container>
+	<label><icon class="fa fa-phone"></icon>&emsp;Phone</label>
+	<input ng-model="user.usrPhoneNo" required type="text">
+	</md-input-container>
+	<!-- Email -->
+	<md-input-container>
+	<label><icon class="fa fa-envelope"></icon>&emsp;Email</label>
+	<input ng-model="user.usrEmail" required type="text">
+	</md-input-container>
+	<!-- Select Branch -->
+	<md-autocomplete
+	ng-disabled="acSsDisabled"
+	md-no-cache="acNoCache"
+	md-selected-item = "acSelectedItem"
+	md-search-text-change = "acSearchTextChange(acSearchText)"
+	md-search-text="acSearchText"
+	md-selected-item-change="acSelectedItemChange(item)"
+	md-items="item in acQuerySearch(acSearchText)"
+	md-item-text="item.display"
+	md-min-length="0"
+	placeholder="Select a branch">
+	<md-item-template>
+	<span md-highlight-text="acSearchText">{{item.display}}</span>
+	</md-item-template>
+	<md-not-found>
+	No matches found for "{{acSearchText}}".
+	</md-not-found>
+	</md-autocomplete><br/>
+	
+	<!-- Submit Button -->
+	<div layout="row" layout-align="end center">
+		<button class="btn grey" ng-click="resetForm();">Clear <icon class="fa fa-eraser"></icon></button>&emsp;
+		<button class="btn" ng-click="setUser(user);">Next <icon class="fa fa-arrow-circle-right"></icon></button>
+	</div>
 </form>
 </md-content>
 </md-tab>
-
 <!-- Tab Two -->
 <md-tab label="User Roles" ng-disabled="userRolesTabDisabled">
 <md-content class="md-padding">
 <div loading-container="roleTableParams.settings().$loading">
-	<table ng-table="roleTableParams" show-filter="true" class="table responsive-table bordered striped hoverable">
-		<tbody>
-			<tr ng-repeat="role in $data">
-				<td filter="{'name':'text'}" data-title="'Role Name'">{{role.roleName}}</td>
-				<td data-title="'Description'">{{role.roleDescription}}</td>
-        <td data-title="'Select'">
-         <md-checkbox ng-checked="{{selectedRoles.indexOf(role) > -1}}" ng-click="toggleSelectedRole(role)" aria-label="Select"></md-checkbox>
-       </td>
-     </tr>
-   </tbody>
- </table>
+	<div class="responive-table">
+		<table ng-table="roleTableParams" show-filter="true" class="table bordered striped hoverable">
+			<tbody>
+				<tr ng-repeat="role in $data">
+					<td filter="{'name':'text'}" data-title="'Role Name'">{{role.roleName}}</td>
+					<td data-title="'Description'">{{role.roleDescription}}</td>
+					<td data-title="'Select'">
+						<!-- ng-checked="{{selectedRoles.indexOf(role) > -1}}" -->
+						<md-checkbox
+						ng-model="rolesChckbox[role.roleId]"
+						ng-click="toggleSelectedRole(role)"
+						aria-label="Select">
+						</md-checkbox>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
 </md-content>
 <!-- <pre>{{selectedPermissions|json}}</pre> -->
-
 <div class="divider"></div>
 <md-content class="md-padding">
 <div layout="row" layout-align="end center">
-	<md-button class="md-raised md-padding" ng-click="restart();">Cancel</md-button>&emsp;
-	<md-button class="md-raised md-primary md-padding" ng-click="save();" style="color:white">Submit</md-button>
+	<button class="btn grey" ng-click="restart();">Cancel <icon class="fa fa-times"></icon></button>&emsp;
+	<button class="btn" ng-click="save();">Submit <icon class="fa fa-check"></icon></button>
 </div>
 </md-content>
-
 </md-tab>
 </md-tabs>
-
 <md-progress-linear md-mode="indeterminate" ng-show="showSaveProgress"></md-progress-linear><br/>
 </md-card-content>
-
 </md-card>
 </md-content>

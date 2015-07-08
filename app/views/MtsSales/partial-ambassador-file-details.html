@@ -1,0 +1,31 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="start center">
+		<a href="#/mk-ambassadors">
+			<md-button class="md-fab" aria-label="New Customer">
+			<icon class="fa fa-chevron-left" style="color:white"></icon>
+			</md-button>
+		</a>
+	</section>
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">File Details</h5>
+<div loading-container="fileDetailsParams.settings().$loading">
+	<table ng-table="fileDetailsParams" show-filter="true" class="table responsive-table bordered striped hoverable">
+		<tbody>
+			<tr ng-repeat="fd in $data">
+				<td filter="{'phoneNo':'text'}" data-title="'Phone Number'">{{fd.mkfMisdn}}
+				</td>
+				<td data-title="'Customer Name'">{{fd.customerName}}</td>
+				<td data-title="'Date Registered'">{{fd.dateRegistered}}</td>
+				<td data-title="'Date File Uploaded'">{{fd.dateUploaded}}</td>
+				<td data-title="'Status'"
+				ng-style="{{fd.mkfStatus}} == 0? {color:'green'} : {{fd.mkfStatus}} == 1 ? {color:'orange'} : {color:'red'}">{{fd.mkfDescription}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</md-card>
+</md-card-content>
+</md-content>

@@ -1,0 +1,35 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="end center">
+		<a href="#/mk-ambassadors-upload">
+			<md-button class="md-fab" aria-label="New Customer">
+			<icon class="fa fa-plus" style="color:white"></icon>
+			<md-tooltip>Upload File</md-tooltip>
+			</md-button>
+		</a>
+	</section>
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">My Uploads</h5>
+<div loading-container="uploadParams.settings().$loading">
+	<div class="responsive-table">
+		<table ng-table="uploadParams" show-filter="true" class="table bordered striped hoverable">
+			<tbody>
+				<tr ng-repeat="upload in $data">
+					<!-- <td data-title="'Customer Code'">{{customer.customerCode}}</td> -->
+					<td filter="{'fileName':'text'}" data-title="'File Name'">{{upload.mkaFileName}}</td>
+					<td data-title="'Date Uploaded'">{{upload.mkaDateUploaded}}</td>
+					<td data-title="'Uploaded By'">{{upload.mkaUsrId.usrName}}</td>
+					<td data-title="'Status'">{{upload.mkaStatus}}</td>
+					<td data-title="'Action'">
+						<a class="btn btn-flat" ng-click="loadFileDetails(upload.mkaId)"><icon class="fa fa-eye"></icon> View</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</md-card-content>
+</md-card>
+</md-content>
