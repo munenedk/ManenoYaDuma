@@ -35,20 +35,28 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	//Roles checkbox
 	$scope.rolesChckbox = {};
 
-
 	//Inject Service methods to scope
 	$scope.getUsers = UserService.list();
 	$scope.getUser = UserService.find();
 	$scope.saveUser = UserService.save();
 	$scope.getRoles = RolesService.list();
 	$scope.getAllBranches = UserService.listAllBranches();
+	$scope.updateUser = UserService.updateUser();
+	$scope.updateUsrRoles = UserService.updateUserRoles();
 
 	//initialize user
 	if ($routeParams.userId !== undefined) {
 		//Get User
 		$scope.getUser($routeParams.userId)
 			.success(function(data, status, headers, config) {
-				$scope.user = data.payload;
+				$scope.user = data.payload.user;
+				$scope.user.usrStatus = 0 ? 'New' : 1 ? 'Active' : 2 ? 'Disabled' : 'Unknown';
+				var userRoles = data.payload.userRoles;
+				//Preselect User Roles
+				for (var i in userRoles) {
+					$scope.toggleSelectedRole(userRoles[i]);
+					$scope.rolesChckbox[userRoles[i].roleId] = true;
+				}
 				$scope.showToast(data.message);
 			})
 			.error(function(data, status, headers, config) {
@@ -144,6 +152,41 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 			});
 	};
 
+	//Update user
+	$scope.update = function(user) {
+		user.usrStatus = 'New' ? 0 : 'Active' ? 1 : 'Disabled' ? 2 : 3;
+		// console.log(JSON.stringify(user));
+		$scope.updateUser(user)
+			.success(function(data, status, headers, config) {
+				$scope.user = data.payload;
+				$scope.user.usrStatus = 0 ? 'New' : 1 ? 'Active' : 2 ? 'Disabled' : 'Unknown';
+				$scope.showToast(data.message);
+			})
+			.error(function(data, status, headers, config) {
+				$scope.showAlert(status, data.message);
+			});
+	};
+
+	//Update User roles
+	$scope.updateUserRoles = function() {
+		var usr = $scope.user;
+		usr.usrStatus = 'New' ? 0 : 'Active' ? 1 : 'Disabled' ? 2 : 3;
+		console.log("User Roles Selected: " + JSON.stringify($scope.selectedRoles));
+		var userContext = {
+			'user': usr,
+			'roles': $scope.selectedRoles
+		};
+
+		$scope.showSaveProgress = true;
+		$scope.updateUsrRoles(userContext)
+			.success(function(data, status, headers, config) {
+				$scope.showToast(data.message);
+			})
+			.error(function(data, status, headers, config) {
+				$scope.showAlert(status, data.message);
+			});
+	};
+
 	//Reset User Form
 	$scope.resetForm = function() {
 		$scope.user = {
@@ -169,9 +212,7 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 					var rData = {};
 					rData = data.payload;
 					// console.log(JSON.stringify(rData));
-
 					var users = rData.content;
-
 					params.total(rData.totalElements);
 					//set New data
 					$defer.resolve(users);
@@ -194,17 +235,20 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	}, {
 		total: 0,
 		getData: function($defer, params) {
+			//Reset Roles
+			$scope.selectedRoles = [];
+
 			//ajax request to api
 			$scope.getRoles(params)
 				.success(function(data, status, headers, config) {
 					var rData = {};
 					rData = data.payload;
 
-					var users = rData.content;
+					var roles = rData.content;
 
 					params.total(rData.totalElements);
 					//set New data
-					$defer.resolve(users);
+					$defer.resolve(roles);
 				})
 				.error(function(data, status, headers, config) {
 					var msg = "N/A";
@@ -217,7 +261,15 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	});
 
 	$scope.toggleSelectedRole = function(role) {
-		var idx = $scope.selectedRoles.indexOf(role);
+		console.log(JSON.stringify(role));
+		// var idx = $scope.selectedRoles.indexOf(role);
+		var idx = -1;
+		for (var i = 0; i < $scope.selectedRoles.length; i++) {
+			if (JSON.stringify($scope.selectedRoles[i]) === JSON.stringify(role)) {
+				idx = i;
+			}
+		}
+		console.log("IDX: " + idx);
 
 		//is Currently selected
 		if (idx > -1) {

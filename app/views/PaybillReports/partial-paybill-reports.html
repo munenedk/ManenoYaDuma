@@ -1,0 +1,91 @@
+<div class="container">
+	<div class="row">
+		<div class="col m10 s6">
+			<div class="card" style="overflow:auto">
+				<div class="card-content" style="padding:20px">
+					<span class="card-title teal-text">C2B Reports</span>
+					<form style="padding:32px" name="form.reportForm">
+						<!-- Report Type -->
+						<div class="col s12">
+							<label><span style="color:red">*</span> Report Type</label>
+							<select name="report_type" ng-model="rpt.report_type" required class="browser-default">
+								<option value="" disabled>Select Report Type</option>
+								<option value="detailed">Detailed Transaction Report</option>
+								<option value="summary">Daily Summary Report</option>
+							</select>
+						</div>
+						<!-- From Date -->
+						<div class="input-field col s12">
+							<input id="dateFrom" type="text" class="datepicker" required ng-model="rpt.from_date"/>
+							<label for="dateFrom"><span style="color:red">*</span> Date From</label>
+						</div>
+						<!-- To Date -->
+						<div class="input-field col s12">
+							<input id="dateTo" type="text" class="datepicker" required ng-model="rpt.to_date"/>
+							<label for="dateTo"><span style="color:red">*</span> Date To</label>
+						</div>
+						<!-- Business Number -->
+						<div class="col s12">
+							<label><span style="color:red">*</span> Business Number</label>
+							<select ng-model="rpt.bizNo" required class="browser-default">
+								<option value="" disabled>Business Number</option>
+								<option value="all">All</option>
+								<option value="bizNo" ng-repeat="bizNo in bizNos">{{bizNo}}</option>
+							</select>
+						</div>
+						<!-- Filter By -->
+						<div class="col s6">
+							<label><span style="color:red">*</span> Filter By</label>
+							<select ng-model="rpt.filter_by" required class="browser-default">
+								<option value="" disabled>Filter By</option>
+								<option value="none">None</option>
+								<option value="accno">Account Number</option>
+								<option value="amount">Amount</option>
+								<option value="card_center">Card Center</option>
+								<option value="customer_name">Customer Name</option>
+								<option vallue="judiciary">Judiciary</option>
+								<option value="mpesa_id">Mpesa-ID</option>
+								<option value="mbenki">M-Benki</option>
+								<option value="school">School</option>
+								<option value="phone">Sender Phone Number</option>
+								<option value="retries">T24 Upload Trials</option>
+							</select>
+						</div>
+						<div class="input-field col s6">
+							<input type="text" placeholder="Filter Value" ng-model="rpt.filterValue">
+						</div>
+						<!-- Order By -->
+						<div class="col s6">
+							<label><span style="color:red">*</span> Order By</label>
+							<select ng-model="rpt.order_by" required class="browser-default">
+								<option value="" disabled>Order By</option>
+								<option value="transactionDate" selected>Mpesa Transaction Date</option>
+								<option value="t24uploadDate">T24 Upload Date</option>
+								<option value="amount">Amount</option>
+								<option value="senderMsisdn">Sender Phone Number</option>
+								<option value="accountNumber">Account Number</option>
+								<option value="mpesatransactioncode">Mpesa_ID</option>
+							</select>
+						</div>
+						<!-- Report Format -->
+						<div class="col s6">
+							<label><span style="color:red">*</span> Format</label>
+							<select ng-model="rpt.format" required class="browser-default">
+								<option value="" disabled>Select Format</option>
+								<option value="html">Html</option>
+								<option value="pdf">Pdf</option>
+								<option value="excel">Excel</option>
+							</select>
+						</div>
+					</form>
+				</div>
+				<!-- Card Action -->
+				<div class="card-action col s12" style="margin-top: 30px">
+					<a id="fileDownload" target="_self">
+						<button class="btn right" ng-click="generateReport(rpt);">Submit <i class="fa fa-check"></i></button>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

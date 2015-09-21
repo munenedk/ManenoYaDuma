@@ -14,51 +14,85 @@
 <h5 class="md-title">New Billing Company</h5>
 <form name="form.billingCompany" style="padding:24px">
 	
-	<!-- Company Name -->
-	<md-input-container>
-	<label>Company Name</label>
-	<input ng-model="company.companyName" required type="text"/>
-	</md-input-container>
-	<!-- Account Number -->
-	<md-input-container>
-	<label>Account Number</label>
-	<input ng-model="company.accountNumber" required type="text"/>
-	</md-input-container>
-	<!-- Business Number -->
-	<md-autocomplete
-	ng-disabled="bnIsDisabled"
-	md-no-cache="bnNoCache"
-	md-selected-item = "bnSelectedItem"
-	md-search-text-change = "bnSearchTextChange(bnSearchText)"
-	md-search-text="bnSearchText"
-	md-selected-item-change="bnSelectedItemChange(item)"
-	md-items="item in bnQuerySearch(bnSearchText)"
-	md-item-text="item.display"
-	md-min-length="0"
-	placeholder="Select a Business Number">
-	<md-item-template>
-	<span md-highlight-text="bnSearchText">{{item.display}}</span>
-	</md-item-template>
-	<md-not-found>
-	No matches found for "{{bnSearchText}}".
-	</md-not-found>
-	</md-autocomplete><br/>
+	<div layout layout-sm="column">
+		<!-- Company Name -->
+		<md-input-container flex>
+		<label>Company Name</label>
+		<input ng-model="company.companyName" required type="text"/>
+		</md-input-container>
+		<!-- Account Number -->
+		<md-input-container flex>
+		<label>Account Number</label>
+		<input ng-model="company.accountNumber" required type="text"/>
+		</md-input-container>
+	</div>
+	<div layout layout-sm="column">
+		<!-- Business Number -->
+		<md-autocomplete required flex
+		md-input-name="businessNumber"
+		ng-disabled="bnIsDisabled"
+		md-no-cache="bnNoCache"
+		md-selected-item = "bnSelectedItem"
+		md-search-text-change = "bnSearchTextChange(bnSearchText)"
+		md-search-text="bnSearchText"
+		md-selected-item-change="bnSelectedItemChange(item)"
+		md-items="item in bnQuerySearch(bnSearchText)"
+		md-item-text="item.display"
+		md-floating-label="Business Number">
+		<md-item-template>
+		<span md-highlight-text="bnSearchText" md-highlight-flags="^i">{{item.display}}</span>
+		</md-item-template>
+		<md-not-found>
+		No matches found for "{{bnSearchText}}".
+		</md-not-found>
+		</md-autocomplete>
+		<!-- Account Title -->
+		<md-input-container flex>
+		<label>Account Title</label>
+		<input ng-model="company.accountTitle" required type="text"/>
+		</md-input-container>
+	</div>
 
-	<!-- Company Cell Phone -->
-	<md-input-container>
-	<label>Company Cell Phone</label>
-	<input ng-model="company.companyCellPhone" required type="text"/>
-	</md-input-container>
-	<!-- Account Title -->
-	<md-input-container>
-	<label>Account Title</label>
-	<input ng-model="company.accountTitle" required type="text"/>
-	</md-input-container>
-	<!-- Company Email -->
-	<md-input-container>
-	<label>Company Email</label>
-	<input ng-model="company.companyEmail" required type="email"/>
-	</md-input-container>
+	<!-- For Lipa Karo Only -->
+	<div layout layout-sm="column" ng-if="selectedBizNo == 'lipa karo-522123'">
+		<!-- Branch Name -->
+		<md-autocomplete required flex
+		md-input-name="branchName"
+		ng-disabled="brIsDisabled"
+		md-no-cache="brNoCache"
+		md-selected-item = "brSelectedItem"
+		md-search-text-change = "brSearchTextChange(bnSearchText)"
+		md-search-text="brSearchText"
+		md-selected-item-change="brSelectedItemChange(item)"
+		md-items="item in brQuerySearch(brSearchText)"
+		md-item-text="item.display"
+		md-floating-label="Branch Name">
+		<md-item-template>
+		<span md-highlight-text="brSearchText" md-highlight-flags="^i">{{item.display}}</span>
+		</md-item-template>
+		<md-not-found>
+		No matches found for "{{brSearchText}}".
+		</md-not-found>
+		</md-autocomplete>
+		<!-- Sales Code -->
+		<md-input-container flex>
+		<label>Sales Code</label>
+		<input ng-model="company.salesCode" required type="text"/>
+		</md-input-container>
+	</div>
+
+	<div layout layout-sm="column">
+		<!-- Company Cell Phone -->
+		<md-input-container flex>
+		<label>Company Cell Phone</label>
+		<input ng-model="company.companyCellPhone" required type="text"/>
+		</md-input-container>
+		<!-- Company Email -->
+		<md-input-container flex>
+		<label>Company Email</label>
+		<input ng-model="company.companyEmail" required type="email"/>
+		</md-input-container>
+	</div>
 	
 	<!-- Submit Button -->
 	<div layout="row" layout-align="end center">

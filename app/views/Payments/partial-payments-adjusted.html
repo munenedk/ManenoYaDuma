@@ -1,0 +1,49 @@
+<md-content class="md-padding">
+<div>
+	<!-- 	<section layout="row" layout-sm="column" layout-align="end center">
+			<a href="#/new-card">
+						<md-button class="md-fab" aria-label="New Card">
+						<icon class="fa fa-plus" style="color:white"></icon>
+						</md-button>
+			</a>
+	</section> -->
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">Adjusted Payments</h5>
+<div loading-container="txLogParams.settings().$loading">
+	<div class="responsive-table">
+		<table ng-table="txLogParams" show-filter="true" class="table bordered striped hoverable">
+			<tbody>
+				<tr ng-repeat="txLog in $data">
+					<td filter="{'mpesaTxCode':'text'}" data-title="'Transaction ID'">{{txLog.fkTransactionId}}</td>
+					<td data-title="'Maker'">{{txLog.maker}}</td>
+					<td data-title="'Date Requested'">{{txLog.makerdate}}</td>
+					<td data-title="'Checker'">{{txLog.cheker}}</td>
+					<td data-title="'Date Approved'">{{txLog.chekerdate}}</td>
+					<td data-title="'Action'">{{txLog.action}}</td>
+					<td data-title="'Status'"
+						ng-style="{{txLog.status}} == '0' ? {'color':'blue'} : {{txLog.status}} == '1' ? {'color':'green'} : {'color':'red'}">
+						{{txLog.status == 0 ? 'Pending' : txLog.status == 1 ? 'Approved' : 'Rejected'}}
+					</td>
+					<td data-title="'Action'">
+						<a href="" ng-click="rejectRequest($event,txLog);" ng-show="{{txLog.status == '0'}} && isPaybillChecker">
+							<icon class="fa fa-times" style="color:red"></icon>
+							<md-tooltip>Reject</md-tooltip>
+						</a>&nbsp;
+						<a href="" ng-click="approveRequest($event,txLog);" ng-show="{{txLog.status == '0'}} && isPaybillChecker">
+							<icon class="fa fa-check" style="color:green"></icon>
+							<md-tooltip>Approve</md-tooltip>
+						</a>
+						<a ng-show="{{txLog.status !== '0'}} || !isPaybillChecker">
+							<icon class="fa fa-ban" style="color:orange"></icon>
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</md-card-content>
+</md-card>
+</md-content>

@@ -1,0 +1,46 @@
+<md-content class="md-padding">
+<div>
+	<!-- 	<section layout="row" layout-sm="column" layout-align="end center">
+			<a href="#/new-card">
+						<md-button class="md-fab" aria-label="New Card">
+						<icon class="fa fa-plus" style="color:white"></icon>
+						</md-button>
+			</a>
+	</section> -->
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">Payments</h5>
+<div loading-container="tableParams.settings().$loading">
+	<div class="responsive-table">
+		<table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
+			<tbody>
+				<tr ng-repeat="payment in $data">
+					<td filter="{'mpesaTxCode':'text'}" data-title="'Mpesa Tx Code'">{{payment.mpesatransactioncode}}</td>
+					<td data-title="'Business Number'">{{payment.billerBusinessNumber}}</td>
+					<td data-title="'Account Number'">{{payment.accountNumber}}</td>
+					<td data-title="'Sender MSISDN'">{{payment.senderMsisdn}}</td>
+					<td data-title="'Sender Name'">{{payment.senderFirstName}}</td>
+					<td data-title="'Amount'">{{payment.amount | number:2}}</td>
+					<td data-title="'Status'"
+						ng-style="'{{payment.uploadstatus}}' == 'success' ? {'color':'green'} : '{{payment.uploadstatus.toLowerCase()}}' == 'approval pending' ? {'color':'orange'} : {'color':'red'}">
+						{{payment.uploadstatus.toUpperCase()}}
+					</td>
+					<td data-title="'Action'">
+						<a href="#/payments/{{payment.mpTransactionId}}"
+							ng-show="(payment.status.toLowerCase() === 'invalid account') && isPaybillMaker">
+							<icon class="fa fa-pencil" style="color:#333"></icon>
+							<md-tooltip>Edit</md-tooltip>
+						</a>
+						<a ng-show="(payment.status.toLowerCase() != 'invalid account') || !isPaybillMaker">
+							<icon class="fa fa-ban" style="color:orange">
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</md-card-content>
+</md-card>
+</md-content>

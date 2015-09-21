@@ -29,8 +29,8 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 				var res = data.payload;
 				$scope.ambassadors = res;
 				for (var i in $scope.ambassadors) {
-					console.log($scope.ambassadors[i]);
-					$scope.topAmbassadorsLabels.push($scope.ambassadors[i].name);
+					// console.log($scope.ambassadors[i]);
+					$scope.topAmbassadorsLabels.push($scope.ambassadors[i].name.split(/\b(\s)/)[0]);
 					$scope.topAmbassadorsData.push($scope.ambassadors[i].txs);
 				}
 			})
@@ -44,7 +44,7 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 				var res = data.payload;
 				$scope.regions = res;
 				for (var i in $scope.regions) {
-					console.log($scope.regions[i]);
+					// console.log($scope.regions[i]);
 					$scope.topRegionsLabels.push($scope.regions[i].name);
 					$scope.topRegionsData.push($scope.regions[i].txs);
 				}

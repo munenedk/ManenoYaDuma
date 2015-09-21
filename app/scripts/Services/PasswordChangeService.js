@@ -16,6 +16,7 @@ var PasswordChangeService = function($http, dumaSettings) {
 	};
 
 	var passwordReset = function(email) {
+		// console.log("Password Reset Email: "+email);
 		return $http({
 			method: "PUT",
 			url: apiUrl + "/resetPassword/" + email,

@@ -1,4 +1,4 @@
-var LoginService = function($http, dumaSettings,$rootScope) {
+var LoginService = function($http, dumaSettings, $rootScope) {
 
 	var apiUrl = dumaSettings.backendUrl + "login";
 
@@ -9,7 +9,8 @@ var LoginService = function($http, dumaSettings,$rootScope) {
 			method: "POST",
 			url: apiUrl,
 			headers: {
-				'Content-Type': 'text/plain;charset=UTF-8'
+				// 'Content-Type': 'text/plain;charset=UTF-8'
+				'Content-Type': 'application/json'
 			},
 			data: JSON.stringify(user)
 		});

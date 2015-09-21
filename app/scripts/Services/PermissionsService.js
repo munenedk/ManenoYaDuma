@@ -25,12 +25,12 @@ var PermissionsService =  function($http,dumaSettings){
 	};
 
 	//Save permission
-	var save = function(role){
+	var save = function(permission){
 		return $http({
 			method:"POST",
 			url:apiUrl,
 			headers:{'Content-Type':'application/json'},
-			data:JSON.stringify(role)
+			data:JSON.stringify(permission)
 		});
 	};
 

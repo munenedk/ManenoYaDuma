@@ -45,6 +45,28 @@ var UserService = function($http, dumaSettings) {
 		});
 	};
 
+	var updateUser = function(user) {
+		return $http({
+			method: "PUT",
+			url: apiUrl + "/update_user",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			data: JSON.stringify(user)
+		});
+	};
+
+	var updateUserRoles = function(userContext) {
+		return $http({
+			method: 'PUT',
+			url: apiUrl + "/update_user_roles",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			data: JSON.stringify(userContext)
+		});
+	};
+
 	//Get All Branches
 	var getAllBranches = function() {
 		return $http({
@@ -71,7 +93,14 @@ var UserService = function($http, dumaSettings) {
 		},
 		listAllBranches: function() {
 			return getAllBranches;
+		},
+		updateUser: function() {
+			return updateUser;
+		},
+		updateUserRoles:function(){
+			return updateUserRoles;
 		}
+
 	};
 
 

@@ -4,10 +4,10 @@
 		<a href="#/permissions">
 			<md-button class="md-fab" aria-label="Permissions">
 			<icon class="fa fa-chevron-left" style="color:white"></icon>
-		</md-button>
-	</a>
-	
-</section>
+			</md-button>
+		</a>
+		
+	</section>
 </div>
 <md-card>
 <md-card-content>
@@ -18,19 +18,17 @@
 	<md-input-container>
 	<label>Permission Name</label>
 	<input ng-model="permission.permissionName" required type="text">
-</md-input-container>
-
-<!-- Description -->
-<md-input-container>
-<label>permission Descritpiton</label>
-<textarea ng-model="permission.permissionDescription"></textarea>
-</md-input-container>
-
-<!-- Submit Button -->
-<div layout="row" layout-align="end center">
-	<button class="btn grey" ng-click="resetForm();">Clear</button>&emsp;
-	<button class="btn" ng-click="save(permission);">Submit</button>
-</div>
+	</md-input-container>
+	<!-- Description -->
+	<md-input-container>
+	<label>permission Descritpiton</label>
+	<textarea ng-model="permission.permissionDescription"></textarea>
+	</md-input-container>
+	<!-- Submit Button -->
+	<div layout="row" layout-align="end center">
+		<button class="btn grey" ng-click="resetForm();">Clear</button>&emsp;
+		<button class="btn" ng-click="save(permission);">Submit</button>
+	</div>
 </form>
 </md-card-content>
 </md-card>

@@ -1,48 +1,102 @@
 <md-content class="md-padding">
-<div>
-	<section layout="row" layout-sm="column" layout-align="start center">
-		<a href="#/users">
-			<md-button class="md-fab" aria-label="User">
-			<icon class="fa fa-chevron-left" style="color:white"></icon>
-			</md-button>
-		</a>&emsp;
-	</section>
+<div class="row">
+  <span class="left">
+    <a href="#/users">
+      <md-button class="md-fab" aria-label="User">
+      <icon class="fa fa-chevron-left" style="color:white"></icon>
+      </md-button>
+    </a>
+  </span>
+  <div class="col s12 m12">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title teal-text">Edit User -> {{user.usrName}}</span>
+        <span class="right">
+          <div class="switch">
+            <label>
+              User Details
+              <input type="checkbox" ng-model="showUserRoles">
+              <span class="lever"></span>
+              Roles
+            </label>
+          </div>
+        </span>
+        <!-- User Details -->
+        <div ng-show="!showUserRoles">
+          <form name="userForm" style="padding:24px">
+            <!-- Name -->
+            <md-input-container>
+            <label>Name</label>
+            <input ng-model="user.usrName" required type="text">
+            </md-input-container>
+            <!-- Email -->
+            <md-input-container>
+            <label>Email</label>
+            <input ng-model="user.usrEmail" required type="text">
+            </md-input-container>
+            <!-- Date Created -->
+            <md-input-container>
+            <label>Date Created</label>
+            <input ng-model="user.usrDateCreated" required type="text" ng-disabled="true">
+            </md-input-container>
+            <!-- Last Password Change-->
+            <md-input-container>
+            <label>Last Password Change</label>
+            <input ng-model="user.usrLastPasswordChange" required type="text" ng-disabled="true">
+            </md-input-container>
+            <!-- User Status -->
+            <md-input-container>
+            <label>Status</label>
+            <input ng-model="user.usrStatus" required type="text" ng-disabled="true">
+            </md-input-container>
+            <!-- Reset Password -->
+            <md-input-container>
+            <md-checkbox
+            ng-model="user.resetPassword"
+            aria-label="Reset Password">
+            Reset Password
+            </md-checkbox>
+            </md-input-container>
+            <!-- Submit Button -->
+            <div layout="row" layout-align="end center">
+              <a class="btn grey" href="#/users">Cancel <icon class="fa fa-times"></icon></a>&emsp;
+              <button class="btn" ng-click="update(user);">Update User <icon class="fa fa-floppy-o"></icon></button>
+            </div>
+          </form>
+        </div>
+        <!-- User Roles -->
+        <div ng-show="showUserRoles">
+          <div loading-container="roleTableParams.settings().$loading">
+            <div class="responive-table">
+              <table ng-table="roleTableParams" show-filter="true" class="table bordered striped hoverable">
+                <tbody>
+                  <tr ng-repeat="role in $data track by $index">
+                    <td filter="{'name':'text'}" data-title="'Role Name'">{{role.roleName}}</td>
+                    <td data-title="'Description'">{{role.roleDescription}}</td>
+                    <td data-title="'Select'">
+                      <!-- ng-checked="{{selectedRoles.indexOf(role) > -1}}" -->
+                      <md-checkbox
+                      ng-model="rolesChckbox[role.roleId]" 
+                      ng-click="toggleSelectedRole(role)"
+                      aria-label="Select">
+                      </md-checkbox>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="duma-clear"></div>
+          <div class="divider"></div>
+          <br/>
+          <div layout="row" layout-align="end center">
+            <a class="btn grey" href="#/users">Cancel <icon class="fa fa-times"></icon></a>&emsp;
+            <button class="btn" ng-click="updateUserRoles();">Update Roles <icon class="fa fa-floppy-o"></icon></button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<md-card>
-<md-card-content>
-<h5 class="md-title md-primary">Edit User</h5>
-<form name="userForm" style="padding:24px">
-	<!-- Name -->
-	<md-input-container>
-	<label>Name</label>
-	<input ng-model="user.usrName" required type="text">
-	</md-input-container>
-	<!-- Email -->
-	<md-input-container>
-	<label>Email</label>
-	<input ng-model="user.usrEmail" required type="text">
-	</md-input-container>
-	<!-- Date Created -->
-	<md-input-container>
-	<label>Date Created</label>
-	<input ng-model="user.usrDateCreated" required type="text">
-	</md-input-container>
-	<!-- Last Password Change-->
-	<md-input-container>
-	<label>Last Password Change</label>
-	<input ng-model="user.usrLastPasswordChange" required type="text">
-	</md-input-container>
-	<!-- User Status -->
-	<md-input-container>
-	<label>Status</label>
-	<input ng-model="user.usrStatus" required type="text">
-	</md-input-container>
-	<!-- Submit Button -->
-	<div layout="row" layout-align="end center">
-		<a class="btn grey" href="#/users">Cancel <icon class="fa fa-times"></icon></a>&emsp;
-		<button class="btn" ng-click="update(user)">Update <icon class="fa fa-floppy-o"></icon></button>
-	</div>
-</form>
-</md-card-content>
-</md-card>
 </md-content>

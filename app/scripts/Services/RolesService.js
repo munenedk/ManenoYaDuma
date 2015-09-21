@@ -12,7 +12,6 @@ var RolesService =  function($http,dumaSettings){
 			headers:{'Content-Type':'application/json'},
 			params: {"page":params.page()-1,"size":params.count(),"filter":params.filter()}
 		});
-
 	};
 	
 	//get One role
@@ -26,7 +25,6 @@ var RolesService =  function($http,dumaSettings){
 
 	//Save role
 	var save = function(rolesContext){
-		// console.log(JSON.stringify(rolesContext));
 		return $http({
 			method:"POST",
 			url:apiUrl,

@@ -97,7 +97,7 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"visible": $scope.linkVisible(["MTS_ADMINISTRATOR", "ADMINISTRATOR"])
 			}, {
 				"name": "Business Numbers",
-				"url": "/bizNo",
+				"url": "/bizNos",
 				"icon": "fa fa-list",
 				"ic_color": darkBlue,
 				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "ADMINISTRATOR"])
@@ -113,11 +113,28 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"icon": "fa fa-credit-card",
 				"ic_color": darkBlue,
 				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "ADMINISTRATOR"])
+			},{
+				"name":"Payments",
+				"url":"/payments",
+				"icon":"fa fa-money",
+				"ic_color":darkBlue,
+				"visible":$scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "ADMINISTRATOR"])
+			},{
+				"name":"Adjusted Payments",
+				"url":"/adjusted-payments",
+				"icon":"fa fa-money",
+				"ic_color":darkBlue,
+				"visible":$scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "ADMINISTRATOR"])
+			},{
+				"name":"Payment Reports",
+				"url":"/payment-reports",
+				"icon":"fa fa-file",
+				"ic_color":darkBlue,
+				"visible":$scope.linkVisible(["PAYBILL_MAKER","PAYBILL_CHECKER","ADMINISTRATOR"])
 			}
 			// {"name":"Reports","url":"/reports","icon":"fa fa-file","ic_color":"brown"}
 		];
 	});
-
 
 
 	$scope.logout = function() {

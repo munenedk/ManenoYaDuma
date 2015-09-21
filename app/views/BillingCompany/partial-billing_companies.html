@@ -22,10 +22,27 @@
 					<td data-title="'Business Number'">{{company.fkbusinessnum}}</td>
 					<td data-title="'Telephone'">{{company.companyCellPhone}}</td>
 					<td data-title="'Email'">{{company.companyEmail}}</td>
+					<td data-title="'Status'"
+						ng-style="{{company.status}} == '0' ? {'color':'blue'} : {{company.status}} == '1' ? {'color':'green'} : {'color':'red'}">
+						{{company.status == 0 ? 'Pending Approval' : company.status == 1 ? 'Active' : company.status == 2 ? 'Rejected' : 'Disabled'}}
+					</td>
 					<td data-title="'Action'">
-						<a href="#">
-						<icon class="fa fa-pencil" style="color:#333"></icon>
-					</a>
+						<a href="#/company/{{company.companyID}}" ng-show="({{company.status}} == '1' && isPaybillMaker) || ({{company.status}} == '2' && isPaybillMaker)">
+							<icon class="fa fa-pencil" style="color:#333"></icon>
+							<md-tooltip>Edit</md-tooltip>
+						</a>
+						<a href="" ng-click="rejectCompany($event,company);" ng-show="({{company.status}} == '0') && isPaybillChecker">
+							<icon class="fa fa-times" style="color:red"></icon>
+							<md-tooltip>Reject</md-tooltip>
+						</a>&nbsp;
+						<a href="" ng-click="approveCompany($event,company);" ng-show="({{company.status}} == '0') && isPaybillChecker">
+							<icon class="fa fa-check" style="color:green"></icon>
+							<md-tooltip>Approve</md-tooltip>
+						</a>
+						<a href="" ng-show="({{company.status}} == '2' && isPaybillChecker)  || {{company.status}} == '3' || ({{company.status}} == '0' && !isPaybillChecker) || ({{company.status}} == '1' && isPaybillChecker)">
+							<icon class="fa fa-ban" style="color:orange"></icon>
+							<md-tooltip>No Action</md-tooltip>
+						</a>
 					</td>
 				</tr>
 			</tbody>

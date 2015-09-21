@@ -21,7 +21,7 @@ var BizNoService = function($http, dumaSettings) {
 	var getAllBusinessNumbers = function() {
 		return $http({
 			method: "GET",
-			url: apiUrl+"/all",
+			url: apiUrl + "/all",
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -40,6 +40,55 @@ var BizNoService = function($http, dumaSettings) {
 		});
 	};
 
+
+	//Get Business Number
+	var getBusinessNumber = function(bizId) {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/" + bizId,
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		});
+	};
+
+	//Update Business Number
+	var updateBusinessNumber = function(biz) {
+		return $http({
+			method: "PUT",
+			url: apiUrl,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: JSON.stringify(biz)
+		});
+	};
+
+	//Approve Request
+	var approveRequest = function(biz) {
+		return $http({
+			method: "PUT",
+			url: apiUrl + "/approveRequest",
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: JSON.stringify(biz)
+		});
+	};
+
+	//Reject Request
+	var rejectRequest = function(biz) {
+		return $http({
+			method: "PUT",
+			url: apiUrl + "/rejectRequest",
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: JSON.stringify(biz)
+		});
+	};
+
+
 	return {
 		listBusinessNumbers: function() {
 			return getBusinessNumbers;
@@ -47,8 +96,20 @@ var BizNoService = function($http, dumaSettings) {
 		save: function() {
 			return saveBiz;
 		},
-		listAllBizNos:function(){
+		listAllBizNos: function() {
 			return getAllBusinessNumbers;
+		},
+		getBizNumber: function() {
+			return getBusinessNumber;
+		},
+		updateBizNumber: function() {
+			return updateBusinessNumber;
+		},
+		approveRequest: function() {
+			return approveRequest;
+		},
+		rejectRequest: function() {
+			return rejectRequest;
 		}
 	};
 };

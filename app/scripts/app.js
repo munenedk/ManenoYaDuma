@@ -7,7 +7,7 @@ require('angular-route');
 require('angular-touch');
 require('browsernizr');
 
-angular.module('DumaAdmin', ['ngMaterial', 'ngRoute', 'ngTable', 'angularFileUpload', 'chart.js']);
+angular.module('DumaAdmin', ['ngMaterial', 'ngAnimate', 'ngRoute', 'ngTable', 'angularFileUpload', 'chart.js', 'angular-loading-bar']);
 
 var app = angular.module('DumaAdmin');
 
@@ -25,6 +25,8 @@ var DashboardController = require('./Controllers/DashboardController.js');
 var BizNoController = require('./Controllers/BizNoController.js');
 var BillingCompanyController = require('./Controllers/BillingCompanyController.js');
 var CardController = require('./Controllers/CardController.js');
+var PaymentsController = require('./Controllers/PaymentsController.js');
+var PaybillReportsController = require('./Controllers/PaybillReportsController.js');
 
 //services
 var LoginService = require('./Services/LoginService.js');
@@ -41,6 +43,8 @@ var DashboardService = require('./Services/DashboardService.js');
 var BizNoService = require('./Services/BizNoService.js');
 var BillingCompanyService = require('./Services/BillingCompanyService.js');
 var CardService = require('./Services/CardService.js');
+var PaymentsService = require('./Services/PaymentsService.js');
+var PaybillReportsService = require('./Services/PaybillReportsService.js');
 
 //Factories
 app.factory('CustomerService', CustomerService);
@@ -56,7 +60,9 @@ app.factory('MtsSalesService', MtsSalesService);
 app.factory('DashboardService', DashboardService);
 app.factory('BizNoService', BizNoService);
 app.factory('BillingCompanyService', BillingCompanyService);
-app.factory('CardService',CardService);
+app.factory('CardService', CardService);
+app.factory('PaymentsService', PaymentsService);
+app.factory('PaybillReportsService', PaybillReportsService);
 
 //Inject Controllers
 app.controller('MainController', ['$scope', '$rootScope', '$location', '$mdSidenav', 'TokenStorage', 'LoginService', MainController]);
@@ -69,16 +75,17 @@ app.controller('ReconController', ['$scope', '$rootScope', '$mdDialog', '$mdToas
 app.controller('PasswordChangeController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'dumaSettings', 'PasswordChangeService', 'TokenStorage', '$location', '$routeParams', 'LoginService', PasswordChangeController]);
 app.controller('MtsSalesController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'FileUploader', 'dumaSettings', '$routeParams', 'MtsSalesService', 'LoginService', MtsSalesController]);
 app.controller('DashboardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'dumaSettings', 'DashboardService', 'LoginService', DashboardController]);
-app.controller('BizNoController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'BizNoService', BizNoController]);
-app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'BillingCompanyService','BizNoService',BillingCompanyController]);
-app.controller('CardController',['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService','CardService',CardController]);
+app.controller('BizNoController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BizNoService', BizNoController]);
+app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BillingCompanyService', 'BizNoService','UserService', BillingCompanyController]);
+app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'CardService', CardController]);
+app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams','LoginService', 'PaymentsService', PaymentsController]);
+app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'PaybillReportsService', PaybillReportsController]);
 
 //Constants
 app.constant('dumaSettings', {
-	"backendUrl": "http://localhost:8282/api/v1/"
-		// "backendUrl": "http://172.16.11.166:8090/api/v1/"
-		// "backendUrl": "http://192.168.1.105:8090/api/v1/"
-		// "backendUrl": "http://172.16.4.118:8282/api/v1/"
+	// "backendUrl": "http://localhost:8282/api/v1/"
+		// "backendUrl": "http://172.16.17.191:8282/api/v1/"
+		"backendUrl": "http://172.17.74.91:8282/api/v1/"
 });
 
 //Configuration
@@ -160,9 +167,9 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 		controller: 'UserController'
 	})
 
-	.when('/user/:userId',{
-		templateUrl:'views/User/partial-user.html',
-		controller:'UserController'
+	.when('/user/:userId', {
+		templateUrl: 'views/User/partial-user.html',
+		controller: 'UserController'
 	})
 
 	.when('/new-user', {
@@ -246,13 +253,18 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 		controller: "MtsSalesController"
 	})
 
-	.when('/bizNo', {
-		templateUrl: "views/BizNumbers/partial-bizno.html",
+	.when('/bizNos', {
+		templateUrl: "views/BizNumbers/partial-biznos.html",
 		controller: 'BizNoController'
 	})
 
 	.when('/new-bizNo', {
 		templateUrl: "views/BizNumbers/partial-new-bizno.html",
+		controller: "BizNoController"
+	})
+
+	.when('/bizNo/:bizId', {
+		templateUrl: "views/BizNumbers/partial-bizno.html",
 		controller: "BizNoController"
 	})
 
@@ -266,14 +278,44 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 		controller: "BillingCompanyController"
 	})
 
-	.when('/cards',{
-		templateUrl:"views/Cards/partial-cards.html",
-		controller:"CardController"
+	.when('/company/:companyId', {
+		templateUrl: 'views/BillingCompany/partial-billing-company.html',
+		controller: 'BillingCompanyController'
 	})
 
-	.when('/new-card',{
-		templateUrl:"views/Cards/partial-new-card.html",
-		controller:"CardController"
+	.when('/cards', {
+		templateUrl: "views/Cards/partial-cards.html",
+		controller: "CardController"
+	})
+
+	.when('/new-card', {
+		templateUrl: "views/Cards/partial-new-card.html",
+		controller: "CardController"
+	})
+
+	.when('/card/:cardId', {
+		templateUrl: "views/Cards/partial-card.html",
+		controller: "CardController"
+	})
+
+	.when('/payments', {
+		templateUrl: "views/Payments/partial-payments.html",
+		controller: "PaymentsController"
+	})
+
+	.when('/payments/:paymentId', {
+		templateUrl: "views/Payments/partial-payments-edit-invalid-account.html",
+		controller: "PaymentsController"
+	})
+
+	.when('/adjusted-payments/',{
+		templateUrl:"views/Payments/partial-payments-adjusted.html",
+		controller:"PaymentsController"
+	})
+
+	.when('/payment-reports', {
+		templateUrl: "views/PaybillReports/partial-paybill-reports.html",
+		controller: "PaybillReportsController"
 	})
 
 	.otherwise({

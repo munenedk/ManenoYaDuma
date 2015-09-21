@@ -88,7 +88,8 @@ gulp.task('linked_styles', function() {
 			"node_modules/materialize-css/bin/materialize.css",
 			"bower_components/angular-material/angular-material.min.css",
 			"bower_components/angular-chart.js/dist/angular-chart.css",
-			"bower_components/angular-chart.js/dist/angular-chart.css.map"
+			"bower_components/angular-chart.js/dist/angular-chart.css.map",
+			"bower_components/angular-loading-bar/build/loading-bar.css"
 		])
 		.pipe(gulp.dest('dist/css'));
 });
@@ -105,13 +106,14 @@ gulp.task('linked_scripts', function() {
 			'bower_components/angular-chart.js/dist/angular-chart.js',
 			'bower_components/angular-chart.js/dist/angular-chart.min.js.map',
 			'bower_components/Chart.js/src/*.js',
-			'bower_components/Chart.js/Chart.min.js'
+			'bower_components/Chart.js/Chart.min.js',
+			"bower_components/angular-loading-bar/build/loading-bar.min.js"
 		])
 		.pipe(gulp.dest('dist/linked_scripts'));
 });
 
 //Scripts Task
-gulp.task('scripts', ['linked_scripts'], function() {
+gulp.task('scripts', function() {
 	gulp.src(['./app/scripts/**/*.js', '/app.js'])
 		.pipe(browserify({
 			insertGlobals: true,
@@ -129,17 +131,17 @@ gulp.task('scripts', ['linked_scripts'], function() {
 //Images Task
 gulp.task('images', function() {
 	return gulp.src('app/img/**/*')
-		.pipe(imagemin({
-			optimizationLevel: 3,
-			progressive: true,
-			interlaced: true
-		}))
+		// .pipe(imagemin({
+		// 	optimizationLevel: 3,
+		// 	progressive: true,
+		// 	interlaced: true
+		// }))
 		.pipe(gulp.dest('dist/img'));
 	// .pipe(notify({message: 'Images task complete'}));
 });
 
 gulp.task('build', function(done) {
-	runSequence('clean', ['styles', 'linked_styles', 'scripts', 'images', 'fonts', 'font', 'html', 'views'],
+	runSequence('clean', ['styles', 'linked_styles', 'linked_scripts', 'scripts', 'images', 'fonts', 'font', 'html', 'views'],
 		'copy_to_cordova',
 		'express',
 		'watch',
@@ -152,9 +154,8 @@ gulp.task('copy_to_cordova', function() {
 		.pipe(gulp.dest('cordova_app/www'));
 });
 
-//Clean task
-gulp.task('clean', function(done) {
-	del(['dist/','cordova_app'], done);
+gulp.task('clean', function() {
+	del(['dist/', 'cordova_app']);
 });
 
 //Detault Task

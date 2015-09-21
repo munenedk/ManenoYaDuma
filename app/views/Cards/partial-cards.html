@@ -20,9 +20,26 @@
 					<td filter="{'cardBin':'text'}"data-title="'Card Bin'">{{card.cardnumberidentifier}}</td>
 					<td data-title="'Processing Code'">{{card.processingCode}}</td>
 					<td data-title="'Collection Account'">{{card.collectionAccount}}</td>
+					<td data-title="'Status'"
+					ng-style="{{card.status}} == '0' ? {'color':'blue'} : {{card.status}} == '1' ? {'color':'green'} : {'color':'red'}">
+					{{card.status == 0 ? 'Pending Approval' : card.status == 1 ? 'Active' : card.status == 2 ? 'Rejected' : 'Disabled'}}
+					</td>
 					<td data-title="'Action'">
-						<a href="#">
+						<a href="#/card/{{card.cardid}}" ng-show="({{card.status}} == '1' && isPaybillMaker) || ({{card.status}} == '2' && isPaybillMaker)">
 							<icon class="fa fa-pencil" style="color:#333"></icon>
+							<md-tooltip>Edit</md-tooltip>
+						</a>
+						<a href="" ng-click="rejectCard($event,card);" ng-show="({{card.status}} == '0') && isPaybillChecker">
+							<icon class="fa fa-times" style="color:red"></icon>
+							<md-tooltip>Reject</md-tooltip>
+						</a>&nbsp;
+						<a href="" ng-click="approveCard($event,card);" ng-show="({{card.status}} == '0') && isPaybillChecker">
+							<icon class="fa fa-check" style="color:green"></icon>
+							<md-tooltip>Approve</md-tooltip>
+						</a>
+						<a href="" ng-show="({{card.status}} == '2' && isPaybillChecker)  || {{card.status}} == '3' || ({{card.status}} == '0' && !isPaybillChecker) || ({{card.status}} == '1' && isPaybillChecker)">
+							<icon class="fa fa-ban" style="color:orange"></icon>
+							<md-tooltip>No Action</md-tooltip>
 						</a>
 					</td>
 				</tr>

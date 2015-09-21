@@ -57,7 +57,8 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
 
   //Error Handling
   $scope.handleError = function(result, status, headers) {
-    var msg = result === null ? "Server Unreachable" : result.message;
+    // var msg = result === null ? "Server Unreachable" : result;
+    var msg = result === null ? "Server Unreachable" : "Invalid Username Or Password.";
     $scope.showAlert(status, msg);
   };
 
@@ -78,9 +79,16 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
             $location.path('/home');
           }
         }).error(function(result, status, headers) {
-          console.log(result);
-          $scope.handleError(result, status, result, headers);
+          console.log("Post Result: " + result);
+          $scope.handleError(result, status, headers);
         });
+        // .then(function(response) {
+        //   console.log(response);
+        // })
+        // .catch(function(response) {
+        //   console.log(response);
+        //   console.error('Gists error', response.status, response.data);
+        // });
     }
   };
 

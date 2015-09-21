@@ -1,0 +1,64 @@
+<md-content class="md-padding">
+<div>
+	<section layout="row" layout-sm="column" layout-align="start center">
+		<a href="#/payments">
+			<md-button class="md-fab" aria-label="Business Numbers">
+			<icon class="fa fa-chevron-left" style="color:white"></icon>
+			</md-button>
+		</a>
+	</section>
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">Invalid Account Number</h5>
+<form name="form.txForm" style="padding:24px">
+	
+	<div layout layout-sm="column">
+		<!-- Mpesa Tran Id -->
+		<md-input-container flex>
+		<label>Mpesa Tran Id</label>
+		<input ng-model="payment.mpesatransactioncode" required type="text" disabled/>
+		</md-input-container>
+		<!-- Transaction Date -->
+		<md-input-container flex>
+		<label>Transaction Date</label>
+		<input ng-model="payment.transactionDate" required type="text" disabled/>
+		</md-input-container>
+	</div>
+	<div layout layout-sm="column">
+		<!-- Sender's Name -->
+		<md-input-container flex>
+		<label>Senders Name</label>
+		<input ng-model="payment.senderFirstName" required type="text" disabled/>
+		</md-input-container>
+		<!-- Phone Number -->
+		<md-input-container flex>
+		<label>Phone Number</label>
+		<input ng-model="payment.senderMsisdn" required type="text" disabled/>
+		</md-input-container>
+	</div>
+	<div layout layout-sm="column">
+		<!-- Amount -->
+		<md-input-container flex>
+		<label>Amount</label>
+		<input ng-model="payment.amount" required type="text" disabled/>
+		</md-input-container flex>
+		<!-- Account Number -->
+		<md-input-container flex>
+		<label>Account Number</label>
+		<input ng-model="payment.accountNumber" required type="text" disabled/>
+		</md-input-container>
+	</div>
+	<!-- New Account Number -->
+	<md-input-container>
+	<label>New Account Number</label>
+	<input ng-model="payment.newAccountNumber" required type="text"/>
+	</md-input-container>
+	<!-- Submit Button -->
+	<div layout="row" layout-align="end center">
+		<button class="btn" ng-click="updateTx(payment);">Update <icon class="fa fa-check"></icon></button>
+	</div>
+</form>
+</md-card-content>
+</md-card>
+</md-content>

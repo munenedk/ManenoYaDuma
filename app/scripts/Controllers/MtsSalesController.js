@@ -292,7 +292,7 @@ var MtsSalesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 					$scope.showSearchProgress = false;
 					var rData = {};
 					rData = data.payload;
-					console.log(content);
+					// console.log(data);
 					var fileDetails = rData.content;
 					params.total(rData.totalElements);
 					//set New Data

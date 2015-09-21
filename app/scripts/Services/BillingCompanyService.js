@@ -1,7 +1,7 @@
-var BillingCompanyService = function($http,dumaSettings){
-var apiUrl = dumaSettings.backendUrl + "companies";
+var BillingCompanyService = function($http, dumaSettings) {
+	var apiUrl = dumaSettings.backendUrl + "companies";
 
-//Get Companies - paginated
+	//Get Companies - paginated
 	var getBillingCompanies = function(params) {
 		return $http({
 			method: "GET",
@@ -29,12 +29,73 @@ var apiUrl = dumaSettings.backendUrl + "companies";
 		});
 	};
 
+
+	//Get Billing Company
+	var getBillingCompany = function(companyId) {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/" + companyId,
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		});
+	};
+
+	//Save Billing Company
+	var updateBillingCompany = function(company) {
+		return $http({
+			method: "PUT",
+			url: apiUrl,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: JSON.stringify(company)
+		});
+	};
+
+
+	//Approve Request
+	var approveRequest = function(company) {
+		return $http({
+			method: "PUT",
+			url: apiUrl + "/approveRequest",
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: JSON.stringify(company)
+		});
+	};
+
+	//Reject Request
+	var rejectRequest = function(company) {
+		return $http({
+			method: "PUT",
+			url: apiUrl + "/rejectRequest",
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			data: JSON.stringify(company)
+		});
+	};
+
 	return {
 		listCompanies: function() {
 			return getBillingCompanies;
 		},
 		save: function() {
 			return saveBillingCompany;
+		},
+		getCompany: function() {
+			return getBillingCompany;
+		},
+		updateCompany: function() {
+			return updateBillingCompany;
+		},
+		approveRequest: function() {
+			return approveRequest;
+		},
+		rejectRequest: function() {
+			return rejectRequest;
 		}
 	};
 };
