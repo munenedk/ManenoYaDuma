@@ -4,7 +4,16 @@
 			<div class="card" style="overflow:auto">
 				<div class="card-content" style="padding:20px">
 					<span class="card-title teal-text">C2B Reports</span>
-					<form style="padding:32px" name="form.reportForm">
+					<!-- Loading Bar -->
+					<div ng-show="showSearchProgress">
+						<p class="md-accent">Generating Report...</p>
+						<div class="progress z-depth-3">
+							<div class="indeterminate"></div>
+						</div>
+					</div>
+					<div class="divider"></div>
+					
+					<form style="padding:32px" name="form.reportForm" ng-show="showSearchProgress==false">
 						<!-- Report Type -->
 						<div class="col s12">
 							<label><span style="color:red">*</span> Report Type</label>

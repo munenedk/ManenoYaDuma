@@ -79,7 +79,7 @@ app.controller('BizNoController', ['$scope', '$rootScope', '$mdDialog', '$mdToas
 app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BillingCompanyService', 'BizNoService','UserService', BillingCompanyController]);
 app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'CardService', CardController]);
 app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams','LoginService', 'PaymentsService', PaymentsController]);
-app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'PaybillReportsService', PaybillReportsController]);
+app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', '$window','PaybillReportsService', PaybillReportsController]);
 
 //Constants
 app.constant('dumaSettings', {

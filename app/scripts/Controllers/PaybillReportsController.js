@@ -1,7 +1,7 @@
 /*jslint node: true */
 /* global angular: false */
 
-var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, LoginService, PaybillReportsService) {
+var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, LoginService, $window, PaybillReportsService) {
 	//Get User Menu
 	$scope.getUserMenu = LoginService.loadMenu();
 
@@ -28,6 +28,9 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 	$scope.getBusinessNumbers = PaybillReportsService.getBizNos();
 	$scope.getReport = PaybillReportsService.getReport();
 	$scope.downloadReport = PaybillReportsService.downloadReport();
+
+	//Search progress
+	$scope.showSearchProgress = false;
 
 
 	$scope.toastPosition = {
@@ -114,21 +117,23 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 	$scope.generateReport = function(searchParams) {
 		console.log($scope.form.reportForm);
 		if ($scope.form.reportForm.$valid) {
+			$scope.showSearchProgress = true;
 			console.log(JSON.stringify(searchParams.format));
 			//HTML
 			if (searchParams.format == 'html') {
 				$scope.getReport(searchParams)
 					.success(function(data, status, headers, config) {
+						$scope.showSearchProgress = false;
 						$scope.showToast("Report Generated Successfully");
 						var payload = data.payload;
-						console.log(payload);
-						var anchor = angular.element('#fileDownload');
-						anchor.attr({
-							href: payload,
-							target: '_blank'
-						})[0].click();
+						// console.log(payload);
+
+						//Open New Window To Display Report 
+						$scope.window = $window.open('', '_blank');
+						angular.element($scope.window.document.body).append(payload);
 					})
 					.error(function(data, status, headers, config) {
+						$scope.showSearchProgress = false;
 						$scope.showAlert(status, "No Report Available For Given Parameters");
 					});
 			} else { //PDF or EXCEL
@@ -136,9 +141,10 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 				console.log("Format: " + format);
 				$scope.downloadReport(searchParams)
 					.success(function(data, status, headers, config) {
+						$scope.showSearchProgress = false;
 						$scope.showToast("Report Generated Successfully");
 						file = new Blob([data], {
-							type: 'application/vnd.ms-excel;'
+							type: format
 						});
 						var fileURL = URL.createObjectURL(file);
 						var fileName = "C2BReport";
@@ -150,6 +156,7 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 						})[0].click();
 					})
 					.error(function(data, status, headers, config) {
+						$scope.showSearchProgress = false;
 						$scope.showAlert(status, "No Report Available For Given Parameters");
 					});
 			}

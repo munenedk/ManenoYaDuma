@@ -17,14 +17,15 @@
 			<tbody>
 				<tr ng-repeat="payment in $data">
 					<td filter="{'mpesaTxCode':'text'}" data-title="'Mpesa Tx Code'">{{payment.mpesatransactioncode}}</td>
+					<td data-title="'Tx Date'">{{payment.transactionDate}}</td>
 					<td data-title="'Business Number'">{{payment.billerBusinessNumber}}</td>
 					<td data-title="'Account Number'">{{payment.accountNumber}}</td>
-					<td data-title="'Sender MSISDN'">{{payment.senderMsisdn}}</td>
+					<td filter="{'msisdn':'text'}" data-title="'Sender MSISDN'">{{payment.senderMsisdn}}</td>
 					<td data-title="'Sender Name'">{{payment.senderFirstName}}</td>
 					<td data-title="'Amount'">{{payment.amount | number:2}}</td>
 					<td data-title="'Status'"
-						ng-style="'{{payment.uploadstatus}}' == 'success' ? {'color':'green'} : '{{payment.uploadstatus.toLowerCase()}}' == 'approval pending' ? {'color':'orange'} : {'color':'red'}">
-						{{payment.uploadstatus.toUpperCase()}}
+						ng-style="'{{payment.status}}' == 'success' ? {'color':'green'} : '{{payment.status.toLowerCase()}}' == 'approval pending' ? {'color':'orange'} : {'color':'red'}">
+						{{payment.status.toUpperCase()}}
 					</td>
 					<td data-title="'Action'">
 						<a href="#/payments/{{payment.mpTransactionId}}"

@@ -1,6 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:ng="http://angularjs.org" id="ng-app" ng-app="DumaAdmin">
   <head>
+     <!--[if lte IE 8]>
+      <script>
+        document.createElement('ng-include');
+        document.createElement('ng-pluralize');
+        document.createElement('ng-view');
+
+        // Optionally these for CSS
+        document.createElement('ng:include');
+        document.createElement('ng:pluralize');
+        document.createElement('ng:view');
+      </script>
+    <![endif]-->
     <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
     <link rel="stylesheet" href="css/angular-material.min.css"/>
     <link rel="stylesheet" href="css/ng-table.css"/>
@@ -10,20 +22,20 @@
     <link rel="stylesheet" href="css/loading-bar.css"/>
     <link rel="stylesheet" href="css/bundle.css"/>
   </head>
-  <body layout="column" ng-controller="MainController" id="ng-app" ng-app="DumaAdmin">
-    <md-toolbar layout="row">
+  <body layout="column" ng-controller="MainController">
+    <md-toolbar layout="row" class="md-medium-tall">
     <!-- hide-gt-sm  -->
     <button ng-click="toggleSideNav('left')" class="menuBtn" ng-show="hamburgerAvailable">
     <span class="visually-hidden">Menu</span>
     </button>
-    <h1 style="color:white"><img ng-src="img/kcb_lion.png" width="50px" height="60px" align="center"/>Duma Admin</h1>
+    <h1 ng-style="{'color':'white'}"><img ng-src="img/kcb_lion.png" width="70px" height="70px" align="center"/>Duma Admin</h1>
     <md-button
     class="dropdown-button"
-    style="color:white"
+    ng-style="{'color':'white'}"
     data-activates="loggedInDropDown"
     aria-label="logged in dropdown"
     ng-show="authenticated">
-    <span style="font-size: 18px; padding:20px"> <icon class="fa fa-user"></icon> <span ng-bind="loggedInUser"></span></span>
+    <span ng-style="{'font-size': '18px','padding':'20px'}"> <icon class="fa fa-user"></icon> <span ng-bind="loggedInUser"></span></span>
     </md-button>
     <ul id='loggedInDropDown' class="dropdown-content">
       <li><a ng-click="logout();"><icon class="fa fa-power-off"></icon> Log Out</a></li>
@@ -45,7 +57,8 @@
       <button
       ng-click="navigateTo(item.url);"
       class="btn btn-flat waves-effect waves-light">
-      <icon class="{{item.icon}}" style="color:{{item.ic_color}}"></icon>&nbsp;
+      <icon class="{{item.icon}}" 
+      ng-style="{'color':'{{item.ic_color}}'}"></icon>&nbsp;
       <span ng-bind="item.name"></span>
       </button>
       </md-item-content>
