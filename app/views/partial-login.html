@@ -7,17 +7,34 @@
 					<div class="card z-depth-5">
 						<!-- Card Content -->
 						<div class="card-content white-text">
-							<span class="card-title teal-text">Login</span>
-							<!-- User Name -->
-							<md-input-container>
-							<label><icon class="fa fa-user"></icon>&emsp;UserName</label>
-							<input ng-model="user.usrEmail" required type="text" placeholder="Enter Email">
-							</md-input-container>
-							<!-- Password -->
-							<md-input-container>
-							<label><icon class="fa fa-lock"></icon>&emsp;Password</label>
-							<input ng-model="user.usrPassword" required type="password" placeholder="Enter Password">
-							</md-input-container>
+							<div class="card-title teal-text">Login
+								<!-- Domain Selector -->
+								<span class="switch right">
+									<i class="fa fa-windows"></i>
+									<label class="teal-text">
+										HERCULES 
+										<input type="checkbox" ng-model="user.useDumaDomain">
+										<span class="lever"></span>
+										DUMA
+									</label> 
+									 &nbsp;<i class="fa fa-database"></i>
+								</span>
+							</div>
+
+							<div class="md-padding">
+								<p ng-style="{'color':'#ccc'}" ng-show="!user.useDumaDomain">Use Your Windows Credentials</p>
+								<p ng-style="{'color':'#ccc'}" ng-show="user.useDumaDomain">Use Your Duma Portal Credentials</p>
+								<!-- User Name -->
+								<md-input-container>
+								<label><icon class="fa fa-user"></icon>&emsp;UserName</label>
+								<input ng-model="user.usrUsername" required type="text" placeholder="Enter Email">
+								</md-input-container>
+								<!-- Password -->
+								<md-input-container>
+								<label><icon class="fa fa-lock"></icon>&emsp;Password</label>
+								<input ng-model="user.usrPassword" required type="password" placeholder="Enter Password">
+								</md-input-container>
+							</div>
 						</div>
 						<!-- Card Action -->
 						<div class="card-action">

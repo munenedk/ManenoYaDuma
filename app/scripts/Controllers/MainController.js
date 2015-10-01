@@ -72,13 +72,13 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"ic_color": darkBlue,
 				"visible": $scope.linkVisible(["ADMINISTRATOR"])
 			}, {
-				"name": "C2B Mpesa Recon",
+				"name": "MK C2B Mpesa Recon",
 				"url": "/mpesaRecon/c2b",
 				"icon": "fa fa-refresh",
 				"ic_color": darkBlue,
 				"visible": $scope.linkVisible(["RECON_MAKER", "RECON_CHECKER", "ADMINISTRATOR"])
 			}, {
-				"name": "B2C Mpesa Recon",
+				"name": "MK B2C Mpesa Recon",
 				"url": '/mpesaRecon/b2c',
 				"icon": "fa fa-refresh",
 				"ic_color": darkBlue,
@@ -88,7 +88,7 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"url": "/mk-ambassadors",
 				"icon": "fa fa-money",
 				"ic_color": darkBlue,
-				"visible": $scope.linkVisible(["MK_AMBASSADOR", "MOBI_DSR","MOBI_STAFF"])
+				"visible": $scope.linkVisible(["MK_AMBASSADOR", "MOBI_DSR", "MOBI_STAFF"])
 			}, {
 				"name": "MTS Sales Admin",
 				"url": "/mts-sales-admin",
@@ -100,37 +100,37 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"url": "/bizNos",
 				"icon": "fa fa-list",
 				"ic_color": darkBlue,
-				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "ADMINISTRATOR"])
-			},{
+				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"])
+			}, {
 				"name": "Billing Companies",
 				"url": "/companies",
 				"icon": "fa fa-building",
 				"ic_color": darkBlue,
-				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "ADMINISTRATOR"])
-			},{
+				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"])
+			}, {
 				"name": "Cards",
 				"url": "/cards",
 				"icon": "fa fa-credit-card",
 				"ic_color": darkBlue,
-				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "ADMINISTRATOR"])
-			},{
-				"name":"Payments",
-				"url":"/payments",
-				"icon":"fa fa-money",
-				"ic_color":darkBlue,
-				"visible":$scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "ADMINISTRATOR"])
-			},{
-				"name":"Adjusted Payments",
-				"url":"/adjusted-payments",
-				"icon":"fa fa-money",
-				"ic_color":darkBlue,
-				"visible":$scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "ADMINISTRATOR"])
-			},{
-				"name":"Payment Reports",
-				"url":"/payment-reports",
-				"icon":"fa fa-file",
-				"ic_color":darkBlue,
-				"visible":$scope.linkVisible(["PAYBILL_MAKER","PAYBILL_CHECKER","ADMINISTRATOR"])
+				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"])
+			}, {
+				"name": "C2B Payments",
+				"url": "/payments",
+				"icon": "fa fa-money",
+				"ic_color": darkBlue,
+				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"])
+			}, {
+				"name": "Adjusted Payments",
+				"url": "/adjusted-payments",
+				"icon": "fa fa-money",
+				"ic_color": darkBlue,
+				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"])
+			}, {
+				"name": "Payment Reports",
+				"url": "/payment-reports",
+				"icon": "fa fa-file",
+				"ic_color": darkBlue,
+				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"])
 			}
 			// {"name":"Reports","url":"/reports","icon":"fa fa-file","ic_color":"brown"}
 		];

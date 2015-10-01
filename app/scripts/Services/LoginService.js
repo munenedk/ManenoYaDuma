@@ -1,9 +1,15 @@
 var LoginService = function($http, dumaSettings, $rootScope) {
-
-	var apiUrl = dumaSettings.backendUrl + "login";
+	
 
 	//Login
 	var login = function(user) {
+		var apiUrl = dumaSettings.backendUrl;
+		if (user.useDumaDomain) {
+			apiUrl += "duma_login";
+		} else {
+			apiUrl += "ldap_login";
+		}
+		console.log("URL: " + apiUrl);
 		var credentials = JSON.stringify(user);
 		return $http({
 			method: "POST",

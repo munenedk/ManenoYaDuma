@@ -29,6 +29,11 @@
             <label>Name</label>
             <input ng-model="user.usrName" required type="text">
             </md-input-container>
+            <!-- Username -->
+            <md-input-container>
+            <label>Username</label>
+            <input ng-model="user.usrUsername" required type="text">
+            </md-input-container>
             <!-- Email -->
             <md-input-container>
             <label>Email</label>
@@ -76,7 +81,7 @@
                     <td data-title="'Select'">
                       <!-- ng-checked="{{selectedRoles.indexOf(role) > -1}}" -->
                       <md-checkbox
-                      ng-model="rolesChckbox[role.roleId]" 
+                      ng-model="rolesChckbox[role.roleId]"
                       ng-click="toggleSelectedRole(role)"
                       aria-label="Select">
                       </md-checkbox>

@@ -12,6 +12,11 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
   $scope.userLogin = LoginService.login();
   $scope.getUserMenu = LoginService.loadMenu();
 
+//Initialize Domain Selector
+  $scope.user = {
+    "useDumaDomain":false
+  };
+
   //Toast Position
   $scope.toastPosition = {
     bottom: false,
@@ -64,6 +69,10 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
 
   $scope.login = function(user) {
     if ($scope.loginForm.$valid) {
+      // if (user.useDumaDomain === null || user.useDumaDomain === 'undefined') {
+      //   user.useDumaDomain = false;
+      // }
+      console.log("Use Duma Domain: " + user.useDumaDomain);
       $scope.userLogin(user)
         .success(function(data, status, headers, config) {
           $scope.showToast("Login Successful. Redirecting...");
@@ -73,7 +82,7 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
           $scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
           $rootScope.loggedInUser = $scope.token.usrName;
           //Load user Menu
-          if ($scope.token.usrStatus === 0) { //New user Redirect to password change
+          if ($scope.token.usrStatus === 0 && user.useDumaDomain === true) { //New user Redirect to password change
             $location.path('/password-change/' + btoa(JSON.stringify(user)));
           } else {
             $location.path('/home');
@@ -82,13 +91,13 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
           console.log("Post Result: " + result);
           $scope.handleError(result, status, headers);
         });
-        // .then(function(response) {
-        //   console.log(response);
-        // })
-        // .catch(function(response) {
-        //   console.log(response);
-        //   console.error('Gists error', response.status, response.data);
-        // });
+      // .then(function(response) {
+      //   console.log(response);
+      // })
+      // .catch(function(response) {
+      //   console.log(response);
+      //   console.error('Gists error', response.status, response.data);
+      // });
     }
   };
 
