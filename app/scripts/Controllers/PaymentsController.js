@@ -118,8 +118,10 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 	//Update Transaction
 	$scope.updateTx = function(payment) {
 		if ($scope.form.txForm.$valid) {
+			console.log("Reverse: "+payment.reverse);
 			$scope.updatePayment(payment)
 				.success(function(data, status, headers, config) {
+					$scope.payment = data.payload;
 					$scope.showToast(data.message);
 				})
 				.error(function(data, status, headers, config) {

@@ -94,7 +94,7 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"url": "/mts-sales-admin",
 				"icon": "fa fa-money",
 				"ic_color": darkBlue,
-				"visible": $scope.linkVisible(["MTS_ADMINISTRATOR", "ADMINISTRATOR"])
+				"visible": $scope.linkVisible(["MTS_ADMINISTRATOR", "MTS_SALES_MANAGER" ,"ADMINISTRATOR"])
 			}, {
 				"name": "Business Numbers",
 				"url": "/bizNos",

@@ -29,11 +29,12 @@
 					</td>
 					<td data-title="'Action'">
 						<a href="#/payments/{{payment.mpTransactionId}}"
-							ng-show="(payment.status.toLowerCase() === 'invalid account') && isPaybillMaker">
-							<icon class="fa fa-pencil" style="color:#333"></icon>
+							ng-show="['success','approval pending','reversed'].indexOf(payment.status.toLowerCase()) < 0 && isPaybillMaker">
+							<icon class="fa fa-pencil" style="color:#333"></icon> 
 							<md-tooltip>Edit</md-tooltip>
 						</a>
-						<a ng-show="(payment.status.toLowerCase() != 'invalid account') || !isPaybillMaker">
+						<!-- {{payment.status.toLowerCase()}} {{['success','approval pending'].indexOf(payment.status.toLowerCase())}} -->
+						<a ng-show="['success','approval pending','reversed'].indexOf(payment.status.toLowerCase()) > -1 || !isPaybillMaker">
 							<icon class="fa fa-ban" style="color:orange">
 						</a>
 					</td>

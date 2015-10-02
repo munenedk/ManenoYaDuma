@@ -304,7 +304,7 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 	})
 
 	.when('/payments/:paymentId', {
-		templateUrl: "views/Payments/partial-payments-edit-invalid-account.html",
+		templateUrl: "views/Payments/partial-payments-edit-failed-transactions.html",
 		controller: "PaymentsController"
 	})
 
