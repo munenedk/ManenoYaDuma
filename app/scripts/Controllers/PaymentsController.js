@@ -1,6 +1,6 @@
 /*jslint node: true */
 /* global angular: false */
-var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, PaymentsService) {
+var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, $window, PaymentsService) {
 	//Get User menu based on roles
 	$scope.getUserMenu = LoginService.loadMenu();
 
@@ -40,8 +40,10 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 	//Inject Service Methods into scope
 	$scope.getPayments = PaymentsService.getPayments();
 	$scope.getPayment = PaymentsService.getPaymentById();
+	$scope.getPaymentByMpesaTxCode = PaymentsService.getPaymentByMpesaTxCode();
 	$scope.updatePayment = PaymentsService.updatePayment();
-	$scope.getAdjustments = PaymentsService.getAdjustments();
+	$scope.getPendingAdjustments = PaymentsService.getPendingAdjustments();
+	$scope.getClosedAdjustments = PaymentsService.getClosedAdjustments();
 	$scope.confirmApproval = PaymentsService.approveRequest();
 	$scope.rejectApproval = PaymentsService.rejectRequest();
 
@@ -118,7 +120,7 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 	//Update Transaction
 	$scope.updateTx = function(payment) {
 		if ($scope.form.txForm.$valid) {
-			console.log("Reverse: "+payment.reverse);
+			console.log("Reverse: " + payment.reverse);
 			$scope.updatePayment(payment)
 				.success(function(data, status, headers, config) {
 					$scope.payment = data.payload;
@@ -178,6 +180,35 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		});
 	};
 
+	$scope.showPaymentDetails = function(ev, mpesaTxCode) {
+		$scope.getPaymentByMpesaTxCode(mpesaTxCode)
+			.success(function(data, status, headers, config) {
+				// $scope.payment = data.payload;
+				$mdDialog.show({
+					controller: PaymentDetailsDialogController,
+					templateUrl: 'views/Payments/partial-payment-details-diag.html',
+					parent: angular.element(document.body),
+					targetEvent: ev,
+					clickOutsideToClose: true,
+					locals: {payment:data.payload}
+				});
+			})
+			.error(function(data, status, headers, config) {
+				$scope.handleError(data, status, headers, config);
+			});
+	};
+
+	function PaymentDetailsDialogController($scope, $mdDialog,payment) {
+		$scope.payment = payment;
+		$scope.hide = function() {
+			$mdDialog.hide();
+		};
+
+		$scope.cancel = function() {
+			$mdDialog.cancel();
+		};
+	}
+
 	//Payments Table
 	$scope.tableParams = new ngTableParams({
 		page: 1, //Show First page
@@ -201,15 +232,15 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		}
 	});
 
-	//Adjusted Transactions
-	$scope.txLogParams = new ngTableParams({
+	//Pending Adjustments
+	$scope.txLogParams_pending = new ngTableParams({
 		page: 1, //Show First page
 		count: 10 //count per page
 	}, {
 		total: 0, //length of data
 		getData: function($defer, params) {
 			//Ajax Request to API
-			$scope.getAdjustments(params)
+			$scope.getPendingAdjustments(params)
 				.success(function(data, status, headers, config) {
 					var rData = {};
 					rData = data.payload;
@@ -224,7 +255,30 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		}
 	});
 
-	
+		//Closed Adjustments
+	$scope.txLogParams_closed = new ngTableParams({
+		page: 1, //Show First page
+		count: 10 //count per page
+	}, {
+		total: 0, //length of data
+		getData: function($defer, params) {
+			//Ajax Request to API
+			$scope.getClosedAdjustments(params)
+				.success(function(data, status, headers, config) {
+					var rData = {};
+					rData = data.payload;
+					var txLogs = rData.content;
+					params.total(rData.totalElements);
+					//set New Data
+					$defer.resolve(txLogs);
+				})
+				.error(function(data, status, headers, config) {
+					$scope.handleError(data, status, headers, config);
+				});
+		}
+	});
+
+
 };
 
 module.exports = PaymentsController;

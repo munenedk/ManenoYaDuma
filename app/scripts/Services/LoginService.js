@@ -15,8 +15,8 @@ var LoginService = function($http, dumaSettings, $rootScope) {
 			method: "POST",
 			url: apiUrl,
 			headers: {
-				// 'Content-Type': 'text/plain;charset=UTF-8'
-				'Content-Type': 'application/json'
+				'Content-Type': 'text/plain;charset=UTF-8'
+				// 'Content-Type': 'application/json'
 			},
 			data: JSON.stringify(user)
 		});

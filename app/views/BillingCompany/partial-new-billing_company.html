@@ -20,13 +20,6 @@
 		<label>Company Name</label>
 		<input ng-model="company.companyName" required type="text"/>
 		</md-input-container>
-		<!-- Account Number -->
-		<md-input-container flex>
-		<label>Account Number</label>
-		<input ng-model="company.accountNumber" required type="text"/>
-		</md-input-container>
-	</div>
-	<div layout layout-sm="column">
 		<!-- Business Number -->
 		<md-autocomplete required flex
 		md-input-name="businessNumber"
@@ -46,6 +39,19 @@
 		No matches found for "{{bnSearchText}}".
 		</md-not-found>
 		</md-autocomplete>
+	</div>
+
+	<div layout layout-sm="column">
+		<!-- Collection Account -->
+		<md-input-container flex>
+		<label>Collection Account</label>
+		<input ng-model="company.collectionAccount" required type="text"/>
+		</md-input-container>
+		<!-- Account Number -->
+		<md-input-container flex>
+		<label>Account Number</label>
+		<input ng-model="company.accountNumber" required type="text"/>
+		</md-input-container>
 		<!-- Account Title -->
 		<md-input-container flex>
 		<label>Account Title</label>
@@ -54,7 +60,7 @@
 	</div>
 
 	<!-- For Lipa Karo Only -->
-	<div layout layout-sm="column" ng-if="selectedBizNo == 'lipa karo-522123'">
+	<div layout layout-sm="column" ng-if="selectedBizNo == 'lipa karo kcb account-522123'">
 		<!-- Branch Name -->
 		<md-autocomplete required flex
 		md-input-name="branchName"
@@ -77,7 +83,7 @@
 		<!-- Sales Code -->
 		<md-input-container flex>
 		<label>Sales Code</label>
-		<input ng-model="company.salesCode" required type="text"/>
+		<input ng-model="company.salesCode" type="text"/>
 		</md-input-container>
 	</div>
 
@@ -85,12 +91,12 @@
 		<!-- Company Cell Phone -->
 		<md-input-container flex>
 		<label>Company Cell Phone</label>
-		<input ng-model="company.companyCellPhone" required type="text"/>
+		<input ng-model="company.companyCellPhone" type="text"/>
 		</md-input-container>
 		<!-- Company Email -->
 		<md-input-container flex>
 		<label>Company Email</label>
-		<input ng-model="company.companyEmail" required type="email"/>
+		<input ng-model="company.companyEmail" type="email"/>
 		</md-input-container>
 	</div>
 	

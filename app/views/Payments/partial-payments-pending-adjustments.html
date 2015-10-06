@@ -2,29 +2,34 @@
 <div>
 	<!-- 	<section layout="row" layout-sm="column" layout-align="end center">
 			<a href="#/new-card">
-						<md-button class="md-fab" aria-label="New Card">
-						<icon class="fa fa-plus" style="color:white"></icon>
-						</md-button>
+								<md-button class="md-fab" aria-label="New Card">
+								<icon class="fa fa-plus" style="color:white"></icon>
+								</md-button>
 			</a>
 	</section> -->
 </div>
 <md-card>
 <md-card-content>
-<h5 class="md-title">Adjusted Payments</h5>
-<div loading-container="txLogParams.settings().$loading">
+<h5 class="md-title">Pending Adjustments</h5>
+<div loading-container="txLogParams_pending.settings().$loading">
 	<div class="responsive-table">
-		<table ng-table="txLogParams" show-filter="true" class="table bordered striped hoverable">
+		<table ng-table="txLogParams_pending" show-filter="true" class="table bordered striped hoverable" ng-style="{'table-layout':'fixed'}">
 			<tbody>
 				<tr ng-repeat="txLog in $data">
-					<td filter="{'mpesaTxCode':'text'}" data-title="'Transaction ID'">{{txLog.fkTransactionId}}</td>
-					<td data-title="'Maker'">{{txLog.maker}}</td>
+					<td filter="{'mpesaTxCode':'text'}" data-title="'Transaction ID'">
+						<a href="" ng-click="showPaymentDetails($event,txLog.fkTransactionId)"
+						ng-style="{'color':'teal','text-decoration':'underline'}">
+						{{txLog.fkTransactionId}}
+						</a>
+					</td>
+					<td data-title="'Maker'" ng-style="{'word-wrap':'break-word'}">{{txLog.maker.split("@")[0]}}</td>
 					<td data-title="'Date Requested'">{{txLog.makerdate}}</td>
-					<td data-title="'Checker'">{{txLog.cheker}}</td>
-					<td data-title="'Date Approved'">{{txLog.chekerdate}}</td>
-					<td data-title="'Action'">{{txLog.action}}</td>
+					<!-- <td data-title="'Checker'" ng-style="{'word-wrap':'break-word'}">{{txLog.cheker}}</td> -->
+					<!-- <td data-title="'Date Approved'">{{txLog.chekerdate}}</td> -->
+					<td data-title="'Requested Change'">{{txLog.action}}</td>
 					<td data-title="'Status'"
 						ng-style="{{txLog.status}} == '0' ? {'color':'blue'} : {{txLog.status}} == '1' ? {'color':'green'} : {'color':'red'}">
-						{{txLog.status == 0 ? 'Pending' : txLog.status == 1 ? 'Approved' : 'Rejected'}}
+						{{txLog.status == 0 ? 'Approval Pending' : txLog.status == 1 ? 'Approved' : 'Rejected'}}
 					</td>
 					<td data-title="'Action'">
 						<a href="" ng-click="rejectRequest($event,txLog);" ng-show="{{txLog.status == '0'}} && isPaybillChecker">

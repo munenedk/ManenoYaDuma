@@ -11,6 +11,17 @@ var PaymentsService = function($http, dumaSettings) {
 		});
 	};
 
+
+	var getPaymentByMpesaTxCode = function(mpesaTxCode) {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/byMpesaTxCode/" + mpesaTxCode,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+	};
+
 	//Get Payments
 	var getPayments = function(params) {
 		return $http({
@@ -39,11 +50,27 @@ var PaymentsService = function($http, dumaSettings) {
 		});
 	};
 
-	//Get Adjustments
-	var getPaymentAdjustments = function(params) {
+	//Get Pending Adjustments
+	var getPendingAdjustments = function(params) {
 		return $http({
 			method: "GET",
-			url: apiUrl + "/adjustments",
+			url: apiUrl + "/pending_adjustments",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			params: {
+				"page": params.page() - 1,
+				"size": params.count(),
+				"filter": params.filter()
+			}
+		});
+	};
+
+	//Get Closed Adjustments
+	var getClosedAdjustments = function(params) {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/closed_adjustments",
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -83,19 +110,25 @@ var PaymentsService = function($http, dumaSettings) {
 		getPaymentById: function() {
 			return getPayment;
 		},
+		getPaymentByMpesaTxCode: function() {
+			return getPaymentByMpesaTxCode;
+		},
 		getPayments: function() {
 			return getPayments;
 		},
 		updatePayment: function() {
 			return updatePayment;
 		},
-		getAdjustments: function() {
-			return getPaymentAdjustments;
+		getPendingAdjustments: function() {
+			return getPendingAdjustments;
+		},
+		getClosedAdjustments: function() {
+			return getClosedAdjustments;
 		},
 		approveRequest: function() {
 			return approveRequest;
 		},
-		rejectRequest:function(){
+		rejectRequest: function() {
 			return rejectRequest;
 		}
 	};

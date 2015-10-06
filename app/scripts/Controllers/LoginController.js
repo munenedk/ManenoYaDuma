@@ -12,9 +12,9 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
   $scope.userLogin = LoginService.login();
   $scope.getUserMenu = LoginService.loadMenu();
 
-//Initialize Domain Selector
+  //Initialize Domain Selector
   $scope.user = {
-    "useDumaDomain":false
+    "useDumaDomain": false
   };
 
   //Toast Position
@@ -75,17 +75,25 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
       console.log("Use Duma Domain: " + user.useDumaDomain);
       $scope.userLogin(user)
         .success(function(data, status, headers, config) {
-          $scope.showToast("Login Successful. Redirecting...");
-          $rootScope.authenticated = true;
+          //Store Token
           TokenStorage.store(headers('X-AUTH-TOKEN'));
-          // Display
-          $scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
-          $rootScope.loggedInUser = $scope.token.usrName;
-          //Load user Menu
-          if ($scope.token.usrStatus === 0 && user.useDumaDomain === true) { //New user Redirect to password change
-            $location.path('/password-change/' + btoa(JSON.stringify(user)));
+
+          var tkn = TokenStorage.retrieve();
+          console.log("Token: " + tkn);
+          if (tkn !== 'null') {
+            // $scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
+            $scope.token = JSON.parse(atob(tkn.split('.')[0]));
+            $rootScope.loggedInUser = $scope.token.usrName;
+            console.log("Logged In User: " + $rootScope.loggedInUser);
+            $rootScope.authenticated = true;
+            $scope.showToast("Login Successful. Redirecting...");
+            if ($scope.token.usrStatus === 0 && user.useDumaDomain === true) { //New user Redirect to password change
+              $location.path('/password-change/' + btoa(JSON.stringify(user)));
+            } else {
+              $location.path('/home');
+            }
           } else {
-            $location.path('/home');
+            $scope.showAlert("403", "You are not configured to use this portal. Contact your system administrator");
           }
         }).error(function(result, status, headers) {
           console.log("Post Result: " + result);

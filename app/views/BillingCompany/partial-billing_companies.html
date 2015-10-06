@@ -13,15 +13,16 @@
 <h5 class="md-title">Billing Companies</h5>
 <div loading-container="tableParams.settings().$loading">
 	<div class="responsive-table">
-		<table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
+		<table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable" ng-style="{'table-layout':'fixed'}">
 			<tbody>
 				<tr ng-repeat="company in $data">
-					<td filter="{'companyName':'text'}" data-title="'Company Name'">{{company.companyName}}</td>
+					<td filter="{'companyName':'text'}" data-title="'Company Name'" ng-style="{'word-wrap':'break-word'}">{{company.companyName}}</td>
 					<td filter="{'companyCode':'text'}"data-title="'Company Code'">{{company.companyCode}}</td>
+					<td data-title="'Collection Account'" ng-style="{'word-wrap':'break-word'}">{{company.collectionAccount}}</td>
 					<td data-title="'Account Number'">{{company.accountNumber}}</td>
 					<td data-title="'Business Number'">{{company.fkbusinessnum}}</td>
-					<td data-title="'Telephone'">{{company.companyCellPhone}}</td>
-					<td data-title="'Email'">{{company.companyEmail}}</td>
+					<td data-title="'Telephone'">0{{company.companyCellPhone.substring(3,12)}}</td>
+					<td data-title="'Email'" ng-style="{'word-wrap':'break-word'}">{{company.companyEmail}}</td>
 					<td data-title="'Status'"
 						ng-style="{{company.status}} == '0' ? {'color':'blue'} : {{company.status}} == '1' ? {'color':'green'} : {'color':'red'}">
 						{{company.status == 0 ? 'Pending Approval' : company.status == 1 ? 'Active' : company.status == 2 ? 'Rejected' : 'Disabled'}}
@@ -39,7 +40,7 @@
 							<icon class="fa fa-check" style="color:green"></icon>
 							<md-tooltip>Approve</md-tooltip>
 						</a>
-						<a href="" ng-show="({{company.status}} == '2' && isPaybillChecker)  || {{company.status}} == '3' || ({{company.status}} == '0' && !isPaybillChecker) || ({{company.status}} == '1' && isPaybillChecker)">
+						<a href="" ng-show="({{company.status}} == '2' && !isPaybillMaker)  || {{company.status}} == '3' || ({{company.status}} == '0' && !isPaybillChecker) || ({{company.status}} == '1' && !isPaybillMaker)">
 							<icon class="fa fa-ban" style="color:orange"></icon>
 							<md-tooltip>No Action</md-tooltip>
 						</a>

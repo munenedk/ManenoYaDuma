@@ -48,6 +48,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 
 	//Billing Company Form
 	$scope.form = {};
+	$scope.company = {};
 
 	//initialize company
 	if ($routeParams.companyId !== undefined) {
@@ -109,7 +110,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 			$scope.showAlert(status, msg + redirectMsg);
 			location.path('/login');
 		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + forbiddenMsg);
+			$scope.showAlert(status, msg + ". You Are Not Authorized To Use This Resource.");
 		} else {
 			$scope.showAlert(status, msg);
 		}
@@ -128,6 +129,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 					$scope.resetForm();
 				})
 				.error(function(data, status, headers, config) {
+					// console.log("Result: "+ data+"status: "+status);
 					$scope.handleError(data, status, headers, config);
 				});
 		}
@@ -217,6 +219,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 	function selectedItemChange(item) {
 		console.log('Item changed to ' + item.value);
 		$scope.selectedBizNo = item.value;
+		$scope.company.collectionAccount = $scope.selectedBizNo == 'lipa karo kcb account-522123' ? 'KES1403833330001' : 'KES1403822220001';
 	}
 
 	function getBusinessNos() {

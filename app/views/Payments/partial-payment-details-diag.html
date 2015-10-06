@@ -1,0 +1,55 @@
+<md-dialog aria-label="Payment Details" ng-cloak>
+<form name="form.txForm" style="padding:24px">
+	<md-toolbar>
+	<div class="md-toolbar-tools">
+		<h2 class="white-text">Transaction Details</h2>
+		<span flex></span>
+		<md-button class="md-icon-button" ng-click="cancel()">
+		<md-icon aria-label="close Dialog" class="fa fa-times" ng-style="{'color':'white', 'font-size':'18px'}"></md-icon>
+		</md-button>
+	</div>
+	</md-toolbar>
+	<md-dialog-content style="max-width:800px;max-height:810px;">
+	<div layout layout-sm="column">
+		<!-- Mpesa Tran Id -->
+		<md-input-container flex>
+		<label>Mpesa Tran Id</label>
+		<input ng-model="payment.mpesatransactioncode" required type="text" disabled/>
+		</md-input-container>
+		<!-- Transaction Date -->
+		<md-input-container flex>
+		<label>Transaction Date</label>
+		<input ng-model="payment.transactionDate" required type="text" disabled/>
+		</md-input-container>
+	</div>
+	<div layout layout-sm="column">
+		<!-- Sender's Name -->
+		<md-input-container flex>
+		<label>Senders Name</label>
+		<input ng-model="payment.senderFirstName" required type="text" disabled/>
+		</md-input-container>
+		<!-- Phone Number -->
+		<md-input-container flex>
+		<label>Phone Number</label>
+		<input ng-model="payment.senderMsisdn" required type="text" disabled/>
+		</md-input-container>
+	</div>
+	<div layout layout-sm="column">
+		<!-- Amount -->
+		<md-input-container flex>
+		<label>Amount</label>
+		<input ng-model="payment.amount" required type="text" disabled/>
+		</md-input-container>
+		<!-- Account Number -->
+		<md-input-container flex>
+		<label>Account Number</label>
+		<input ng-model="payment.accountNumber" required type="text" disabled/>
+		</md-input-container>
+	</div>
+	</md-dialog-content>
+	<div class="md-actions" layout="row">
+		<span flex></span>
+		<md-button ng-click="cancel()">Close</md-button>
+	</div>
+</form>
+</md-dialog>

@@ -106,7 +106,7 @@ var CardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 			$scope.showAlert(status, msg + redirectMsg);
 			location.path('/login');
 		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + forbiddenMsg);
+			$scope.showAlert(status, msg + ". You Are Not Authorized To Use This Resource.");
 		} else {
 			$scope.showAlert(status, msg);
 		}

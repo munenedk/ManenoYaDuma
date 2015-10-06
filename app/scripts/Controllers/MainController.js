@@ -120,12 +120,18 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"ic_color": darkBlue,
 				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"])
 			}, {
-				"name": "Adjusted Payments",
-				"url": "/adjusted-payments",
-				"icon": "fa fa-money",
+				"name": "Pending Changes",
+				"url": "/pending-adjustments",
+				"icon": "fa fa-pencil-square-o",
 				"ic_color": darkBlue,
 				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"])
 			}, {
+				"name":"Closed Changes",
+				"url":"/closed-adjustments",
+				"icon":"fa fa-pencil-square-o",
+				"ic_color":darkBlue,
+				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"])
+			},{
 				"name": "Payment Reports",
 				"url": "/payment-reports",
 				"icon": "fa fa-file",

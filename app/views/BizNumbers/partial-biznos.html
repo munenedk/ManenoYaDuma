@@ -35,7 +35,7 @@
 							<icon class="fa fa-check" style="color:green"></icon>
 							<md-tooltip>Approve</md-tooltip>
 						</a>
-						<a href="" ng-show="({{biz.status}} == '2' && isPaybillChecker)  || {{biz.status}} == '3' || ({{biz.status}} == '0' && !isPaybillChecker) || ({{biz.status}} == '1' && isPaybillChecker)">
+						<a href="" ng-show="({{biz.status}} == '2' && !isPaybillMaker)  || {{biz.status}} == '3' || ({{biz.status}} == '0' && !isPaybillChecker) || ({{biz.status}} == '1' && !isPaybillMaker)">
 							<icon class="fa fa-ban" style="color:orange"></icon>
 							<md-tooltip>No Action</md-tooltip>
 						</a>

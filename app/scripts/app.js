@@ -76,10 +76,10 @@ app.controller('PasswordChangeController', ['$scope', '$rootScope', '$mdDialog',
 app.controller('MtsSalesController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'FileUploader', 'dumaSettings', '$routeParams', 'MtsSalesService', 'LoginService', MtsSalesController]);
 app.controller('DashboardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'dumaSettings', 'DashboardService', 'LoginService', DashboardController]);
 app.controller('BizNoController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BizNoService', BizNoController]);
-app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BillingCompanyService', 'BizNoService','UserService', BillingCompanyController]);
+app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BillingCompanyService', 'BizNoService', 'UserService', BillingCompanyController]);
 app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'CardService', CardController]);
-app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams','LoginService', 'PaymentsService', PaymentsController]);
-app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', '$window','PaybillReportsService', PaybillReportsController]);
+app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', '$window','PaymentsService', PaymentsController]);
+app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', '$window', 'PaybillReportsService', PaybillReportsController]);
 
 //Constants
 app.constant('dumaSettings', {
@@ -99,6 +99,10 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 	$httpProvider.interceptors.push("TokenAuthInterceptor");
 	// delete $httpProvider.defaults.headers.common["X-Requested-With"];
 	$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+	//Disable Caching
+	$httpProvider.defaults.headers.common["Cache-Control"] = "no-cache";
+	$httpProvider.defaults.headers.common.Pragma = "no-cache";
+	$httpProvider.defaults.headers.common["If-Modified-Since"] = "0";
 
 	// Custom Theme
 	var kcbGreenMap = $mdThemingProvider.extendPalette('light-green', {
@@ -308,9 +312,14 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 		controller: "PaymentsController"
 	})
 
-	.when('/adjusted-payments/',{
-		templateUrl:"views/Payments/partial-payments-adjusted.html",
-		controller:"PaymentsController"
+	.when('/pending-adjustments', {
+		templateUrl: "views/Payments/partial-payments-pending-adjustments.html",
+		controller: "PaymentsController"
+	})
+
+	.when('/closed-adjustments',{
+		templateUrl:"views/Payments/partial-payments-closed-adjustments.html",
+		controller: "PaymentsController"
 	})
 
 	.when('/payment-reports', {

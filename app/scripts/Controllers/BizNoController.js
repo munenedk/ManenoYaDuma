@@ -106,7 +106,7 @@ var BizNoController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 			$scope.showAlert(status, msg + redirectMsg);
 			location.path('/login');
 		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + forbiddenMsg);
+			$scope.showAlert(status, msg + ". You are Not Authorized To Use this Resource.");
 		} else {
 			$scope.showAlert(status, msg);
 		}
@@ -123,6 +123,7 @@ var BizNoController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 					$scope.resetForm();
 				})
 				.error(function(data, status, headers, config) {
+						// console.log("Result: "+ data+"status: "+status);
 					$scope.handleError(data, status, headers, config);
 				});
 		}
