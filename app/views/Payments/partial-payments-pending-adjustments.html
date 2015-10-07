@@ -17,7 +17,7 @@
 			<tbody>
 				<tr ng-repeat="txLog in $data">
 					<td filter="{'mpesaTxCode':'text'}" data-title="'Transaction ID'">
-						<a href="" ng-click="showPaymentDetails($event,txLog.fkTransactionId)"
+						<a href="" ng-click="showPaymentDetails($event,txLog.fkTransactionId,txLog.action)"
 						ng-style="{'color':'teal','text-decoration':'underline'}">
 						{{txLog.fkTransactionId}}
 						</a>

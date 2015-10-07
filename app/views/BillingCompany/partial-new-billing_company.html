@@ -40,7 +40,6 @@
 		</md-not-found>
 		</md-autocomplete>
 	</div>
-
 	<div layout layout-sm="column">
 		<!-- Collection Account -->
 		<md-input-container flex>
@@ -48,17 +47,18 @@
 		<input ng-model="company.collectionAccount" required type="text"/>
 		</md-input-container>
 		<!-- Account Number -->
+		
 		<md-input-container flex>
 		<label>Account Number</label>
-		<input ng-model="company.accountNumber" required type="text"/>
+		<input ng-model="company.accountNumber" required type="text" ng-change="validateAccount(company.accountNumber)"/>
 		</md-input-container>
+		
 		<!-- Account Title -->
 		<md-input-container flex>
 		<label>Account Title</label>
 		<input ng-model="company.accountTitle" required type="text"/>
 		</md-input-container>
 	</div>
-
 	<!-- For Lipa Karo Only -->
 	<div layout layout-sm="column" ng-if="selectedBizNo == 'lipa karo kcb account-522123'">
 		<!-- Branch Name -->
@@ -86,7 +86,6 @@
 		<input ng-model="company.salesCode" type="text"/>
 		</md-input-container>
 	</div>
-
 	<div layout layout-sm="column">
 		<!-- Company Cell Phone -->
 		<md-input-container flex>

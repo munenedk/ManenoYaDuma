@@ -1,6 +1,6 @@
 /*jslint node: true */
 /* global angular: false */
-var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, BillingCompanyService, BizNoService,UserService) {
+var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, BillingCompanyService, BizNoService, UserService) {
 	//Get User menu based on roles
 	$scope.getUserMenu = LoginService.loadMenu();
 
@@ -44,6 +44,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 	$scope.approveRequest = BillingCompanyService.approveRequest();
 	$scope.rejectRequest = BillingCompanyService.rejectRequest();
 	$scope.getAllBranches = UserService.listAllBranches();
+	$scope.validateAccountNumber = BillingCompanyService.validateAccountNumber();
 
 
 	//Billing Company Form
@@ -143,6 +144,20 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 				.success(function(data, status, headers, config) {
 					$scope.company = data.payload;
 					$scope.showToast(data.message);
+				})
+				.error(function(data, status, headers, config) {
+					$scope.handleError(data, status, headers, config);
+				});
+		}
+	};
+
+
+	$scope.validateAccount = function(accNo) {
+		console.log("ACCNO: "+accNo);
+		if (accNo != 'null' || accNo != 'undefined') {
+			$scope.validateAccountNumber(accNo)
+				.success(function(data, status, headers, config) {
+					console.log("Response: " + data);
 				})
 				.error(function(data, status, headers, config) {
 					$scope.handleError(data, status, headers, config);

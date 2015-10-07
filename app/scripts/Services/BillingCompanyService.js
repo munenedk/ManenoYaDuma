@@ -78,6 +78,17 @@ var BillingCompanyService = function($http, dumaSettings) {
 		});
 	};
 
+	var validateAccountNumber = function(accNo) {
+		console.log("Service ACCNO: "+accNo);
+		return $http({
+			method: "GET",
+			url: apiUrl + "/validateAccount/"+accNo,
+			headers: {
+				'Content-Type': 'application/json',
+			}
+		});
+	};
+
 	return {
 		listCompanies: function() {
 			return getBillingCompanies;
@@ -96,6 +107,9 @@ var BillingCompanyService = function($http, dumaSettings) {
 		},
 		rejectRequest: function() {
 			return rejectRequest;
+		},
+		validateAccountNumber: function() {
+			return validateAccountNumber;
 		}
 	};
 };

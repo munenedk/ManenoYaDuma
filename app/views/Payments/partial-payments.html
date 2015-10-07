@@ -18,12 +18,12 @@
 				<tr ng-repeat="payment in $data">
 					<td filter="{'mpesaTxCode':'text'}" data-title="'Mpesa Tx Code'">{{payment.mpesatransactioncode}}</td>
 					<td data-title="'Tx Date'">{{payment.transactionDate}}</td>
-					<td data-title="'Business Number'">{{payment.billerBusinessNumber}}</td>
+					<td filter="{'bizNo':'text'}" data-title="'Business Number'">{{payment.billerBusinessNumber}}</td>
 					<td data-title="'Account Number'" ng-style="{'word-wrap':'break-word'}">{{payment.accountNumber}}</td>
 					<td filter="{'msisdn':'text'}" data-title="'Sender Phone(254)'">{{payment.senderMsisdn.substring(3,12)}}</td>
 					<td filter="{'senderName':'text'}" data-title="'Sender Name'" ng-style="{'word-wrap':'break-word'}">{{payment.senderFirstName}}</td>
 					<td data-title="'Amount'">{{payment.amount | number:2}}</td>
-					<td data-title="'Status'"
+					<td filter="{'pStatus':'text'}" data-title="'Status'"
 						ng-style="'{{payment.status}}' == 'success' ? {'color':'green'} : '{{payment.status.toLowerCase()}}' == 'approval pending' ? {'color':'orange'} : {'color':'red'}"
 						ng-style="'{'word-wrap':'break-word'}'">
 						{{payment.status.toUpperCase()}}

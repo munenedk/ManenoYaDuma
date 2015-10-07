@@ -1,6 +1,6 @@
 <md-dialog aria-label="Payment Details" ng-cloak>
-<form name="form.txForm" style="padding:24px">
-	<md-toolbar>
+<form name="form.txForm">
+	<md-toolbar class="teal">
 	<div class="md-toolbar-tools">
 		<h2 class="white-text">Transaction Details</h2>
 		<span flex></span>
@@ -9,7 +9,7 @@
 		</md-button>
 	</div>
 	</md-toolbar>
-	<md-dialog-content style="max-width:800px;max-height:810px;">
+	<md-dialog-content>
 	<div layout layout-sm="column">
 		<!-- Mpesa Tran Id -->
 		<md-input-container flex>
@@ -46,7 +46,20 @@
 		<input ng-model="payment.accountNumber" required type="text" disabled/>
 		</md-input-container>
 	</div>
-	</md-dialog-content>
+	<!-- 	<div class="input-field col s12">
+			<textarea id="requestedAction" ng-model="payment.requestedAction" class="materialize-textarea" disabled></textarea>
+			<label for="requestedAction">Requested Action</label>
+	</div> -->
+	<div class="col s12">
+		<p>
+			<span ng-style="{'color':'#999'}"><u><Strong>Requested Change</Strong></u></span>
+			<span ng-style="{'color':'#999'}">
+				<br/>{{payment.requestedAction.split('|')[0]}}
+				<br/>{{payment.requestedAction.split('|')[1]}}
+			</span>
+		</p>
+	</div>
+	</md-dialog-content><br/>
 	<div class="md-actions" layout="row">
 		<span flex></span>
 		<md-button ng-click="cancel()">Close</md-button>

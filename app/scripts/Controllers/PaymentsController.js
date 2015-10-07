@@ -146,7 +146,7 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 			$scope.confirmApproval(txLog)
 				.success(function(data, status, headers, config) {
 					$scope.showToast(data.message);
-					$scope.txLogParams.reload();
+					$scope.txLogParams_pending.reload();
 				})
 				.error(function(data, status, headers, config) {
 					$scope.handleError(data, status, headers, config);
@@ -180,17 +180,20 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		});
 	};
 
-	$scope.showPaymentDetails = function(ev, mpesaTxCode) {
+	$scope.showPaymentDetails = function(ev, mpesaTxCode,requestedChange) {
 		$scope.getPaymentByMpesaTxCode(mpesaTxCode)
 			.success(function(data, status, headers, config) {
 				// $scope.payment = data.payload;
+				var pmt = data.payload;
+				pmt.requestedAction = requestedChange;
+				console.log(JSON.stringify(pmt));
 				$mdDialog.show({
 					controller: PaymentDetailsDialogController,
 					templateUrl: 'views/Payments/partial-payment-details-diag.html',
 					parent: angular.element(document.body),
 					targetEvent: ev,
 					clickOutsideToClose: true,
-					locals: {payment:data.payload}
+					locals: {payment:pmt}
 				});
 			})
 			.error(function(data, status, headers, config) {
