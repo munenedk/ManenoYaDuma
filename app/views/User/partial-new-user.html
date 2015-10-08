@@ -8,7 +8,6 @@
 		</a>
 	</section>
 </div>
-
 <md-card>
 <md-card-content>
 <h5 class="md-title md-primary">New User</h5>
@@ -18,51 +17,59 @@
 <md-content class="md-padding">
 <!-- ng-controller="UserController as ctrl" -->
 <form name="form.userForm" style="padding:24px" class="duma-form" >
-	<!-- Name -->
-	<md-input-container>
-	<label><icon class="fa fa-user"></icon>&emsp;Name</label>
-	<input ng-model="user.usrName" required type="text">
-	</md-input-container>
-	<!-- ID Number -->
-	<md-input-container>
-	<label><icon class="fa fa-credit-card"></icon>&emsp;Staff Id</label>
-	<input ng-model="user.usrStaffId" required type="text">
-	</md-input-container>
+	<div layout layout-sm="column">
+		<!-- Name -->
+		<md-input-container flex>
+		<label><icon class="fa fa-user"></icon>&emsp;Name</label>
+		<input ng-model="user.usrName" required type="text">
+		</md-input-container>
+		<!-- ID Number -->
+		<md-input-container flex>
+		<label><icon class="fa fa-credit-card"></icon>&emsp;Staff Id</label>
+		<input ng-model="user.usrStaffId" required type="text">
+		</md-input-container>
+	</div>
 	
-	<!-- Phone Number -->
-	<md-input-container>
-	<label><icon class="fa fa-phone"></icon>&emsp;Phone</label>
-	<input ng-model="user.usrPhoneNo" required type="text">
-	</md-input-container>
-	<!-- Username -->
-	<md-input-container>
-	<label><icon class="fa fa-envelope"></icon>&emsp;Username</label>
-	<input ng-model="user.usrUsername" required type="text">
-	</md-input-container>
-	<!-- Email -->
-	<md-input-container>
-	<label><icon class="fa fa-envelope"></icon>&emsp;Email</label>
-	<input ng-model="user.usrEmail" required type="text">
-	</md-input-container>
-	<!-- Select Branch -->
-	<md-autocomplete
-	ng-disabled="acSsDisabled"
-	md-no-cache="acNoCache"
-	md-selected-item = "acSelectedItem"
-	md-search-text-change = "acSearchTextChange(acSearchText)"
-	md-search-text="acSearchText"
-	md-selected-item-change="acSelectedItemChange(item)"
-	md-items="item in acQuerySearch(acSearchText)"
-	md-item-text="item.display"
-	md-min-length="0"
-	placeholder="Select a branch">
-	<md-item-template>
-	<span md-highlight-text="acSearchText">{{item.display}}</span>
-	</md-item-template>
-	<md-not-found>
-	No matches found for "{{acSearchText}}".
-	</md-not-found>
-	</md-autocomplete><br/>
+	<div layout layout-sm="column">
+		<!-- Username -->
+		<md-input-container flex>
+		<label><icon class="fa fa-windows"></icon>&emsp;Windows Username</label>
+		<input ng-model="user.usrUsername" required type="text">
+		</md-input-container>
+		<!-- Email -->
+		<md-input-container flex>
+		<label><icon class="fa fa-envelope"></icon>&emsp;Email</label>
+		<input ng-model="user.usrEmail" required type="text">
+		</md-input-container>
+	</div>
+	
+	<div layout layout-sm="column">
+		<!-- Phone Number -->
+		<md-input-container flex>
+		<label><icon class="fa fa-phone"></icon>&emsp;Phone</label>
+		<input ng-model="user.usrPhoneNo" required type="text">
+		</md-input-container>
+		<!-- Select Branch -->
+		<md-autocomplete required flex
+		md-input-name="branch"
+		ng-disabled="acSsDisabled"
+		md-no-cache="acNoCache"
+		md-selected-item = "acSelectedItem"
+		md-search-text-change = "acSearchTextChange(acSearchText)"
+		md-search-text="acSearchText"
+		md-selected-item-change="acSelectedItemChange(item)"
+		md-items="item in acQuerySearch(acSearchText)"
+		md-item-text="item.display"
+		md-min-length="0"
+		md-floating-label="Branch">
+		<md-item-template>
+		<span md-highlight-text="acSearchText" md-highlight-flags="^i">{{item.display}}</span>
+		</md-item-template>
+		<md-not-found>
+		No matches found for "{{acSearchText}}".
+		</md-not-found>
+		</md-autocomplete>
+	</div>
 	
 	<!-- Submit Button -->
 	<div layout="row" layout-align="end center">
@@ -94,7 +101,6 @@
 			</tbody>
 		</table>
 	</div>
-
 </div>
 </md-content>
 <!-- <pre>{{selectedPermissions|json}}</pre> -->

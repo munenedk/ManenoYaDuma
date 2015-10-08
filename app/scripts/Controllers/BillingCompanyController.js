@@ -151,17 +151,24 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 		}
 	};
 
-
+	//Validate Account
 	$scope.validateAccount = function(accNo) {
-		console.log("ACCNO: "+accNo);
-		if (accNo != 'null' || accNo != 'undefined') {
-			$scope.validateAccountNumber(accNo)
-				.success(function(data, status, headers, config) {
-					console.log("Response: " + data);
-				})
-				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
-				});
+		console.log("ACCNO: " + accNo);
+		if (accNo !== null) {
+			if (accNo.length >= 10) {
+				$scope.validateAccountNumber(accNo)
+					.success(function(data, status, headers, config) {
+						console.log("Response: " + data);
+						$scope.showToast(data.message);
+						$scope.company.accountNumber = data.payload.accountNumber;
+						$scope.company.accountTitle = data.payload.accountTitle;
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config);
+						$scope.company.accountNumber = null;
+						$scope.company.accountTitle = null;
+					});
+			}
 		}
 	};
 

@@ -50,7 +50,7 @@
 		
 		<md-input-container flex>
 		<label>Account Number</label>
-		<input ng-model="company.accountNumber" required type="text" ng-change="validateAccount(company.accountNumber)"/>
+		<input ng-model="company.accountNumber" required type="text" ng-blur="validateAccount(company.accountNumber)"/>
 		</md-input-container>
 		
 		<!-- Account Title -->

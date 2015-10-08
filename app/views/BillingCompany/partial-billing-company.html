@@ -13,43 +13,48 @@
 <md-card-content>
 <h5 class="md-title">Edit Billing Company</h5>
 <form name="form.billingCompany" style="padding:24px">
-	
-	<!-- Company Name -->
-	<md-input-container>
-	<label>Company Name</label>
-	<input ng-model="company.companyName" required type="text"/>
-	</md-input-container>
-	<!-- Account Title -->
-	<md-input-container>
-	<label>Account Title</label>
-	<input ng-model="company.accountTitle" required type="text"/>
-	</md-input-container>
-	<!-- Collection Account -->
-	<md-input-container>
-	<label>Collection Account</label>
-	<input ng-model="company.collectionAccount" required type="text"/>
-	</md-input-container>
-	<!-- Account Number -->
-	<md-input-container>
-	<label>Account Number</label>
-	<input ng-model="company.accountNumber" required type="text"/>
-	</md-input-container>
-	<!-- Business Number -->
-	<md-input-container>
-	<label>Business Number</label>
-	<input ng-model="company.fkbusinessnum" required type="text"/>
-	</md-input-container>
-	<!-- Company Cell Phone -->
-	<md-input-container>
-	<label>Company Cell Phone</label>
-	<input ng-model="company.companyCellPhone" required type="text"/>
-	</md-input-container>
-	
-	<!-- Company Email -->
-	<md-input-container>
-	<label>Company Email</label>
-	<input ng-model="company.companyEmail" required type="email"/>
-	</md-input-container>
+	<div layout layout-sm="column">
+		<!-- Company Name -->
+		<md-input-container flex>
+		<label>Company Name</label>
+		<input ng-model="company.companyName" required type="text"/>
+		</md-input-container>
+		<!-- Business Number -->
+		<md-input-container flex>
+		<label>Business Number</label>
+		<input ng-model="company.fkbusinessnum" required type="text"/>
+		</md-input-container>
+		
+	</div>
+	<div layout layout-sm="column">
+		<!-- Collection Account -->
+		<md-input-container flex>
+		<label>Collection Account</label>
+		<input ng-model="company.collectionAccount" required type="text"/>
+		</md-input-container>
+		<!-- Account Number -->
+		<md-input-container flex>
+		<label>Account Number</label>
+		<input ng-model="company.accountNumber" required type="text" ng-blur="validateAccount(company.accountNumber)"/>
+		</md-input-container>
+		<!-- Account Title -->
+		<md-input-container flex>
+		<label>Account Title</label>
+		<input ng-model="company.accountTitle" required type="text"/>
+		</md-input-container>
+	</div>
+	<div layout layout-sm="column">
+		<!-- Company Cell Phone -->
+		<md-input-container flex>
+		<label>Company Cell Phone</label>
+		<input ng-model="company.companyCellPhone" required type="text"/>
+		</md-input-container>
+		<!-- Company Email -->
+		<md-input-container flex>
+		<label>Company Email</label>
+		<input ng-model="company.companyEmail" required type="email"/>
+		</md-input-container>
+	</div>
 	
 	<!-- Submit Button -->
 	<div layout="row" layout-align="end center">

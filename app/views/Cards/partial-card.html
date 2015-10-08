@@ -14,26 +14,30 @@
 <h5 class="md-title">Edit Card</h5>
 <form name="form.cardForm" style="padding:24px">
 	
-	<!-- Card Bin -->
-	<md-input-container>
-	<label>Card Bin</label>
-	<input ng-model="card.cardnumberidentifier" required type="text"/>
-	</md-input-container>
-	<!-- Card Name -->
-	<md-input-container>
-	<label>Card Name</label>
-	<input ng-model="card.cardName" required type="text"/>
-	</md-input-container>
-	<!-- Processing Code-->
-	<md-input-container>
-	<label>Processing Code</label>
-	<input ng-model="card.processingCode" required type="text"/>
-	</md-input-container>
-	<!-- Collection Account -->
-	<md-input-container>
-	<label>Collection Account</label>
-	<input ng-model="card.collectionAccount" required type="text"/>
-	</md-input-container>
+	<div layout layout-sm="column">
+		<!-- Card Bin -->
+		<md-input-container flex>
+		<label>Card Bin</label>
+		<input ng-model="card.cardnumberidentifier" required type="text"/>
+		</md-input-container>
+		<!-- Card Name -->
+		<md-input-container flex>
+		<label>Card Name</label>
+		<input ng-model="card.cardName" required type="text"/>
+		</md-input-container>
+	</div>
+	<div layout layout-sm="column">
+		<!-- Processing Code-->
+		<md-input-container flex>
+		<label>Processing Code</label>
+		<input ng-model="card.processingCode" required type="text"/>
+		</md-input-container>
+		<!-- Collection Account -->
+		<md-input-container flex>
+		<label>Collection Account</label>
+		<input ng-model="card.collectionAccount" required type="text"/>
+		</md-input-container>
+	</div>
 	
 	<!-- Submit Button -->
 	<div layout="row" layout-align="end center">

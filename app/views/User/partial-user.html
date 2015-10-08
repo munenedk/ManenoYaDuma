@@ -24,36 +24,43 @@
         <!-- User Details -->
         <div ng-show="!showUserRoles">
           <form name="userForm" style="padding:24px">
-            <!-- Name -->
-            <md-input-container>
-            <label>Name</label>
-            <input ng-model="user.usrName" required type="text">
-            </md-input-container>
-            <!-- Username -->
-            <md-input-container>
-            <label>Username</label>
-            <input ng-model="user.usrUsername" required type="text">
-            </md-input-container>
-            <!-- Email -->
-            <md-input-container>
-            <label>Email</label>
-            <input ng-model="user.usrEmail" required type="text">
-            </md-input-container>
-            <!-- Date Created -->
-            <md-input-container>
-            <label>Date Created</label>
-            <input ng-model="user.usrDateCreated" required type="text" ng-disabled="true">
-            </md-input-container>
-            <!-- Last Password Change-->
-            <md-input-container>
-            <label>Last Password Change</label>
-            <input ng-model="user.usrLastPasswordChange" required type="text" ng-disabled="true">
-            </md-input-container>
-            <!-- User Status -->
-            <md-input-container>
-            <label>Status</label>
-            <input ng-model="user.usrStatus" required type="text" ng-disabled="true">
-            </md-input-container>
+            <div layout layout-sm="column">
+              <!-- Name -->
+              <md-input-container flex>
+              <label>Name</label>
+              <input ng-model="user.usrName" required type="text">
+              </md-input-container>
+              
+            </div>
+            <div layout layout-sm="column">
+              <!-- Username -->
+              <md-input-container flex>
+              <label>Windows Username</label>
+              <input ng-model="user.usrUsername" required type="text">
+              </md-input-container>
+              <!-- Email -->
+              <md-input-container flex>
+              <label>Email</label>
+              <input ng-model="user.usrEmail" required type="text">
+              </md-input-container>
+            </div>
+            <div layout layout-sm="column">
+              <!-- Date Created -->
+              <md-input-container flex>
+              <label>Date Created</label>
+              <input ng-model="user.usrDateCreated" required type="text" ng-disabled="true">
+              </md-input-container>
+              <!-- Last Password Change-->
+              <md-input-container flex>
+              <label>Last Password Change</label>
+              <input ng-model="user.usrLastPasswordChange" required type="text" ng-disabled="true">
+              </md-input-container>
+              <!-- User Status -->
+              <md-input-container flex>
+              <label>Status</label>
+              <input ng-model="user.usrStatus" required type="text" ng-disabled="true">
+              </md-input-container>
+            </div>
             <!-- Reset Password -->
             <md-input-container>
             <md-checkbox
