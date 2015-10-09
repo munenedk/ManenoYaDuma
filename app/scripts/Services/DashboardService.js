@@ -23,14 +23,42 @@ var DashboardService = function($http, dumaSettings) {
 		});
 	};
 
+	//Get txStatus Summary
+	var getTxStatus = function() {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/txStatus",
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+	};
+
+	//Get txTotal Summary
+	var getTxTotals = function() {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/txTotals",
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+	};
+
 
 	//Return Values
 	return {
 		topAmbassadors: function() {
 			return getTopAmbassadors;
 		},
-		topRegions: function(){
+		topRegions: function() {
 			return getTopRegions;
+		},
+		getTxStatus: function() {
+			return getTxStatus;
+		},
+		getTxTotals: function() {
+			return getTxTotals;
 		}
 	};
 

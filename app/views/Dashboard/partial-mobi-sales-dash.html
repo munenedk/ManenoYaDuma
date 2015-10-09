@@ -1,0 +1,76 @@
+<div class="section" style="margin-bottom: 50px">
+  <div class="row">
+    <div class="col m6">
+      <div class="card cyan darken-4">
+        <div class="card-content white-text">
+          <span class="card-title">Daily Top Staff</span>
+          <table ng-table class="table">
+            <tbody>
+              <tr ng-repeat="amb in ambassadors">
+                <td data-title="'Name'">{{amb.name}}</td>
+                <td data-title="'Branch'">{{amb.branch}}</td>
+                <td data-title="'Transactions'">{{amb.txs}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Top Staff Chart -->
+    <div class="col m6">
+      <div class="card cyan darken-4">
+        <div class="card-content white-text">
+          <span class="card-title white-text">Top Staff Chart</span>
+          <div class="divider"></div>
+          <div class="dash-graph">
+            <canvas id="doughnut"
+            legend="true"
+            class="chart chart-doughnut"
+            data="topAmbassadorsData"
+            labels="topAmbassadorsLabels"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+<div class="divider"></div>
+<!-- Charts -->
+<div class="section" style="margin-top: 50px">
+  <div class="row">
+    <!-- Regional Performance -->
+    <div class="col s12 m6">
+      <div class="card cyan darken-4">
+        <div class="card-content white-text">
+          <span class="card-title">Daily Regional Perfomance</span>
+          <table ng-table="regionParams" class="table">
+            <tbody>
+              <tr ng-repeat="region in regions">
+                <td data-title="'Name'">{{region.name}}</td>
+                <td data-title="'Transactions'">{{region.txs}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Top Regions -->
+    <div class="col s12 m6">
+      <div class="card cyan darken-4">
+        <div class="card-content white-text">
+          <span class="card-title white-text">Top Regions</span>
+          <div class="divider"></div>
+          <div class="dash-graph">
+            <canvas id="doughnut"
+            legend="true"
+            class="chart chart-doughnut"
+            data="topRegionsData"
+            labels="topRegionsLabels"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<!-- Transaction Status -->
+<div class="card">
+	<div class="card-content">
+		<span class="card-title teal-text">Transactions Status Summary</span>
+		<canvas id="txStatus_lineChart"
+		class="chart chart-line"
+		chart-data="txStatusData"
+		chart-legend="true"
+		chart-series="txStatusSeries"
+		chart-labels="txStatusLabels"
+		chart-colours="txSeriesColors"
+		chart-options="txSeriesOptions"></canvas>
+	</div>
+</div>
+<!-- Transaction Totals -->
+<div class="card">
+	<div class="card-content">
+		<span class="card-title teal-text">Transactions Total Amount Summary</span>
+		<canvas id="bar"
+		class="chart chart-bar"
+		chart-data="txTotalData"
+		chart-legend="true"
+		chart-series="txTotalSeries"
+		chart-labels="txTotalLabels"
+		chart-colours="txTotalColours"
+		chart-options="txTotalOptions"></canvas>
+	</div>
+</div>

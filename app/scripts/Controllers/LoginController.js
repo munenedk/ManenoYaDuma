@@ -79,12 +79,12 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
           TokenStorage.store(headers('X-AUTH-TOKEN'));
 
           var tkn = TokenStorage.retrieve();
-          console.log("Token: " + tkn);
+          // console.log("Token: " + tkn);
           if (tkn !== 'null') {
             // $scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
             $scope.token = JSON.parse(atob(tkn.split('.')[0]));
             $rootScope.loggedInUser = $scope.token.usrName;
-            console.log("Logged In User: " + $rootScope.loggedInUser);
+            // console.log("Logged In User: " + $rootScope.loggedInUser);
             $rootScope.authenticated = true;
             $scope.showToast("Login Successful. Redirecting...");
             if ($scope.token.usrStatus === 0 && user.useDumaDomain === true) { //New user Redirect to password change
