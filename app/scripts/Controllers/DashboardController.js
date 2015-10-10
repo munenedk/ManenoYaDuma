@@ -50,8 +50,8 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 		$rootScope.loggedInUser = token.usrName;
 		$scope.getUserMenu();
 
-		var mobiRoles = ["ROLE_MTS_ADMINISTRATOR", "ROLE_MTS_SALES_MANAGER", "ROLE_MK_AMBASSADOR", "ROLE_MOBI_DSR", "ROLE_MOBI_STAFF", "ROLE_ADMINISTRATOR"];
-		var paybillRoles = ["ROLE_PAYBILL_MAKER", "ROLE_PAYBILL_CHECKER", "ROLE_PAYBILL_AUDITOR"];
+		var mobiRoles = ["ROLE_MTS_ADMINISTRATOR", "ROLE_MTS_SALES_MANAGER", "ROLE_MK_AMBASSADOR", "ROLE_MOBI_DSR", "ROLE_MOBI_STAFF"];
+		var paybillRoles = ["ROLE_PAYBILL_MAKER", "ROLE_PAYBILL_CHECKER", "ROLE_PAYBILL_AUDITOR", "ROLE_ADMINISTRATOR"];
 
 		var auths = token.authorities;
 

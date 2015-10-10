@@ -39,7 +39,7 @@
 							<select ng-model="rpt.bizNo" required class="browser-default">
 								<option value="" disabled>Business Number</option>
 								<option value="all">All</option>
-								<option value="{{bizNo}}" ng-repeat="bizNo in bizNos">{{bizNo}}</option>
+								<option value="{{bizNo.bzNo}}" ng-repeat="bizNo in bizNos">{{bizNo.bzName}} - {{bizNo.bzNo}}</option>
 							</select>
 						</div>
 						<!-- Filter By -->

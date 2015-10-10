@@ -17,7 +17,7 @@
 			<tbody>
 				<tr ng-repeat="payment in $data">
 					<td filter="{'mpesaTxCode':'text'}" data-title="'Mpesa Tx Code'">{{payment.mpesatransactioncode}}</td>
-					<td data-title="'Tx Date'">{{payment.transactionDate}}</td>
+					<td filter="{'txDate':'text'}" data-title="'Tx Date'">{{payment.transactionDate}}</td>
 					<td filter="{'bizNo':'text'}" data-title="'Business Number'">{{payment.billerBusinessNumber}}</td>
 					<td data-title="'Account Number'" ng-style="{'word-wrap':'break-word'}">{{payment.accountNumber}}</td>
 					<td filter="{'msisdn':'text'}" data-title="'Sender Phone(254)'">{{payment.senderMsisdn.substring(3,12)}}</td>

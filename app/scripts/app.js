@@ -78,13 +78,13 @@ app.controller('DashboardController', ['$scope', '$rootScope', '$mdDialog', '$md
 app.controller('BizNoController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BizNoService', BizNoController]);
 app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BillingCompanyService', 'BizNoService', 'UserService', BillingCompanyController]);
 app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'CardService', CardController]);
-app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', '$window','PaymentsService', PaymentsController]);
+app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', '$window', 'LoginService', 'BillingCompanyService', 'PaymentsService', PaymentsController]);
 app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', '$window', 'PaybillReportsService', PaybillReportsController]);
 
 //Constants
 app.constant('dumaSettings', {
-	// "backendUrl": "http://localhost:8282/api/v1/"
-		"backendUrl": "http://172.16.17.191:8282/api/v1/"
+	"backendUrl": "http://localhost:8282/api/v1/"
+		// "backendUrl": "http://172.16.17.191:8282/api/v1/"
 		// "backendUrl": "http://172.17.74.91:8282/api/v1/"
 });
 

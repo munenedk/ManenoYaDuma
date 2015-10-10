@@ -1,6 +1,6 @@
 /*jslint node: true */
 /* global angular: false */
-var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, $window, PaymentsService) {
+var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, $window, LoginService, BillingCompanyService, PaymentsService) {
 	//Get User menu based on roles
 	$scope.getUserMenu = LoginService.loadMenu();
 
@@ -19,7 +19,6 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		var authorities = token.authorities;
 		var auths = [];
 		for (var i in authorities) {
-			// console.log(authorities[i].authority);
 			auths.push(authorities[i].authority);
 		}
 
@@ -29,9 +28,6 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 	} else {
 		$location.path('/login');
 	}
-
-	// console.log("Paybill Maker: "+$scope.isPaybillMaker);
-	// console.log("Paybill Checker: "+$scope.isPaybillChecker);
 
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
@@ -46,11 +42,10 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 	$scope.getClosedAdjustments = PaymentsService.getClosedAdjustments();
 	$scope.confirmApproval = PaymentsService.approveRequest();
 	$scope.rejectApproval = PaymentsService.rejectRequest();
+	$scope.validateAccountNumber = BillingCompanyService.validateAccountNumber();
 
 	//form
 	$scope.form = {};
-
-
 
 	//initialize payment
 	if ($routeParams.paymentId !== undefined) {
@@ -180,20 +175,20 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		});
 	};
 
-	$scope.showPaymentDetails = function(ev, mpesaTxCode,requestedChange) {
+	$scope.showPaymentDetails = function(ev, mpesaTxCode, requestedChange) {
 		$scope.getPaymentByMpesaTxCode(mpesaTxCode)
 			.success(function(data, status, headers, config) {
-				// $scope.payment = data.payload;
 				var pmt = data.payload;
 				pmt.requestedAction = requestedChange;
-				console.log(JSON.stringify(pmt));
 				$mdDialog.show({
 					controller: PaymentDetailsDialogController,
 					templateUrl: 'views/Payments/partial-payment-details-diag.html',
 					parent: angular.element(document.body),
 					targetEvent: ev,
 					clickOutsideToClose: true,
-					locals: {payment:pmt}
+					locals: {
+						payment: pmt
+					}
 				});
 			})
 			.error(function(data, status, headers, config) {
@@ -201,7 +196,27 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 			});
 	};
 
-	function PaymentDetailsDialogController($scope, $mdDialog,payment) {
+
+	$scope.validateAccount = function(accNo) {
+		if (accNo !== null) {
+			if (accNo.length >= 10) {
+				$scope.validateAccountNumber(accNo)
+					.success(function(data, status, headers, config) {
+						console.log("Response: " + data);
+						$scope.showToast(data.message);
+						$scope.payment.newAccountNumber = data.payload.accountNumber;
+						$scope.payment.newAccountName = data.payload.accountTitle;
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config);
+						$scope.payment.newAccountNumber = null;
+						$scope.payment.newAccountName = null;
+					});
+			}
+		}
+	};
+
+	function PaymentDetailsDialogController($scope, $mdDialog, payment) {
 		$scope.payment = payment;
 		$scope.hide = function() {
 			$mdDialog.hide();
@@ -258,7 +273,7 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		}
 	});
 
-		//Closed Adjustments
+	//Closed Adjustments
 	$scope.txLogParams_closed = new ngTableParams({
 		page: 1, //Show First page
 		count: 10 //count per page

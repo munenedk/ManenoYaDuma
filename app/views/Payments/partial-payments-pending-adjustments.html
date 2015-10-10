@@ -26,7 +26,7 @@
 					<td data-title="'Date Requested'">{{txLog.makerdate}}</td>
 					<!-- <td data-title="'Checker'" ng-style="{'word-wrap':'break-word'}">{{txLog.cheker}}</td> -->
 					<!-- <td data-title="'Date Approved'">{{txLog.chekerdate}}</td> -->
-					<td data-title="'Requested Change'">{{txLog.action}}</td>
+					<td data-title="'Requested Change'" ng-style="{'word-wrap':'break-word'}">{{txLog.action}}</td>
 					<td data-title="'Status'"
 						ng-style="{{txLog.status}} == '0' ? {'color':'blue'} : {{txLog.status}} == '1' ? {'color':'green'} : {'color':'red'}">
 						{{txLog.status == 0 ? 'Approval Pending' : txLog.status == 1 ? 'Approved' : 'Rejected'}}

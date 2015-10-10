@@ -10,7 +10,7 @@
 </div>
 <md-card>
 <md-card-content>
-<h5 class="md-title">Invalid Account Number</h5>
+<h5 class="md-title">Edit Transaction</h5>
 <form name="form.txForm" style="padding:24px">
 	<div layout layout-sm="column">
 		<!-- Mpesa Tran Id -->
@@ -48,12 +48,18 @@
 		<input ng-model="payment.accountNumber" required type="text" disabled/>
 		</md-input-container>
 	</div>
-	
-	<!-- New Account Number -->
-	<md-input-container>
-	<label>New Account Number</label>
-	<input ng-model="payment.newAccountNumber" type="text" ng-disabled="payment.reverse"/>
-	</md-input-container>
+	<div layout layout-sm="column">
+		<!-- New Account Number -->
+		<md-input-container flex>
+		<label>New Account Number</label>
+		<input ng-model="payment.newAccountNumber" type="text" ng-disabled="payment.reverse"  ng-blur="validateAccount(payment.newAccountNumber)"/>
+		</md-input-container>
+		<!-- Account Name -->
+		<md-input-container flex>
+		<label>New Account Name</label>
+		<input ng-model="payment.newAccountName" type="text" ng-disabled="payment.reverse"/>
+		</md-input-container>
+	</div>
 	<!-- Reverse Transaction -->
 	<md-input-container>
 	<md-checkbox
