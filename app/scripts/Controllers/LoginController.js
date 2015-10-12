@@ -72,19 +72,16 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
       // if (user.useDumaDomain === null || user.useDumaDomain === 'undefined') {
       //   user.useDumaDomain = false;
       // }
-      console.log("Use Duma Domain: " + user.useDumaDomain);
       $scope.userLogin(user)
         .success(function(data, status, headers, config) {
           //Store Token
           TokenStorage.store(headers('X-AUTH-TOKEN'));
 
           var tkn = TokenStorage.retrieve();
-          // console.log("Token: " + tkn);
           if (tkn !== 'null') {
             // $scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
             $scope.token = JSON.parse(atob(tkn.split('.')[0]));
             $rootScope.loggedInUser = $scope.token.usrName;
-            // console.log("Logged In User: " + $rootScope.loggedInUser);
             $rootScope.authenticated = true;
             $scope.showToast("Login Successful. Redirecting...");
             if ($scope.token.usrStatus === 0 && user.useDumaDomain === true) { //New user Redirect to password change
@@ -96,7 +93,6 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
             $scope.showAlert("403", "You are not configured to use this portal. Contact your system administrator");
           }
         }).error(function(result, status, headers) {
-          console.log("Post Result: " + result);
           $scope.handleError(result, status, headers);
         });
       // .then(function(response) {

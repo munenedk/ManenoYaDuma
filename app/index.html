@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:ng="http://angularjs.org" id="ng-app" ng-app="DumaAdmin">
   <head>
-     <!--[if lte IE 8]>
-      <script>
-        document.createElement('ng-include');
-        document.createElement('ng-pluralize');
-        document.createElement('ng-view');
-
-        // Optionally these for CSS
-        document.createElement('ng:include');
-        document.createElement('ng:pluralize');
-        document.createElement('ng:view');
-      </script>
+    <!--[if lte IE 8]>
+    <script>
+    document.createElement('ng-include');
+    document.createElement('ng-pluralize');
+    document.createElement('ng-view');
+    // Optionally these for CSS
+    document.createElement('ng:include');
+    document.createElement('ng:pluralize');
+    document.createElement('ng:view');
+    </script>
     <![endif]-->
     <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
     <link rel="stylesheet" href="css/angular-material.min.css"/>
@@ -52,15 +51,14 @@
       </md-toolbar>
       <md-content>
       <md-list class="sideNav-list">
-      <md-list-item ng-repeat="item in menuItems" ng-show="item.visible">
+      <md-list-item ng-repeat="item in menuItems" 
+      ng-show="item.visible" 
+      md-ink-ripple id="{{item.id}}" 
+      ng-style="item.active == true ? {'background':'#00456A'} : {'background':'white'}">
       <md-item-content>
-      <button
-      ng-click="navigateTo(item.url);"
-      class="btn btn-flat waves-effect waves-light">
-      <icon class="{{item.icon}}" 
-      ng-style="{'color':'{{item.ic_color}}'}"></icon>&nbsp;
-      <span ng-bind="item.name"></span>
-      </button>
+      <a href="" ng-click="navigateTo(item.url,item.id)" ng-style="item.active == true ? {'color':'white'}:{'color':'{{item.ic_color}}'}">
+        <i class="{{item.icon}}"></i>&nbsp;  <span ng-bind="item.name"></span>
+      </a>
       </md-item-content>
       <md-divider ng-if="!$last"></md-divider>
       </md-list-item>

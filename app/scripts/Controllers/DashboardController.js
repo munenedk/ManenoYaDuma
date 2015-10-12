@@ -24,7 +24,7 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 	$scope.txSeriesOptions = {
 		scaleLabel: "<%=Number(value).toLocaleString('en')%>",
 		tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= Number(value).toLocaleString('en') %>"
-		// multiTooltipTemplate: "<%if (series){%><%=series%>: <%}%><%= Number(value).toLocaleString('en') %>"
+			// multiTooltipTemplate: "<%if (series){%><%=series%>: <%}%><%= Number(value).toLocaleString('en') %>"
 	};
 
 	//Paybill Totals Chart variables
@@ -56,7 +56,6 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 		var auths = token.authorities;
 
 		for (var i in auths) {
-			console.log(auths[i].authority);
 			//Evaluate Mobi Roles
 			if (mobiRoles.indexOf(auths[i].authority) > -1) {
 				$scope.showMobiSalesDashboard = true;
@@ -68,9 +67,6 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 			}
 		}
 
-		console.log("showMobiSalesDashboard: " + $scope.showMobiSalesDashboard);
-		console.log("showPaybillDashboard: " + $scope.showPaybillDashboard);
-
 		//Populate Mobi Dashboar
 		if ($scope.showMobiSalesDashboard === true) {
 			//Get Top Ambassadors
@@ -79,7 +75,6 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 					var res = data.payload;
 					$scope.ambassadors = res;
 					for (var i in $scope.ambassadors) {
-						// console.log($scope.ambassadors[i]);
 						$scope.topAmbassadorsLabels.push($scope.ambassadors[i].name.split(/\b(\s)/)[0]);
 						$scope.topAmbassadorsData.push($scope.ambassadors[i].txs);
 					}
@@ -94,7 +89,6 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 					var res = data.payload;
 					$scope.regions = res;
 					for (var i in $scope.regions) {
-						// console.log($scope.regions[i]);
 						$scope.topRegionsLabels.push($scope.regions[i].name);
 						$scope.topRegionsData.push($scope.regions[i].txs);
 					}
@@ -124,9 +118,6 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 						}
 						$scope.txStatusData.push(dataArray);
 					}
-					console.log(JSON.stringify($scope.txStatusLabels));
-					console.log(JSON.stringify($scope.txStatusData));
-					console.log(JSON.stringify($scope.txStatusSeries));
 				})
 				.error(function(data, status, headers, config) {
 					$scope.handleError(data, status, headers, config);
@@ -142,9 +133,6 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 						dataArray.push(Number(res[i].amount));
 					}
 					$scope.txTotalData.push(dataArray);
-
-					console.log(JSON.stringify($scope.txTotalLabels));
-					console.log(JSON.stringify($scope.txTotalData));
 				})
 				.error(function(data, status, headers, config) {
 					$scope.handleError(data, status, headers, config);

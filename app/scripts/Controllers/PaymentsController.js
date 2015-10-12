@@ -115,7 +115,6 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 	//Update Transaction
 	$scope.updateTx = function(payment) {
 		if ($scope.form.txForm.$valid) {
-			console.log("Reverse: " + payment.reverse);
 			$scope.updatePayment(payment)
 				.success(function(data, status, headers, config) {
 					$scope.payment = data.payload;
@@ -202,7 +201,6 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 			if (accNo.length >= 10) {
 				$scope.validateAccountNumber(accNo)
 					.success(function(data, status, headers, config) {
-						console.log("Response: " + data);
 						$scope.showToast(data.message);
 						$scope.payment.newAccountNumber = data.payload.accountNumber;
 						$scope.payment.newAccountName = data.payload.accountTitle;

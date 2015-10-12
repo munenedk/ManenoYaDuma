@@ -317,8 +317,8 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 		controller: "PaymentsController"
 	})
 
-	.when('/closed-adjustments',{
-		templateUrl:"views/Payments/partial-payments-closed-adjustments.html",
+	.when('/closed-adjustments', {
+		templateUrl: "views/Payments/partial-payments-closed-adjustments.html",
 		controller: "PaymentsController"
 	})
 
@@ -337,7 +337,10 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 app.run(function($rootScope, $location) {
 	$rootScope.$on("$routeChangeStart", function(event, next, current) {
 		if ($rootScope.loggedInUser === 'undefined' || $rootScope.loggedInUser === null) {
-			if (next.templateUrl == "views/partial-login.html") {} else {
+
+			if (next.templateUrl == "views/partial-login.html") {
+
+			} else {
 				$location.path("/login");
 			}
 		}

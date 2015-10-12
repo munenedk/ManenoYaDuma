@@ -115,10 +115,8 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 
 	//Get Report
 	$scope.generateReport = function(searchParams) {
-		console.log($scope.form.reportForm);
 		if ($scope.form.reportForm.$valid) {
 			$scope.showSearchProgress = true;
-			console.log(JSON.stringify(searchParams.format));
 			//HTML
 			if (searchParams.format == 'html') {
 				$scope.getReport(searchParams)
@@ -126,7 +124,6 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 						$scope.showSearchProgress = false;
 						$scope.showToast("Report Generated Successfully");
 						var payload = data.payload;
-						// console.log(payload);
 
 						//Open New Window To Display Report 
 						$scope.window = $window.open('', '_blank');
@@ -138,7 +135,6 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 					});
 			} else { //PDF or EXCEL
 				var format = searchParams.format == 'pdf' ? 'application/pdf;' : 'application/vnd.ms-excel;';
-				console.log("Format: " + format);
 				$scope.downloadReport(searchParams)
 					.success(function(data, status, headers, config) {
 						$scope.showSearchProgress = false;
