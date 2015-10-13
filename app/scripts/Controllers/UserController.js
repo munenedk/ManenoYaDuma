@@ -235,9 +235,6 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	}, {
 		total: 0,
 		getData: function($defer, params) {
-			//Reset Roles
-			$scope.selectedRoles = [];
-
 			//ajax request to api
 			$scope.getRoles(params)
 				.success(function(data, status, headers, config) {
@@ -261,7 +258,7 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	});
 
 	$scope.toggleSelectedRole = function(role) {
-		console.log(JSON.stringify(role));
+		// console.log(JSON.stringify(role));
 		// var idx = $scope.selectedRoles.indexOf(role);
 		var idx = -1;
 		for (var i = 0; i < $scope.selectedRoles.length; i++) {
@@ -273,13 +270,13 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 
 		//is Currently selected
 		if (idx > -1) {
+			//If Is selected Remove It
 			$scope.selectedRoles.splice(idx, 1);
-		}
-
-		//is newly selected
-		else {
+		}else {
+			//If is not selected push to array
 			$scope.selectedRoles.push(role);
 		}
+		console.log($scope.selectedRoles);
 	};
 
 	$scope.restart = function() {
@@ -344,7 +341,6 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 				$scope.handleError(data, status, headers, config);
 			});
 	}
-
 
 	function loadAll() {
 		if (allBranches != "'") {

@@ -182,6 +182,14 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"ic_color": darkBlue,
 				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"]),
 				"active": $scope.isActive("link_payment_reports")
+			}, {
+				"id": "link_mtn_payments",
+				"name": "MTN Payments",
+				"url": "/mtn-payments",
+				"icon": "fa fa-money",
+				"ic_color": darkBlue,
+				"visible": $scope.linkVisible(["MTN_AUDITOR", "ADMINISTRATOR"]),
+				"active": $scope.isActive("link_mtn_payments")
 
 			}
 			// {"name":"Reports","url":"/reports","icon":"fa fa-file","ic_color":"brown"}

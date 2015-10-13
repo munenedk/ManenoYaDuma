@@ -27,6 +27,7 @@ var BillingCompanyController = require('./Controllers/BillingCompanyController.j
 var CardController = require('./Controllers/CardController.js');
 var PaymentsController = require('./Controllers/PaymentsController.js');
 var PaybillReportsController = require('./Controllers/PaybillReportsController.js');
+var MtnPaymentsController = require('./Controllers/MtnPaymentsController.js');
 
 //services
 var LoginService = require('./Services/LoginService.js');
@@ -45,6 +46,7 @@ var BillingCompanyService = require('./Services/BillingCompanyService.js');
 var CardService = require('./Services/CardService.js');
 var PaymentsService = require('./Services/PaymentsService.js');
 var PaybillReportsService = require('./Services/PaybillReportsService.js');
+var MtnPaymentsService = require('./Services/MtnPaymentsService.js');
 
 //Factories
 app.factory('CustomerService', CustomerService);
@@ -63,6 +65,7 @@ app.factory('BillingCompanyService', BillingCompanyService);
 app.factory('CardService', CardService);
 app.factory('PaymentsService', PaymentsService);
 app.factory('PaybillReportsService', PaybillReportsService);
+app.factory('MtnPaymentsService',MtnPaymentsService);
 
 //Inject Controllers
 app.controller('MainController', ['$scope', '$rootScope', '$location', '$mdSidenav', 'TokenStorage', 'LoginService', MainController]);
@@ -80,6 +83,7 @@ app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog',
 app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'CardService', CardController]);
 app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', '$window', 'LoginService', 'BillingCompanyService', 'PaymentsService', PaymentsController]);
 app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', '$window', 'PaybillReportsService', PaybillReportsController]);
+app.controller('MtnPaymentsController',['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService','MtnPaymentsService',MtnPaymentsController]);
 
 //Constants
 app.constant('dumaSettings', {
@@ -325,6 +329,11 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 	.when('/payment-reports', {
 		templateUrl: "views/PaybillReports/partial-paybill-reports.html",
 		controller: "PaybillReportsController"
+	})
+
+	.when('/mtn-payments',{
+		templateUrl:"views/Mtn/partial-mtn-payments.html",
+		controller:"MtnPaymentsController"
 	})
 
 	.otherwise({

@@ -1,0 +1,27 @@
+<md-content class="md-padding">
+<md-card>
+<md-card-content>
+<h5 class="md-title">MTN Payments</h5>
+<div loading-container="tableParams.settings().$loading">
+	<div class="responsive-table">
+		<table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
+			<tbody>
+				<tr ng-repeat="payment in $data">
+					<td filter="{'txDate':'text'}" data-title="'Transaction Date'">{{payment.paymentDate}}</td>
+					<td data-title="'MTN Tx ID'">{{payment.transactionId}}</td>
+					<td data-title="'KCB Tx ID'">{{payment.paymentTransactionId}}</td>
+					<td data-title="'Description'">{{payment.serviceId == '100'?'Push':'Pull'}}</td>
+					<td filter="{'msisdn':'text'}" data-title="'Transacting Number'">{{payment.msisdn}}</td>
+					<td data-title="'Amount (UGX)'">{{payment.amount | number:2}}</td>
+					<td filter="{'pStatus':'text'}" data-title="'Status'"
+						ng-style="{{payment.status}} == '2'?{'color':'green'}:{{payment.status}} == '3'?{'color':'red'}:{'color':'blue'}">
+						{{payment.status == '0' ? 'Unprocessed': payment.status == '1' ? 'Processing':payment.status == '2' ? 'Successful':payment.status == '3'?'Failed':payment.status == '5'?'Awaiting Validation':'Unknown'}}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</md-card-content>
+</md-card>
+</md-content>
