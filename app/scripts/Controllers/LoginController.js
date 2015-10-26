@@ -80,7 +80,12 @@ var LoginController = function($scope, $rootScope, $mdDialog, $mdToast, LoginSer
           var tkn = TokenStorage.retrieve();
           if (tkn !== 'null') {
             // $scope.token = JSON.parse(atob(TokenStorage.retrieve().split('.')[0]));
-            $scope.token = JSON.parse(atob(tkn.split('.')[0]));
+            var part1 = JSON.parse(atob(tkn.split('.')[0]));
+            // var part2 = JSON.parse(atob(tkn.split('.')[1]));
+            console.log(part1);
+            // console.log(JSON.stringify(part2));
+            // $scope.token = JSON.parse(atob(tkn.split('.')[0]));
+            $scope.token = part1;
             $rootScope.loggedInUser = $scope.token.usrName;
             $rootScope.authenticated = true;
             $scope.showToast("Login Successful. Redirecting...");

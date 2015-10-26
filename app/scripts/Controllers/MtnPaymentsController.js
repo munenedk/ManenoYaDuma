@@ -14,7 +14,6 @@ var MtsPaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ng
 		$location.path('/login');
 	}
 
-
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
 	$rootScope.menuAvailable = true;
