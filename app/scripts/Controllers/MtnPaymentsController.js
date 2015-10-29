@@ -1,109 +1,59 @@
 /*jslint node: true */
 /* global angular: false */
-var MtsPaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, LoginService, MtnPaymentsService) {
+var MtsPaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, LoginService, MtnPaymentsService, AlertUtils) {
+	//Inject service methods into scope
 	$scope.getUserMenu = LoginService.loadMenu();
-	//check authentication
+	$scope.getPayments = MtnPaymentsService.getPayments();
+	$scope.isSessionActive = TokenStorage.isSessionActive();
+	$scope.showToast = AlertUtils.showToast();
+	$scope.showAlert = AlertUtils.showAlert();
+	$scope.handleError = AlertUtils.handleError();
+
+	//Get Authentication Token
 	var token = TokenStorage.retrieve();
 	$rootScope.authenticated = false;
-	if (token) {
-		token = JSON.parse(atob(token.split('.')[0]));
+
+	if ($scope.isSessionActive(token) === true) {
+		var user = JSON.parse(atob(token.split('.')[0]));
 		$rootScope.authenticated = true;
-		$rootScope.loggedInUser = token.usrName;
+		$rootScope.loggedInUser = user.usrName;
 		$scope.getUserMenu();
+
+		//MTN Payments
+		$scope.tableParams = new ngTableParams({
+			page: 1, //Show first page
+			count: 10, //count per page
+		}, {
+			total: 0,
+			getData: function($defer, params) {
+				//ajax request to api
+				$scope.getPayments(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						var payments = rData.content;
+						params.total(rData.totalElements);
+						//set New data
+						$defer.resolve(payments);
+					})
+					.error(function(data, status, headers, config) {
+						var msg = "N/A";
+						if (data !== null) {
+							msg = data.error + " : " + data.message;
+						}
+						$scope.showAlert(status, msg);
+					});
+			}
+		});
 	} else {
+		TokenStorage.clear();
+		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
 		$location.path('/login');
 	}
 
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
 	$rootScope.menuAvailable = true;
-
-
-	$scope.getPayments = MtnPaymentsService.getPayments();
-
-
-	//Toast Position
-	$scope.toastPosition = {
-		bottom: false,
-		top: true,
-		left: false,
-		right: true
-	};
-
-	//Get Toast
-	$scope.getToastPosition = function() {
-		return Object.keys($scope.toastPosition)
-			.filter(function(pos) {
-				return $scope.toastPosition[pos];
-			})
-			.join(' ');
-	};
-
-	//Show Toast
-	$scope.showToast = function(message) {
-		$mdToast.show(
-			$mdToast.simple()
-			.content(message)
-			.position($scope.getToastPosition())
-			.hideDelay(5000)
-		);
-	};
-
-	//Alerts
-	$scope.alert = "";
-	$scope.showAlert = function(status, message) {
-		$mdDialog.show(
-			$mdDialog.alert()
-			.title("Error " + status)
-			.content(message)
-			.ariaLabel('Error Notification')
-			.ok('Ok')
-			// .targetEvent(ev)
-		);
-	};
-
-
-	//Error Handling
-	$scope.handleError = function(data, status, headers, config) {
-		var msg = data === null ? "Message Unavailable" : data.message;
-		if (status === 401) { //unauthorized
-			$scope.showAlert(status, msg + redirectMsg);
-			location.path('/home');
-		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + forbiddenMsg);
-		} else {
-			$scope.showAlert(status, msg);
-		}
-	};
-
-	//MTN Payments
-	$scope.tableParams = new ngTableParams({
-		page: 1, //Show first page
-		count: 10, //count per page
-	}, {
-		total: 0,
-		getData: function($defer, params) {
-			//ajax request to api
-			$scope.getPayments(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					var payments = rData.content;
-					params.total(rData.totalElements);
-					//set New data
-					$defer.resolve(payments);
-				})
-				.error(function(data, status, headers, config) {
-					var msg = "N/A";
-					if (data !== null) {
-						msg = data.error + " : " + data.message;
-					}
-					$scope.showAlert(status, msg);
-				});
-		}
-	});
-
-
 };
 
 module.exports = MtsPaymentsController;

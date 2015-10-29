@@ -1,12 +1,16 @@
 /*jslint node: true */
 /* global angular: false */
-var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, dumaSettings, DashboardService, LoginService) {
+var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, dumaSettings, DashboardService, LoginService,AlertUtils) {
 	//Inject Service methods to scope
+	$scope.getUserMenu = LoginService.loadMenu();
 	$scope.getTopAmbassadors = DashboardService.topAmbassadors();
 	$scope.getTopRegions = DashboardService.topRegions();
-	$scope.getUserMenu = LoginService.loadMenu();
 	$scope.getTxStatus = DashboardService.getTxStatus();
 	$scope.getTxTotals = DashboardService.getTxTotals();
+	$scope.isSessionActive = TokenStorage.isSessionActive();
+	$scope.showToast = AlertUtils.showToast();
+	$scope.showAlert = AlertUtils.showAlert();
+	$scope.handleError = AlertUtils.handleError();
 
 	//Mobi Sales Chart Variables
 	$scope.topAmbassadorsLabels = [];
@@ -23,37 +27,38 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 	$scope.txSeriesColors = ["#00CC00", "#FF0000", "#FF9900", "#0000FF", "#996600"];
 	$scope.txSeriesOptions = {
 		scaleLabel: "<%=Number(value).toLocaleString('en')%>",
-		tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= Number(value).toLocaleString('en') %>"
-			// multiTooltipTemplate: "<%if (series){%><%=series%>: <%}%><%= Number(value).toLocaleString('en') %>"
+		multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= Number(value).toLocaleString('en') %>"
 	};
 
 	//Paybill Totals Chart variables
 	$scope.txTotalLabels = [];
 	$scope.txTotalData = [];
-	$scope.txTotalSeries = ["Total Amount (KSH)"];
-	$scope.txTotalColours = ["#00CC00"];
+	$scope.txTotalSeries = ["Total", "C2B", "B2B"];
+	$scope.txTotalColours = ["#00CC00", "#0000FF", "#996600"];
 	$scope.txTotalOptions = {
 		scaleLabel: "<%=Number(value).toLocaleString('en')%>",
-		tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= Number(value).toLocaleString('en') %>"
+		multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= Number(value).toLocaleString('en') %>"
+
 	};
 
-	//Dashboar Selectors
+	//Dashboard Selectors
 	$scope.showMobiSalesDashboard = false;
 	$scope.showPaybillDashboard = false;
 
-	//check authentication
+	//Get user token
 	var token = TokenStorage.retrieve();
 	$rootScope.authenticated = false;
-	if (token) {
-		token = JSON.parse(atob(token.split('.')[0]));
+
+	if ($scope.isSessionActive(token) === true) {
+		var user = JSON.parse(atob(token.split('.')[0]));
 		$rootScope.authenticated = true;
-		$rootScope.loggedInUser = token.usrName;
+		$rootScope.loggedInUser = user.usrName;
 		$scope.getUserMenu();
 
 		var mobiRoles = ["ROLE_MTS_ADMINISTRATOR", "ROLE_MTS_SALES_MANAGER", "ROLE_MK_AMBASSADOR", "ROLE_MOBI_DSR", "ROLE_MOBI_STAFF"];
 		var paybillRoles = ["ROLE_PAYBILL_MAKER", "ROLE_PAYBILL_CHECKER", "ROLE_PAYBILL_AUDITOR", "ROLE_ADMINISTRATOR"];
 
-		var auths = token.authorities;
+		var auths = user.authorities;
 
 		for (var i in auths) {
 			//Evaluate Mobi Roles
@@ -67,7 +72,7 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 			}
 		}
 
-		//Populate Mobi Dashboar
+		//Populate Mobi Dashboard
 		if ($scope.showMobiSalesDashboard === true) {
 			//Get Top Ambassadors
 			$scope.getTopAmbassadors()
@@ -127,12 +132,19 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 			$scope.getTxTotals()
 				.success(function(data, status, headers, config) {
 					var res = data.payload;
-					var dataArray = [];
+					var c2bArray = [];
+					var b2bArray = [];
+					var dailyTotalArray = [];
 					for (var i in res) {
 						$scope.txTotalLabels.push(res[i].tranDate);
-						dataArray.push(Number(res[i].amount));
+						var c2bAmount = Number(res[i].c2bAmount);
+						var b2bAmount = Number(res[i].b2bAmount);
+						var totalAmt = c2bAmount + b2bAmount;
+						dailyTotalArray.push(totalAmt);
+						c2bArray.push(c2bAmount);
+						b2bArray.push(b2bAmount);
 					}
-					$scope.txTotalData.push(dataArray);
+					$scope.txTotalData.push(dailyTotalArray, c2bArray, b2bArray);
 				})
 				.error(function(data, status, headers, config) {
 					$scope.handleError(data, status, headers, config);
@@ -140,69 +152,14 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 
 		}
 	} else {
+		TokenStorage.clear();
+		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
 		$location.path('/login');
 	}
 
 	//Menu
 	$rootScope.hamburgerAvailable = true;
 	$rootScope.menuAvailable = true;
-
-	//Toast Position
-	$scope.toastPosition = {
-		bottom: false,
-		top: true,
-		left: false,
-		right: true
-	};
-
-	//Get Toast
-	$scope.getToastPosition = function() {
-		return Object.keys($scope.toastPosition)
-			.filter(function(pos) {
-				return $scope.toastPosition[pos];
-			})
-			.join(' ');
-	};
-
-	//Show Toast
-	$scope.showToast = function(message) {
-		$mdToast.show(
-			$mdToast.simple()
-			.content(message)
-			.position($scope.getToastPosition())
-			.hideDelay(5000)
-		);
-	};
-
-	//Alerts
-	$scope.alert = "";
-	$scope.showAlert = function(status, message) {
-		$mdDialog.show(
-			$mdDialog.alert()
-			.title("Error " + status)
-			.content(message)
-			.ariaLabel('Error Notification')
-			.ok('Ok')
-			// .targetEvent(ev)
-		);
-	};
-
-	//Error messages
-	var redirectMsg = ". Your session has expired. You will now be redirected";
-	var forbiddenMsg = ". You do not have permission to use this resource";
-
-	//Error Handling
-	$scope.handleError = function(data, status, headers, config) {
-		var msg = data === null ? "Message Unavailable" : data.message;
-		if (status === 401) { //unauthorized
-			$scope.showAlert(status, msg + redirectMsg);
-			location.path('/home');
-		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + forbiddenMsg);
-		} else {
-			$scope.showAlert(status, msg);
-		}
-	};
 };
 
 module.exports = DashboardController;

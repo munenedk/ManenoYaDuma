@@ -7,7 +7,7 @@ require('angular-route');
 require('angular-touch');
 require('browsernizr');
 
-angular.module('DumaAdmin', ['ngMaterial', 'ngAnimate', 'ngRoute', 'ngTable', 'angularFileUpload', 'chart.js', 'angular-loading-bar']);
+angular.module('DumaAdmin', ['ngMaterial', 'ngAnimate', 'ngRoute', 'ngTable', 'angularFileUpload', 'chart.js', 'angular-loading-bar', 'ngFileSaver']);
 
 var app = angular.module('DumaAdmin');
 
@@ -47,6 +47,7 @@ var CardService = require('./Services/CardService.js');
 var PaymentsService = require('./Services/PaymentsService.js');
 var PaybillReportsService = require('./Services/PaybillReportsService.js');
 var MtnPaymentsService = require('./Services/MtnPaymentsService.js');
+var AlertUtils = require('./Services/AlertUtils.js');
 
 //Factories
 app.factory('CustomerService', CustomerService);
@@ -65,31 +66,35 @@ app.factory('BillingCompanyService', BillingCompanyService);
 app.factory('CardService', CardService);
 app.factory('PaymentsService', PaymentsService);
 app.factory('PaybillReportsService', PaybillReportsService);
-app.factory('MtnPaymentsService',MtnPaymentsService);
+app.factory('MtnPaymentsService', MtnPaymentsService);
+app.factory('AlertUtils', AlertUtils);
 
 //Inject Controllers
 app.controller('MainController', ['$scope', '$rootScope', '$location', '$mdSidenav', 'TokenStorage', 'LoginService', MainController]);
-app.controller('LoginController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'LoginService', 'TokenStorage', '$location', '$mdSidenav', LoginController]);
-app.controller('CustomerController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'CustomerService', '$routeParams', 'TokenStorage', '$location', 'LoginService', CustomerController]);
-app.controller('UserController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'UserService', 'RolesService', '$routeParams', 'TokenStorage', '$location', 'LoginService', UserController]);
-app.controller('RolesController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'RolesService', 'PermissionsService', 'TokenStorage', '$location', 'LoginService', RolesController]);
-app.controller('PermissionsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'PermissionsService', 'TokenStorage', '$location', 'LoginService', PermissionsController]);
-app.controller('ReconController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'FileUploader', 'dumaSettings', 'ReconService', 'TokenStorage', '$location', '$routeParams', 'LoginService', ReconController]);
-app.controller('PasswordChangeController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'dumaSettings', 'PasswordChangeService', 'TokenStorage', '$location', '$routeParams', 'LoginService', PasswordChangeController]);
-app.controller('MtsSalesController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'FileUploader', 'dumaSettings', '$routeParams', 'MtsSalesService', 'LoginService', MtsSalesController]);
-app.controller('DashboardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'dumaSettings', 'DashboardService', 'LoginService', DashboardController]);
-app.controller('BizNoController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BizNoService', BizNoController]);
-app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BillingCompanyService', 'BizNoService', 'UserService', BillingCompanyController]);
-app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'CardService', CardController]);
-app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', '$window', 'LoginService', 'BillingCompanyService', 'PaymentsService', PaymentsController]);
-app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', '$window', 'PaybillReportsService', PaybillReportsController]);
-app.controller('MtnPaymentsController',['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService','MtnPaymentsService',MtnPaymentsController]);
+app.controller('LoginController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'LoginService', 'TokenStorage', '$location', '$mdSidenav', 'AlertUtils', LoginController]);
+app.controller('CustomerController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'CustomerService', '$routeParams', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', CustomerController]);
+app.controller('UserController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'UserService', 'RolesService', '$routeParams', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', UserController]);
+app.controller('RolesController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'RolesService', 'PermissionsService', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', RolesController]);
+app.controller('PermissionsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'PermissionsService', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', PermissionsController]);
+app.controller('ReconController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'FileUploader', 'dumaSettings', 'ReconService', 'TokenStorage', '$location', '$routeParams', 'FileSaver', 'Blob', 'LoginService', 'AlertUtils', ReconController]);
+app.controller('PasswordChangeController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'dumaSettings', 'PasswordChangeService', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'AlertUtils', PasswordChangeController]);
+app.controller('MtsSalesController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'FileUploader', 'dumaSettings', 'FileSaver', 'Blob', '$routeParams', 'MtsSalesService', 'LoginService', 'AlertUtils', MtsSalesController]);
+app.controller('DashboardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'dumaSettings', 'DashboardService', 'LoginService', 'AlertUtils', DashboardController]);
+app.controller('BizNoController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BizNoService', 'AlertUtils', BizNoController]);
+app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'BillingCompanyService', 'BizNoService', 'UserService', 'AlertUtils', BillingCompanyController]);
+app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'CardService', 'AlertUtils', CardController]);
+app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', '$window', 'LoginService', 'BillingCompanyService', 'PaymentsService', 'AlertUtils', PaymentsController]);
+app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'FileSaver', 'Blob', 'LoginService', '$window', 'PaybillReportsService', 'AlertUtils', PaybillReportsController]);
+app.controller('MtnPaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'MtnPaymentsService', 'AlertUtils', MtnPaymentsController]);
 
 //Constants
 app.constant('dumaSettings', {
-	"backendUrl": "http://localhost:8282/api/v1/"
-		// "backendUrl": "http://172.16.17.191:8282/api/v1/"
-		// "backendUrl": "http://172.17.74.91:8282/api/v1/"
+	"backendUrl": "http://localhost:8282/api/v1/",
+	// "backendUrl": "http://172.16.17.191:8282/api/v1/",
+	// "backendUrl": "http://172.17.74.91:8282/api/v1/",
+
+	/****S ession Timeout *************/
+	"session_timeout": 1800000
 });
 
 //Configuration
@@ -331,9 +336,9 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 		controller: "PaybillReportsController"
 	})
 
-	.when('/mtn-payments',{
-		templateUrl:"views/Mtn/partial-mtn-payments.html",
-		controller:"MtnPaymentsController"
+	.when('/mtn-payments', {
+		templateUrl: "views/Mtn/partial-mtn-payments.html",
+		controller: "MtnPaymentsController"
 	})
 
 	.otherwise({

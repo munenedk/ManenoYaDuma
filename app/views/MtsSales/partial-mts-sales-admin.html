@@ -69,11 +69,11 @@
 	<form class="col m12">
 		<span class="col m5">
 			<label class="fromDate">From</label>
-			<input type="date" class="datepicker" ng-model="dt.fromDate">
+			<input type="text" class="datepicker" ng-model="dt.fromDate">
 		</span>
 		<span class="col m5">
 			<label class="fromDate">To</label>
-			<input type="date" class="datepicker" ng-model="dt.toDate">
+			<input type="text" class="datepicker" ng-model="dt.toDate">
 		</span>
 		<div class="input-field col m2">
 			<button class="btn waves-effect waves-light" ng-click="searchByDate(dt);">Search
@@ -101,7 +101,7 @@
 					<td data-title="'Br DAO'">{{acc.brDao}}</td>
 					<td data-title="'Br Name'">{{acc.brDaoName}}</td>
 					<td data-title="'Staff Category'">{{acc.staffCategory}}</td>
-					<td data-title="'Customer Name'">{{acc.cusName}}</td>
+					<td data-title="'Region'">{{acc.staffRegion}}</td>
 					<td data-title="'Cust Mobile'">{{acc.cusMobile}}</td>
 					<td data-title="'Status'"
 						ng-style="{{acc.status}} == '0'?{'color':'green'}:{{acc.status}} == '1'?{'color':'orange'} : {'color':'red'}">

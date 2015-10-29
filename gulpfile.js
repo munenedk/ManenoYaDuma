@@ -107,7 +107,8 @@ gulp.task('linked_scripts', function() {
 			'bower_components/angular-chart.js/dist/angular-chart.min.js.map',
 			'bower_components/Chart.js/src/*.js',
 			'bower_components/Chart.js/Chart.min.js',
-			"bower_components/angular-loading-bar/build/loading-bar.min.js"
+			"bower_components/angular-loading-bar/build/loading-bar.min.js",
+			"node_modules/angular-file-saver/dist/angular-file-saver.bundle.js"
 		])
 		.pipe(gulp.dest('dist/linked_scripts'));
 });

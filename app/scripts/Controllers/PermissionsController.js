@@ -1,71 +1,69 @@
 /*jslint node: true */
 /* global angular: false */
 
-var PermissionsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, PermissionsService, TokenStorage, $location,LoginService) {
+var PermissionsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, PermissionsService, TokenStorage, $location, LoginService, AlertUtils) {
+
+	//Inject Services To Scope
 	$scope.getUserMenu = LoginService.loadMenu();
-	//check authentication
+	$scope.getPermissions = PermissionsService.list();
+	$scope.getPermission = PermissionsService.find();
+	$scope.savePermission = PermissionsService.save();
+	$scope.isSessionActive = TokenStorage.isSessionActive();
+	$scope.showToast = AlertUtils.showToast();
+	$scope.showAlert = AlertUtils.showAlert();
+	$scope.handleError = AlertUtils.handleError();
+
+	//Get Authentication Token
 	var token = TokenStorage.retrieve();
 	$rootScope.authenticated = false;
-	if (token) {
-		token = JSON.parse(atob(token.split('.')[0]));
+
+	//Permissions Checkboxes
+	$scope.permissionsChckBox = {};
+
+	if ($scope.isSessionActive(token) === true) {
+		var user = JSON.parse(atob(token.split('.')[0]));
 		$rootScope.authenticated = true;
-		$rootScope.loggedInUser = token.usrName;
+		$rootScope.loggedInUser = user.usrName;
 		$scope.getUserMenu();
+
+		//Table
+		$scope.tableParams = new ngTableParams({
+			page: 1, //Show first page
+			count: 10, //count per page
+		}, {
+			total: 0,
+			getData: function($defer, params) {
+				//ajax request to api
+				$scope.getPermissions(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						// console.log(JSON.stringify(rData));
+
+						var permissions = rData.content;
+
+						params.total(rData.totalElements);
+						//set New data
+						$defer.resolve(permissions);
+					})
+					.error(function(data, status, headers, config) {
+						var msg = "N/A";
+						if (data !== null) {
+							msg = data.error + " : " + data.message;
+						}
+						$scope.showAlert(status, msg);
+					});
+			}
+		});
 	} else {
+		TokenStorage.clear();
+		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
 		$location.path('/login');
 	}
 
 	//Menu
 	$rootScope.hamburgerAvailable = true;
 	$rootScope.menuAvailable = true;
-
-	//Inject Services To Scope
-	$scope.getPermissions = PermissionsService.list();
-	$scope.getPermission = PermissionsService.find();
-	$scope.savePermission = PermissionsService.save();
-
-	//Permissions Checkboxes
-	$scope.permissionsChckBox = {};
-
-	//Toast Position
-	$scope.toastPosition = {
-		bottom: false,
-		top: true,
-		left: false,
-		right: true
-	};
-
-	//Get Toast
-	$scope.getToastPosition = function() {
-		return Object.keys($scope.toastPosition)
-			.filter(function(pos) {
-				return $scope.toastPosition[pos];
-			})
-			.join(' ');
-	};
-
-	//Show Toast
-	$scope.showToast = function(message) {
-		$mdToast.show(
-			$mdToast.simple()
-			.content(message)
-			.position($scope.getToastPosition())
-			.hideDelay(5000)
-		);
-	};
-
-	//Alerts
-	$scope.alert = "";
-	$scope.showAlert = function(status, message) {
-		$mdDialog.show(
-			$mdDialog.alert()
-			.title("Error " + status)
-			.content(message)
-			.ariaLabel('Error Notification')
-			.ok('Ok')
-			// .targetEvent(ev)
-		);
-	};
 
 	//Save Role
 	$scope.save = function save(permission) {
@@ -78,7 +76,6 @@ var PermissionsController = function($scope, $rootScope, $mdDialog, $mdToast, ng
 					$scope.showAlert(status, data.message);
 				});
 		}
-
 	};
 
 	//Reset Permissions Form
@@ -89,38 +86,6 @@ var PermissionsController = function($scope, $rootScope, $mdDialog, $mdToast, ng
 			permissionDescription: '',
 		};
 	};
-
-
-	//Table
-	$scope.tableParams = new ngTableParams({
-		page: 1, //Show first page
-		count: 10, //count per page
-	}, {
-		total: 0,
-		getData: function($defer, params) {
-			//ajax request to api
-			$scope.getPermissions(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					// console.log(JSON.stringify(rData));
-
-					var permissions = rData.content;
-
-					params.total(rData.totalElements);
-					//set New data
-					$defer.resolve(permissions);
-				})
-				.error(function(data, status, headers, config) {
-					var msg = "N/A";
-					if (data !== null) {
-						msg = data.error + " : " + data.message;
-					}
-					$scope.showAlert(status, msg);
-				});
-		}
-	});
-
 };
 
 module.exports = PermissionsController;

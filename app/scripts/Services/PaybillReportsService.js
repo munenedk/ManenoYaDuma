@@ -25,9 +25,16 @@ var PaybillReportsService = function($http, dumaSettings) {
 
 	// Download Pdf/xls File
 	var downloadReport = function(searchParams) {
+		var mUrl = apiUrl;
+		if (searchParams.format == 'pdf') {
+			mUrl = mUrl + "/pdf";
+		} else {
+			mUrl = mUrl + "/xls";
+		}
+
 		return $http({
 			method: "POST",
-			url: apiUrl,
+			url: mUrl,
 			responseType: "arraybuffer",
 			data: JSON.stringify(searchParams)
 		});

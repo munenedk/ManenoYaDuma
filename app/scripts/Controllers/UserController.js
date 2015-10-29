@@ -1,22 +1,23 @@
 /*jslint node: true */
 /* global angular: false */
-var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, UserService, RolesService, $routeParams, TokenStorage, $location, LoginService) {
+var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, UserService, RolesService, $routeParams, TokenStorage, $location, LoginService, AlertUtils) {
+	//Inject Service methods to scope
 	$scope.getUserMenu = LoginService.loadMenu();
+	$scope.getUsers = UserService.list();
+	$scope.getUser = UserService.find();
+	$scope.saveUser = UserService.save();
+	$scope.getRoles = RolesService.list();
+	$scope.getAllBranches = UserService.listAllBranches();
+	$scope.updateUser = UserService.updateUser();
+	$scope.updateUsrRoles = UserService.updateUserRoles();
+	$scope.isSessionActive = TokenStorage.isSessionActive();
+	$scope.showToast = AlertUtils.showToast();
+	$scope.showAlert = AlertUtils.showAlert();
+	$scope.handleError = AlertUtils.handleError();
+
 	//check authentication
 	var token = TokenStorage.retrieve();
 	$rootScope.authenticated = false;
-	if (token) {
-		token = JSON.parse(atob(token.split('.')[0]));
-		$rootScope.authenticated = true;
-		$rootScope.loggedInUser = token.usrName;
-		$scope.getUserMenu();
-	} else {
-		$location.path('/login');
-	}
-
-	//Show Menu Buttons
-	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
 
 	//Manage Tabs
 	$scope.selectedTab = 0;
@@ -26,101 +27,124 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	//save progress
 	$scope.showSaveProgress = false;
 
-	//form
-	$scope.form = {};
-
 	//Selected Roles
 	$scope.selectedRoles = [];
 
 	//Roles checkbox
 	$scope.rolesChckbox = {};
 
-	//Inject Service methods to scope
-	$scope.getUsers = UserService.list();
-	$scope.getUser = UserService.find();
-	$scope.saveUser = UserService.save();
-	$scope.getRoles = RolesService.list();
-	$scope.getAllBranches = UserService.listAllBranches();
-	$scope.updateUser = UserService.updateUser();
-	$scope.updateUsrRoles = UserService.updateUserRoles();
+	/***##### BRANCH SEARCH ######***/
+	$scope.acSimulateQuery = false;
+	$scope.acIsDisabled = false;
+	$scope.acNoCache = false;
+	var allBranches = "'";
 
-	//initialize user
-	if ($routeParams.userId !== undefined) {
-		//Get User
-		$scope.getUser($routeParams.userId)
-			.success(function(data, status, headers, config) {
-				$scope.user = data.payload.user;
-				$scope.user.usrStatus = 0 ? 'New' : 1 ? 'Active' : 2 ? 'Disabled' : 'Unknown';
-				var userRoles = data.payload.userRoles;
-				//Preselect User Roles
-				for (var i in userRoles) {
-					$scope.toggleSelectedRole(userRoles[i]);
-					$scope.rolesChckbox[userRoles[i].roleId] = true;
-				}
-				$scope.showToast(data.message);
-			})
-			.error(function(data, status, headers, config) {
-				$scope.handleError(data, status, headers, config);
-			});
+
+	//Check if there's an active session
+	if ($scope.isSessionActive(token) === true) {
+		var usr = JSON.parse(atob(token.split('.')[0]));
+		$rootScope.authenticated = true;
+		$rootScope.loggedInUser = usr.usrName;
+		$scope.getUserMenu();
+
+		//initialize user
+		if ($routeParams.userId !== undefined) {
+			//Get User
+			$scope.getUser($routeParams.userId)
+				.success(function(data, status, headers, config) {
+					$scope.user = data.payload.user;
+					$scope.user.usrStatus = 0 ? 'New' : 1 ? 'Active' : 2 ? 'Disabled' : 'Unknown';
+					var userRoles = data.payload.userRoles;
+					//Preselect User Roles
+					for (var i in userRoles) {
+						$scope.toggleSelectedRole(userRoles[i]);
+						$scope.rolesChckbox[userRoles[i].roleId] = true;
+					}
+					$scope.showToast(data.message);
+				})
+				.error(function(data, status, headers, config) {
+					$scope.handleError(data, status, headers, config);
+				});
+		}
+
+		//User Table
+		$scope.tableParams = new ngTableParams({
+			page: 1, //Show first page
+			count: 10, //count per page
+		}, {
+			total: 0,
+			getData: function($defer, params) {
+				//ajax request to api
+				$scope.getUsers(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						// console.log(JSON.stringify(rData));
+						var users = rData.content;
+						params.total(rData.totalElements);
+						//set New data
+						$defer.resolve(users);
+					})
+					.error(function(data, status, headers, config) {
+						var msg = "N/A";
+						if (data !== null) {
+							msg = data.error + " : " + data.message;
+						}
+						$scope.showAlert(status, msg);
+						// alert("Error! "+status);
+					});
+			}
+		});
+
+		//Roles Table
+		$scope.roleTableParams = new ngTableParams({
+			page: 1, //Show first page
+			count: 10, //count per page
+		}, {
+			total: 0,
+			getData: function($defer, params) {
+				//ajax request to api
+				$scope.getRoles(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+
+						var roles = rData.content;
+
+						params.total(rData.totalElements);
+						//set New data
+						$defer.resolve(roles);
+					})
+					.error(function(data, status, headers, config) {
+						var msg = "N/A";
+						if (data !== null) {
+							msg = data.error + " : " + data.message;
+						}
+						$scope.showAlert(status, msg);
+					});
+			}
+		});
+
+		//Load the Branches
+		getBranches();
+		// console.log("Load All Method: " + loadAll());
+		// console.log(self.branches);
+		$scope.acQuerySearch = querySearch;
+		$scope.acSelectedItemChange = selectedItemChange;
+		$scope.acSearchTextChange = searchTextChange;
+
+	} else {
+		TokenStorage.clear();
+		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
+		$location.path('/login');
 	}
 
+	//Show Menu Buttons
+	$rootScope.hamburgerAvailable = true;
+	$rootScope.menuAvailable = true;
 
-	//Toast Position
-	$scope.toastPosition = {
-		bottom: false,
-		top: true,
-		left: false,
-		right: true
-	};
-
-	//Get Toast
-	$scope.getToastPosition = function() {
-		return Object.keys($scope.toastPosition)
-			.filter(function(pos) {
-				return $scope.toastPosition[pos];
-			})
-			.join(' ');
-	};
-
-	//Show Toast
-	$scope.showToast = function(message) {
-		$mdToast.show(
-			$mdToast.simple()
-			.content(message)
-			.position($scope.getToastPosition())
-			.hideDelay(5000)
-		);
-	};
-
-	//Alerts
-	$scope.alert = "";
-	$scope.showAlert = function(status, message) {
-		$mdDialog.show(
-			$mdDialog.alert()
-			.title("Error " + status)
-			.content(message)
-			.ariaLabel('Error Notification')
-			.ok('Ok')
-			// .targetEvent(ev)
-		);
-	};
-
-	//Error messages
-	var redirectMsg = ". Your session has expired. You will now be redirected";
-	var forbiddenMsg = ". You do not have permission to use this resource";
-
-	//Error Handling
-	$scope.handleError = function(data, status, headers, config) {
-		var msg = data === null ? "Message Unavailable" : data.message;
-		if (status === 401) { //unauthorized
-			$scope.showAlert(status, msg + redirectMsg);
-			location.path('/home');
-		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + forbiddenMsg);
-		} else {
-			$scope.showAlert(status, msg);
-		}
-	};
+	//form
+	$scope.form = {};
 
 	$scope.setUser = function(user) {
 		if ($scope.form.userForm.$valid) {
@@ -199,64 +223,6 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 		};
 	};
 
-	//User Table
-	$scope.tableParams = new ngTableParams({
-		page: 1, //Show first page
-		count: 10, //count per page
-	}, {
-		total: 0,
-		getData: function($defer, params) {
-			//ajax request to api
-			$scope.getUsers(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					// console.log(JSON.stringify(rData));
-					var users = rData.content;
-					params.total(rData.totalElements);
-					//set New data
-					$defer.resolve(users);
-				})
-				.error(function(data, status, headers, config) {
-					var msg = "N/A";
-					if (data !== null) {
-						msg = data.error + " : " + data.message;
-					}
-					$scope.showAlert(status, msg);
-					// alert("Error! "+status);
-				});
-		}
-	});
-
-	//Roles Table
-	$scope.roleTableParams = new ngTableParams({
-		page: 1, //Show first page
-		count: 10, //count per page
-	}, {
-		total: 0,
-		getData: function($defer, params) {
-			//ajax request to api
-			$scope.getRoles(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-
-					var roles = rData.content;
-
-					params.total(rData.totalElements);
-					//set New data
-					$defer.resolve(roles);
-				})
-				.error(function(data, status, headers, config) {
-					var msg = "N/A";
-					if (data !== null) {
-						msg = data.error + " : " + data.message;
-					}
-					$scope.showAlert(status, msg);
-				});
-		}
-	});
-
 	$scope.toggleSelectedRole = function(role) {
 		// console.log(JSON.stringify(role));
 		// var idx = $scope.selectedRoles.indexOf(role);
@@ -272,7 +238,7 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 		if (idx > -1) {
 			//If Is selected Remove It
 			$scope.selectedRoles.splice(idx, 1);
-		}else {
+		} else {
 			//If is not selected push to array
 			$scope.selectedRoles.push(role);
 		}
@@ -286,21 +252,6 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 		$scope.userDetailsTabDisabled = true;
 		$scope.selectedTab = 0;
 	};
-
-	/***##### BRANCH SEARCH ######***/
-	$scope.acSimulateQuery = false;
-	$scope.acIsDisabled = false;
-	$scope.acNoCache = false;
-
-	//Load the branches
-	var allBranches = "'";
-	getBranches();
-
-	// console.log("Load All Method: " + loadAll());
-	// console.log(self.branches);
-	$scope.acQuerySearch = querySearch;
-	$scope.acSelectedItemChange = selectedItemChange;
-	$scope.acSearchTextChange = searchTextChange;
 
 	// Branch Query Search
 	function querySearch(query) {

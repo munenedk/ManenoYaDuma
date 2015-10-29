@@ -1,22 +1,51 @@
 /*jslint node: true */
 /* global angular: false */
-var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, BillingCompanyService, BizNoService, UserService) {
-	//Get User menu based on roles
+var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, BillingCompanyService, BizNoService, UserService, AlertUtils) {
+	//Inject Scope Methods
 	$scope.getUserMenu = LoginService.loadMenu();
+	$scope.getBillingCompanies = BillingCompanyService.listCompanies();
+	$scope.saveBillingCompany = BillingCompanyService.save();
+	$scope.getBillingCompany = BillingCompanyService.getCompany();
+	$scope.updateBillingCompany = BillingCompanyService.updateCompany();
+	$scope.getAllBizNos = BizNoService.listAllBizNos();
+	$scope.approveRequest = BillingCompanyService.approveRequest();
+	$scope.rejectRequest = BillingCompanyService.rejectRequest();
+	$scope.getAllBranches = UserService.listAllBranches();
+	$scope.validateAccountNumber = BillingCompanyService.validateAccountNumber();
+	$scope.isSessionActive = TokenStorage.isSessionActive();
+	$scope.showToast = AlertUtils.showToast();
+	$scope.showAlert = AlertUtils.showAlert();
+	$scope.handleError = AlertUtils.handleError();
 
-	//check authentication
+	//Get User Token
 	var token = TokenStorage.retrieve();
+
+	//User Roles Variables
 	$scope.isPaybillMaker = false;
 	$scope.isPaybillChecker = false;
 	$rootScope.authenticated = false;
-	if (token) {
-		token = JSON.parse(atob(token.split('.')[0]));
+
+	/***##### Branch Search ######***/
+	$scope.brSimulateQuery = false;
+	$scope.brIsDisabled = false;
+	$scope.brNoCache = false;
+	var allBranches = "";
+
+	/***##### BUSINESS NUMBER SEARCH ######***/
+	$scope.bnSimulateQuery = false;
+	$scope.bnIsDisabled = false;
+	$scope.bnNoCache = false;
+	var allBizNos = "";
+
+	//Check if there's an active session
+	if ($scope.isSessionActive(token) === true) {
+		var user = JSON.parse(atob(token.split('.')[0]));
 		$rootScope.authenticated = true;
-		$rootScope.loggedInUser = token.usrName;
+		$rootScope.loggedInUser = user.usrName;
 		$scope.getUserMenu();
 
 		//Check if is Paybill Maker or checker
-		var authorities = token.authorities;
+		var authorities = user.authorities;
 		var auths = [];
 		for (var i in authorities) {
 			// console.log(authorities[i].authority);
@@ -27,7 +56,60 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 		$scope.isPaybillMaker = auths.indexOf('ROLE_PAYBILL_MAKER') > -1;
 		$scope.isPaybillChecker = auths.indexOf('ROLE_PAYBILL_CHECKER') > -1;
 
+		//initialize company
+		if ($routeParams.companyId !== undefined) {
+			//Get Company
+			$scope.getBillingCompany($routeParams.companyId)
+				.success(function(data, status, headers, config) {
+					$scope.company = data.payload;
+					$scope.showToast(data.message);
+				})
+				.error(function(data, status, headers, config) {
+					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+				});
+		}
+
+		//Billing Company Table
+		$scope.tableParams = new ngTableParams({
+			page: 1, //Show First page
+			count: 10 //count per page
+		}, {
+			total: 0, //length of data
+			getData: function($defer, params) {
+				//Ajax Request to API
+				$scope.getBillingCompanies(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						var companies = rData.content;
+						params.total(rData.totalElements);
+						//set New Data
+						$defer.resolve(companies);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+					});
+			}
+		});
+
+		//Load the branches
+		getBranches();
+		$scope.brQuerySearch = brQuerySearch;
+		$scope.brSelectedItemChange = brSelectedItemChange;
+		$scope.brSearchTextChange = brSearchTextChange;
+
+		//Load All Business Numbers
+		getBusinessNos();
+		// console.log("Load All Method: " + loadAll());
+		// console.log(self.branches);
+		$scope.bnQuerySearch = querySearch;
+		$scope.bnSelectedItemChange = selectedItemChange;
+		$scope.bnSearchTextChange = searchTextChange;
+
+
 	} else {
+		TokenStorage.clear();
+		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
 		$location.path('/login');
 	}
 
@@ -35,87 +117,9 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 	$rootScope.hamburgerAvailable = true;
 	$rootScope.menuAvailable = true;
 
-	//Inject Scope Methods
-	$scope.getBillingCompanies = BillingCompanyService.listCompanies();
-	$scope.saveBillingCompany = BillingCompanyService.save();
-	$scope.getBillingCompany = BillingCompanyService.getCompany();
-	$scope.updateBillingCompany = BillingCompanyService.updateCompany();
-	$scope.getAllBizNos = BizNoService.listAllBizNos();
-	$scope.approveRequest = BillingCompanyService.approveRequest();
-	$scope.rejectRequest = BillingCompanyService.rejectRequest();
-	$scope.getAllBranches = UserService.listAllBranches();
-	$scope.validateAccountNumber = BillingCompanyService.validateAccountNumber();
-
-
 	//Billing Company Form
 	$scope.form = {};
 	$scope.company = {};
-
-	//initialize company
-	if ($routeParams.companyId !== undefined) {
-		//Get Company
-		$scope.getBillingCompany($routeParams.companyId)
-			.success(function(data, status, headers, config) {
-				$scope.company = data.payload;
-				$scope.showToast(data.message);
-			})
-			.error(function(data, status, headers, config) {
-				$scope.handleError(data, status, headers, config);
-			});
-	}
-
-	//Toast Position
-	$scope.toastPosition = {
-		bottom: false,
-		top: true,
-		left: false,
-		right: true
-	};
-
-	//Get Toast
-	$scope.getToastPosition = function() {
-		return Object.keys($scope.toastPosition)
-			.filter(function(pos) {
-				return $scope.toastPosition[pos];
-			})
-			.join(' ');
-	};
-
-	//Show Toast
-	$scope.showToast = function(message) {
-		$mdToast.show(
-			$mdToast.simple()
-			.content(message)
-			.position($scope.getToastPosition())
-			.hideDelay(5000)
-		);
-	};
-
-	//Alerts
-	$scope.alert = "";
-	$scope.showAlert = function(status, message) {
-		$mdDialog.show(
-			$mdDialog.alert()
-			.title("Error " + status)
-			.content(message)
-			.ariaLabel('Error Notification')
-			.ok('Ok')
-			// .targetEvent(ev)
-		);
-	};
-
-	//Error Handling
-	$scope.handleError = function(data, status, headers, config) {
-		var msg = data === null ? "Message Unavailable" : data.message;
-		if (status === 401) { //unauthorized
-			$scope.showAlert(status, msg + redirectMsg);
-			location.path('/login');
-		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + ". You Are Not Authorized To Use This Resource.");
-		} else {
-			$scope.showAlert(status, msg);
-		}
-	};
 
 
 	//Save Billing Company
@@ -131,7 +135,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 				})
 				.error(function(data, status, headers, config) {
 					// console.log("Result: "+ data+"status: "+status);
-					$scope.handleError(data, status, headers, config);
+					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
 				});
 		}
 	};
@@ -146,7 +150,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 					$scope.showToast(data.message);
 				})
 				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
+					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
 				});
 		}
 	};
@@ -164,7 +168,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 						$scope.company.accountTitle = data.payload.accountTitle;
 					})
 					.error(function(data, status, headers, config) {
-						$scope.handleError(data, status, headers, config);
+						$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
 						$scope.company.accountNumber = null;
 						$scope.company.accountTitle = null;
 					});
@@ -180,44 +184,6 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 	};
 
 
-	//Billing Company Table
-	$scope.tableParams = new ngTableParams({
-		page: 1, //Show First page
-		count: 10 //count per page
-	}, {
-		total: 0, //length of data
-		getData: function($defer, params) {
-			//Ajax Request to API
-			$scope.getBillingCompanies(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					var companies = rData.content;
-					params.total(rData.totalElements);
-					//set New Data
-					$defer.resolve(companies);
-				})
-				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
-				});
-		}
-	});
-
-
-	/***##### BUSINESS NUMBER SEARCH ######***/
-	$scope.bnSimulateQuery = false;
-	$scope.bnIsDisabled = false;
-	$scope.bnNoCache = false;
-
-	//Load the branches
-	var allBizNos = "";
-	getBusinessNos();
-
-	// console.log("Load All Method: " + loadAll());
-	// console.log(self.branches);
-	$scope.bnQuerySearch = querySearch;
-	$scope.bnSelectedItemChange = selectedItemChange;
-	$scope.bnSearchTextChange = searchTextChange;
 
 	// Branch Query Search
 	function querySearch(query) {
@@ -257,7 +223,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 				$scope.bnBizNos = loadAllBizNos();
 			})
 			.error(function(data, status, headers, config) {
-				$scope.handleError(data, status, headers, config);
+				$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
 			});
 	}
 
@@ -299,7 +265,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 					$scope.tableParams.reload();
 				})
 				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
+					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
 				});
 		}, function() {
 			// $scope.status = 'You decided to keep your debt.';
@@ -323,29 +289,13 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 					$scope.tableParams.reload();
 				})
 				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
+					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
 				});
 		}, function() {
 			// $scope.status = 'You decided to keep your debt.';
 		});
 	};
 
-
-
-	/***##### Branch Search ######***/
-	$scope.brSimulateQuery = false;
-	$scope.brIsDisabled = false;
-	$scope.brNoCache = false;
-
-	//Load the branches
-	var allBranches = "";
-	getBranches();
-
-	// console.log("Load All Method: " + loadAll());
-	// console.log(self.branches);
-	$scope.brQuerySearch = brQuerySearch;
-	$scope.brSelectedItemChange = brSelectedItemChange;
-	$scope.brSearchTextChange = brSearchTextChange;
 
 	// Branch Query Search
 	function brQuerySearch(query) {
@@ -383,7 +333,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 				$scope.branches = loadAllBranches();
 			})
 			.error(function(data, status, headers, config) {
-				$scope.handleError(data, status, headers, config);
+				$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
 			});
 	}
 

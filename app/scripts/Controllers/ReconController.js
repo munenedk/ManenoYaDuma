@@ -1,26 +1,6 @@
-var ReconController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, FileUploader, dumaSettings, ReconService, TokenStorage, $location, $routeParams,LoginService) {
-  $scope.getUserMenu = LoginService.loadMenu();
-
-  //check authentication
-  var token = TokenStorage.retrieve();
-  $rootScope.authenticated = false;
-  if (token) {
-    token = JSON.parse(atob(token.split('.')[0]));
-    $rootScope.authenticated = true;
-    $rootScope.loggedInUser = token.usrName;
-    $scope.getUserMenu();
-  } else {
-    $location.path('/login');
-  }
-
-  //Recon Type
-  $scope.reconType = $routeParams.reconType;
-
-  //Show Menu Buttons
-  $rootScope.hamburgerAvailable = true;
-  $rootScope.menuAvailable = true;
-
+var ReconController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, FileUploader, dumaSettings, ReconService, TokenStorage, $location, $routeParams, FileSaver, Blob, LoginService, AlertUtils) {
   //Inject Service methods
+  $scope.getUserMenu = LoginService.loadMenu();
   $scope.getUploads = ReconService.list();
   $scope.getRecons = ReconService.listRecons();
   $scope.getAllRecons = ReconService.listAllRecons();
@@ -30,6 +10,17 @@ var ReconController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
   $scope.submitRequests = ReconService.approveRequests();
   $scope.getReversalStatus = ReconService.listReversalStatus();
   $scope.getFile = ReconService.downloadFile();
+  $scope.isSessionActive = TokenStorage.isSessionActive();
+  $scope.showToast = AlertUtils.showToast();
+  $scope.showAlert = AlertUtils.showAlert();
+  $scope.handleError = AlertUtils.handleError();
+
+  //check authentication
+  var token = TokenStorage.retrieve();
+  $rootScope.authenticated = false;
+
+  //Recon Type
+  $scope.reconType = $routeParams.reconType;
 
   //Selected Recons
   $scope.selectedRecons = [];
@@ -48,63 +39,120 @@ var ReconController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
   $scope.showFileDetails = true;
   $scope.showProcessing = false;
 
+  if ($scope.isSessionActive(token) === true) {
+    var user = JSON.parse(atob(token.split('.')[0]));
+    $rootScope.authenticated = true;
+    $rootScope.loggedInUser = user.usrName;
+    $scope.getUserMenu();
+
+    //Upload Table
+    $scope.uploadParams = new ngTableParams({
+      page: 1, //Show First page
+      count: 10 //count per page
+    }, {
+      total: 0, //length of data
+      getData: function($defer, params) {
+        //Ajax Request to API
+        $scope.getUploads(params, $routeParams.reconType)
+          .success(function(data, status, headers, config) {
+            var rData = {};
+            rData = data.payload.content;
+            var uploads = rData;
+            params.total(rData.totalElements);
+            //set New Data
+            $defer.resolve(uploads);
+          })
+          .error(function(data, status, headers, config) {
+            $scope.handleError(data, status, headers, config);
+          });
+      }
+    });
+
+
+    //Recon File Table
+    $scope.reconParams = new ngTableParams({
+      page: 1, //Show First page
+      count: 10 //count per page
+    }, {
+      total: 0, //length of data
+      getData: function($defer, params) {
+        //Ajax Request to API
+        $scope.getRecons(params, $routeParams.uploadId, $routeParams.reconType)
+          .success(function(data, status, headers, config) {
+            var rData = {};
+            rData = data.payload;
+            var recons = rData.content;
+            console.log(recons);
+            params.total(rData.totalElements);
+            //set New Data
+            $defer.resolve(recons);
+          })
+          .error(function(data, status, headers, config) {
+            $scope.handleError(data, status, headers, config);
+          });
+      }
+    });
+
+
+    //Approval Table
+    $scope.requestsParams = new ngTableParams({
+      page: 1, //Show First page
+      count: 10 //count per page
+    }, {
+      total: 0, //length of data
+      getData: function($defer, params) {
+        //Ajax Request to API
+        $scope.getReconRequests(params, $routeParams.requestUploadId, $routeParams.reconType)
+          .success(function(data, status, headers, config) {
+            var rData = {};
+            rData = data.payload;
+            var requests = rData.content;
+            params.total(rData.totalElements);
+            //set New Data
+            $defer.resolve(requests);
+          })
+          .error(function(data, status, headers, config) {
+            $scope.handleError(data, status, headers, config);
+          });
+      }
+    });
+
+    //Requests Table
+    $scope.reversalStatusParams = new ngTableParams({
+      page: 1, //Show First page
+      count: 10 //count per page
+    }, {
+      total: 0, //length of data
+      getData: function($defer, params) {
+        //Ajax Request to API
+        $scope.getReversalStatus(params, $routeParams.uploadId, $routeParams.reconType)
+          .success(function(data, status, headers, config) {
+            var rData = {};
+            rData = data.payload;
+            var reversals = rData.content;
+            // console.log(reversals);
+            params.total(rData.totalElements);
+            //set New Data
+            $defer.resolve(reversals);
+          })
+          .error(function(data, status, headers, config) {
+            $scope.handleError(data, status, headers, config);
+          });
+      }
+    });
+  } else {
+    TokenStorage.clear();
+    $scope.showToast("Your Session has exprired. You have been redirected to the login page.");
+    $location.path('/login');
+  }
+  
+  //Show Menu Buttons
+  $rootScope.hamburgerAvailable = true;
+  $rootScope.menuAvailable = true;
 
   //Error Messages
   var redirectMsg = ". Your session has expired. You will now be redirected";
   var forbiddenMsg = ". You do not have permission to use this resource";
-
-  //Toast Position
-  $scope.toastPosition = {
-    bottom: false,
-    top: true,
-    left: false,
-    right: true
-  };
-
-  //Get Toast
-  $scope.getToastPosition = function() {
-    return Object.keys($scope.toastPosition)
-      .filter(function(pos) {
-        return $scope.toastPosition[pos];
-      })
-      .join(' ');
-  };
-
-  //Show Toast
-  $scope.showToast = function(message) {
-    $mdToast.show(
-      $mdToast.simple()
-      .content(message)
-      .position($scope.getToastPosition())
-      .hideDelay(5000)
-    );
-  };
-
-  //Alerts
-  $scope.alert = "";
-  $scope.showAlert = function(status, message) {
-    $mdDialog.show(
-      $mdDialog.alert()
-      .title("Error " + status)
-      .content(message)
-      .ariaLabel('Error Notification')
-      .ok('Ok')
-      // .targetEvent(ev)
-    );
-  };
-
-  //Error Handling
-  $scope.handleError = function(data, status, headers, config) {
-    var msg = data === null ? "Message Unavailable" : data.message;
-    if (status === 401) { //unauthorized
-      $scope.showAlert(status, msg + redirectMsg);
-      location.path('/login');
-    } else if (status === 403) { //forbidden
-      $scope.showAlert(status, msg + forbiddenMsg);
-    } else {
-      $scope.showAlert(status, msg);
-    }
-  };
 
   //Load Selected File Details
   $scope.loadFileDetails = function(uploadId, status, reconType) {
@@ -337,122 +385,23 @@ var ReconController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
   $scope.downloadFile = function() {
     $scope.getFile($routeParams.reconType, $routeParams.uploadId)
       .success(function(data, status, headers, config) {
-        file = new Blob([data], {
+        var fileData = new Blob([data], {
           // type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' //XLSX
           type: 'application/vnd.ms-excel; ' //XLS
         });
-        var fileURL = URL.createObjectURL(file);
+
         var fileName = $routeParams.reconType.toLowerCase() == 'c2b' ? "C2BReversals" : "B2CReversals";
-        // var anchor = angular.element('<a/>');
-        var anchor = angular.element('#fileDownload');
-        anchor.attr({
-          href: fileURL,
-          target: '_blank',
-          download: fileName
-        })[0].click();
+        var fileConfig = {
+          data: fileData,
+          filename: fileName
+        };
+        FileSaver.saveAs(fileConfig);
       })
       // download: fileName
       .error(function(data, status, headers, config) {
         $scope.handleError(data, status, headers, config);
       });
   };
-
-  //Upload Table
-  $scope.uploadParams = new ngTableParams({
-    page: 1, //Show First page
-    count: 10 //count per page
-  }, {
-    total: 0, //length of data
-    getData: function($defer, params) {
-      //Ajax Request to API
-      $scope.getUploads(params, $routeParams.reconType)
-        .success(function(data, status, headers, config) {
-          var rData = {};
-          rData = data.payload.content;
-          var uploads = rData;
-          params.total(rData.totalElements);
-          //set New Data
-          $defer.resolve(uploads);
-        })
-        .error(function(data, status, headers, config) {
-          $scope.handleError(data, status, headers, config);
-        });
-    }
-  });
-
-
-  //Recon File Table
-  $scope.reconParams = new ngTableParams({
-    page: 1, //Show First page
-    count: 10 //count per page
-  }, {
-    total: 0, //length of data
-    getData: function($defer, params) {
-      //Ajax Request to API
-      $scope.getRecons(params, $routeParams.uploadId, $routeParams.reconType)
-        .success(function(data, status, headers, config) {
-          var rData = {};
-          rData = data.payload;
-          var recons = rData.content;
-          console.log(recons);
-          params.total(rData.totalElements);
-          //set New Data
-          $defer.resolve(recons);
-        })
-        .error(function(data, status, headers, config) {
-          $scope.handleError(data, status, headers, config);
-        });
-    }
-  });
-
-
-  //Approval Table
-  $scope.requestsParams = new ngTableParams({
-    page: 1, //Show First page
-    count: 10 //count per page
-  }, {
-    total: 0, //length of data
-    getData: function($defer, params) {
-      //Ajax Request to API
-      $scope.getReconRequests(params, $routeParams.requestUploadId, $routeParams.reconType)
-        .success(function(data, status, headers, config) {
-          var rData = {};
-          rData = data.payload;
-          var requests = rData.content;
-          params.total(rData.totalElements);
-          //set New Data
-          $defer.resolve(requests);
-        })
-        .error(function(data, status, headers, config) {
-          $scope.handleError(data, status, headers, config);
-        });
-    }
-  });
-
-  //Requests Table
-  $scope.reversalStatusParams = new ngTableParams({
-    page: 1, //Show First page
-    count: 10 //count per page
-  }, {
-    total: 0, //length of data
-    getData: function($defer, params) {
-      //Ajax Request to API
-      $scope.getReversalStatus(params, $routeParams.uploadId, $routeParams.reconType)
-        .success(function(data, status, headers, config) {
-          var rData = {};
-          rData = data.payload;
-          var reversals = rData.content;
-          // console.log(reversals);
-          params.total(rData.totalElements);
-          //set New Data
-          $defer.resolve(reversals);
-        })
-        .error(function(data, status, headers, config) {
-          $scope.handleError(data, status, headers, config);
-        });
-    }
-  });
 };
-
 
 module.exports = ReconController;

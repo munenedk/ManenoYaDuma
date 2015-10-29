@@ -12,6 +12,9 @@
     document.createElement('ng:view');
     </script>
     <![endif]-->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
     <link rel="stylesheet" href="css/angular-material.min.css"/>
     <link rel="stylesheet" href="css/ng-table.css"/>
@@ -51,9 +54,9 @@
       </md-toolbar>
       <md-content>
       <md-list class="sideNav-list">
-      <md-list-item ng-repeat="item in menuItems" 
-      ng-show="item.visible" 
-      md-ink-ripple id="{{item.id}}" 
+      <md-list-item ng-repeat="item in menuItems"
+      ng-show="item.visible"
+      md-ink-ripple id="{{item.id}}"
       ng-style="item.active == true ? {'background':'#00456A'} : {'background':'white'}">
       <md-item-content>
       <a href="" ng-click="navigateTo(item.url,item.id)" ng-style="item.active == true ? {'color':'white'}:{'color':'{{item.ic_color}}'}">
@@ -82,5 +85,6 @@
     <script src="linked_scripts/Chart.min.js"></script>
     <script src="linked_scripts/angular-chart.js"></script>
     <script src="linked_scripts/loading-bar.min.js"></script>
+    <script src="linked_scripts/angular-file-saver.bundle.js"></script>
   </body>
 </html>

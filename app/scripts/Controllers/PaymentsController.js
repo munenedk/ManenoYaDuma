@@ -1,39 +1,8 @@
 /*jslint node: true */
 /* global angular: false */
-var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, $window, LoginService, BillingCompanyService, PaymentsService) {
-	//Get User menu based on roles
-	$scope.getUserMenu = LoginService.loadMenu();
-
-	//check authentication
-	var token = TokenStorage.retrieve();
-	$rootScope.authenticated = false;
-	$scope.isPaybillMaker = false;
-	$scope.isPaybillChecker = false;
-	if (token) {
-		token = JSON.parse(atob(token.split('.')[0]));
-		$rootScope.authenticated = true;
-		$rootScope.loggedInUser = token.usrName;
-		$scope.getUserMenu();
-
-		//Check if is Paybill Maker or checker
-		var authorities = token.authorities;
-		var auths = [];
-		for (var i in authorities) {
-			auths.push(authorities[i].authority);
-		}
-
-		//Evaluate Roles
-		$scope.isPaybillMaker = auths.indexOf('ROLE_PAYBILL_MAKER') > -1;
-		$scope.isPaybillChecker = auths.indexOf('ROLE_PAYBILL_CHECKER') > -1;
-	} else {
-		$location.path('/login');
-	}
-
-	//Show Menu Buttons
-	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
-
+var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, $window, LoginService, BillingCompanyService, PaymentsService,AlertUtils) {
 	//Inject Service Methods into scope
+	$scope.getUserMenu = LoginService.loadMenu();
 	$scope.getPayments = PaymentsService.getPayments();
 	$scope.getPayment = PaymentsService.getPaymentById();
 	$scope.getPaymentByMpesaTxCode = PaymentsService.getPaymentByMpesaTxCode();
@@ -43,74 +12,130 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 	$scope.confirmApproval = PaymentsService.approveRequest();
 	$scope.rejectApproval = PaymentsService.rejectRequest();
 	$scope.validateAccountNumber = BillingCompanyService.validateAccountNumber();
+	$scope.isSessionActive = TokenStorage.isSessionActive();
+	$scope.showToast = AlertUtils.showToast();
+	$scope.showAlert = AlertUtils.showAlert();
+	$scope.handleError = AlertUtils.handleError();
+
+	//Get user token
+	var token = TokenStorage.retrieve();
+
+	//Role Variable
+	$scope.isPaybillMaker = false;
+	$scope.isPaybillChecker = false;
+	$rootScope.authenticated = false;
+
+	//Check if there's an active session
+	if ($scope.isSessionActive(token) === true) {
+		var user = JSON.parse(atob(token.split('.')[0]));
+		$rootScope.authenticated = true;
+		$rootScope.loggedInUser = user.usrName;
+		$scope.getUserMenu();
+
+		//Check if is Paybill Maker or checker
+		var authorities = user.authorities;
+		var auths = [];
+		for (var i in authorities) {
+			auths.push(authorities[i].authority);
+		}
+
+		//Evaluate Roles
+		$scope.isPaybillMaker = auths.indexOf('ROLE_PAYBILL_MAKER') > -1;
+		$scope.isPaybillChecker = auths.indexOf('ROLE_PAYBILL_CHECKER') > -1;
+
+		//initialize payment
+		if ($routeParams.paymentId !== undefined) {
+			//Get Payment
+			$scope.getPayment($routeParams.paymentId)
+				.success(function(data, status, headers, config) {
+					$scope.payment = data.payload;
+				})
+				.error(function(data, status, headers, config) {
+					$scope.handleError(data, status, headers, config);
+				});
+		}
+
+		//Payments Table
+		$scope.tableParams = new ngTableParams({
+			page: 1, //Show First page
+			count: 10 //count per page
+		}, {
+			total: 0, //length of data
+			getData: function($defer, params) {
+				//Ajax Request to API
+				$scope.getPayments(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						var payments = rData.content;
+						params.total(rData.totalElements);
+						//set New Data
+						$defer.resolve(payments);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config);
+					});
+			}
+		});
+
+		//Pending Adjustments
+		$scope.txLogParams_pending = new ngTableParams({
+			page: 1, //Show First page
+			count: 10 //count per page
+		}, {
+			total: 0, //length of data
+			getData: function($defer, params) {
+				//Ajax Request to API
+				$scope.getPendingAdjustments(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						var txLogs = rData.content;
+						params.total(rData.totalElements);
+						//set New Data
+						$defer.resolve(txLogs);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config);
+					});
+			}
+		});
+
+		//Closed Adjustments
+		$scope.txLogParams_closed = new ngTableParams({
+			page: 1, //Show First page
+			count: 10 //count per page
+		}, {
+			total: 0, //length of data
+			getData: function($defer, params) {
+				//Ajax Request to API
+				$scope.getClosedAdjustments(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						var txLogs = rData.content;
+						params.total(rData.totalElements);
+						//set New Data
+						$defer.resolve(txLogs);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config);
+					});
+			}
+		});
+
+	} else {
+		TokenStorage.clear();
+		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
+		$location.path('/login');
+	}
+
+	//Show Menu Buttons
+	$rootScope.hamburgerAvailable = true;
+	$rootScope.menuAvailable = true;
 
 	//form
 	$scope.form = {};
-
-	//initialize payment
-	if ($routeParams.paymentId !== undefined) {
-		//Get Payment
-		$scope.getPayment($routeParams.paymentId)
-			.success(function(data, status, headers, config) {
-				$scope.payment = data.payload;
-			})
-			.error(function(data, status, headers, config) {
-				$scope.handleError(data, status, headers, config);
-			});
-	}
-
-	$scope.toastPosition = {
-		bottom: false,
-		top: true,
-		left: false,
-		right: true
-	};
-
-	//Get Toast
-	$scope.getToastPosition = function() {
-		return Object.keys($scope.toastPosition)
-			.filter(function(pos) {
-				return $scope.toastPosition[pos];
-			})
-			.join(' ');
-	};
-
-	//Show Toast
-	$scope.showToast = function(message) {
-		$mdToast.show(
-			$mdToast.simple()
-			.content(message)
-			.position($scope.getToastPosition())
-			.hideDelay(5000)
-		);
-	};
-
-	//Alerts
-	$scope.alert = "";
-	$scope.showAlert = function(status, message) {
-		$mdDialog.show(
-			$mdDialog.alert()
-			.title("Error " + status)
-			.content(message)
-			.ariaLabel('Error Notification')
-			.ok('Ok')
-			// .targetEvent(ev)
-		);
-	};
-
-	//Error Handling
-	$scope.handleError = function(data, status, headers, config) {
-		var msg = data === null ? "Message Unavailable" : data.message;
-		if (status === 401) { //unauthorized
-			$scope.showAlert(status, msg + redirectMsg);
-			location.path('/login');
-		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + forbiddenMsg);
-		} else {
-			$scope.showAlert(status, msg);
-		}
-	};
-
 
 	//Update Transaction
 	$scope.updateTx = function(payment) {
@@ -195,7 +220,6 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 			});
 	};
 
-
 	$scope.validateAccount = function(accNo) {
 		if (accNo !== null) {
 			if (accNo.length >= 10) {
@@ -224,77 +248,6 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 			$mdDialog.cancel();
 		};
 	}
-
-	//Payments Table
-	$scope.tableParams = new ngTableParams({
-		page: 1, //Show First page
-		count: 10 //count per page
-	}, {
-		total: 0, //length of data
-		getData: function($defer, params) {
-			//Ajax Request to API
-			$scope.getPayments(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					var payments = rData.content;
-					params.total(rData.totalElements);
-					//set New Data
-					$defer.resolve(payments);
-				})
-				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
-				});
-		}
-	});
-
-	//Pending Adjustments
-	$scope.txLogParams_pending = new ngTableParams({
-		page: 1, //Show First page
-		count: 10 //count per page
-	}, {
-		total: 0, //length of data
-		getData: function($defer, params) {
-			//Ajax Request to API
-			$scope.getPendingAdjustments(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					var txLogs = rData.content;
-					params.total(rData.totalElements);
-					//set New Data
-					$defer.resolve(txLogs);
-				})
-				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
-				});
-		}
-	});
-
-	//Closed Adjustments
-	$scope.txLogParams_closed = new ngTableParams({
-		page: 1, //Show First page
-		count: 10 //count per page
-	}, {
-		total: 0, //length of data
-		getData: function($defer, params) {
-			//Ajax Request to API
-			$scope.getClosedAdjustments(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					var txLogs = rData.content;
-					params.total(rData.totalElements);
-					//set New Data
-					$defer.resolve(txLogs);
-				})
-				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
-				});
-		}
-	});
-
-
 };
 
 module.exports = PaymentsController;

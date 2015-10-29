@@ -1,28 +1,118 @@
 /*jslint node: true */
 /* global angular: false */
-var MtsSalesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, FileUploader, dumaSettings, $routeParams, MtsSalesService,LoginService) {
- $scope.getUserMenu = LoginService.loadMenu();
-	//check authentication
+var MtsSalesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, FileUploader, dumaSettings, FileSaver, Blob, $routeParams, MtsSalesService, LoginService,AlertUtils) {
+	//Inject Service methods to scope
+	$scope.getUserMenu = LoginService.loadMenu();
+	$scope.getUploads = MtsSalesService.listUploads();
+	$scope.getFileDetails = MtsSalesService.fileDetails();
+	$scope.getOpenedAccounts = MtsSalesService.openedAccounts();
+	$scope.getFile = MtsSalesService.downloadFile();
+	$scope.isSessionActive = TokenStorage.isSessionActive();
+	$scope.showToast = AlertUtils.showToast();
+	$scope.showAlert = AlertUtils.showAlert();
+	$scope.handleError = AlertUtils.handleError();
+
+	//Get user token
 	var token = TokenStorage.retrieve();
 	$rootScope.authenticated = false;
-	if (token) {
-		token = JSON.parse(atob(token.split('.')[0]));
+
+	//Check if there's active session
+	if ($scope.isSessionActive(token) === true) {
+		var user = JSON.parse(atob(token.split('.')[0]));
 		$rootScope.authenticated = true;
-		$rootScope.loggedInUser = token.usrName;
+		$rootScope.loggedInUser = user.usrName;
 		$scope.getUserMenu();
+
+		//Initialize Date Pickers
+		angular.element(".datepicker").pickadate({
+			selectMonths: true,
+			selectYears: 15
+		});
+
+		//Uploads Table
+		$scope.uploadParams = new ngTableParams({
+			page: 1, //Show First page
+			count: 10 //count per page
+		}, {
+			total: 0, //length of data
+			getData: function($defer, params) {
+				//Ajax Request to API
+				$scope.getUploads(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						var uploads = rData.content;
+						console.log(uploads);
+						params.total(rData.totalElements);
+						//set New Data
+						$defer.resolve(uploads);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config);
+					});
+			}
+		});
+
+		//Upload File Details Table
+		$scope.fileDetailsParams = new ngTableParams({
+			page: 1, //Show First page
+			count: 10 //count per page
+		}, {
+			total: 0, //length of data
+			getData: function($defer, params) {
+				//Ajax Request to API
+				$scope.getFileDetails(params, $routeParams.uploadId)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						var fileDetails = rData.content;
+						console.log(fileDetails);
+						params.total(rData.totalElements);
+						//set New Data
+						$defer.resolve(fileDetails);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config);
+					});
+			}
+		});
+
+		//Opened Accounts File Details Table
+		$scope.openedAccountsParams = new ngTableParams({
+			page: 1, //Show First page
+			count: 10 //count per page
+		}, {
+			total: 0, //length of data
+			getData: function($defer, params) {
+				$scope.showSearchProgress = true;
+				//Ajax Request to API
+				$scope.getOpenedAccounts(params, $scope.staffId, $scope.dateRange)
+					.success(function(data, status, headers, config) {
+						$scope.showSearchProgress = false;
+						var rData = {};
+						rData = data.payload;
+						// console.log(data);
+						var fileDetails = rData.content;
+						params.total(rData.totalElements);
+						//set New Data
+						$defer.resolve(fileDetails);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.showSearchProgress = false;
+						$scope.handleError(data, status, headers, config);
+					});
+			}
+		});
+
 	} else {
+		TokenStorage.clear();
+		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
 		$location.path('/login');
 	}
 
 	//Menu
 	$rootScope.hamburgerAvailable = true;
 	$rootScope.menuAvailable = true;
-
-	//Inject Service methods to scope
-	$scope.getUploads = MtsSalesService.listUploads();
-	$scope.getFileDetails = MtsSalesService.fileDetails();
-	$scope.getOpenedAccounts = MtsSalesService.openedAccounts();
-	$scope.getFile = MtsSalesService.downloadFile();
 
 	//Show upload div
 	$scope.showFileUpload = true;
@@ -36,64 +126,6 @@ var MtsSalesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 	//Init Data
 	$scope.staffId = "";
 	$scope.dateRange = "";
-
-	//Toast Position
-	$scope.toastPosition = {
-		bottom: false,
-		top: true,
-		left: false,
-		right: true
-	};
-
-	//Get Toast
-	$scope.getToastPosition = function() {
-		return Object.keys($scope.toastPosition)
-			.filter(function(pos) {
-				return $scope.toastPosition[pos];
-			})
-			.join(' ');
-	};
-
-	//Show Toast
-	$scope.showToast = function(message) {
-		$mdToast.show(
-			$mdToast.simple()
-			.content(message)
-			.position($scope.getToastPosition())
-			.hideDelay(5000)
-		);
-	};
-
-	//Alerts
-	$scope.alert = "";
-	$scope.showAlert = function(status, message) {
-		var title = status == 200 ? 'Success':'Error'+status;
-		$mdDialog.show(
-			$mdDialog.alert()
-			.title(title)
-			.content(message)
-			.ariaLabel('Alert Notification')
-			.ok('Ok')
-			// .targetEvent(ev)
-		);
-	};
-
-	//Error messages
-	var redirectMsg = ". Your session has expired. You will now be redirected";
-	var forbiddenMsg = ". You do not have permission to use this resource";
-
-	//Error Handling
-	$scope.handleError = function(data, status, headers, config) {
-		var msg = data === null ? "Message Unavailable" : data.message;
-		if (status === 401) { //unauthorized
-			$scope.showAlert(status, msg + redirectMsg);
-			location.path('/home');
-		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + forbiddenMsg);
-		} else {
-			$scope.showAlert(status, msg);
-		}
-	};
 
 	//File Uploader
 	var backendUrl = dumaSettings.backendUrl + "mtsSales/upload";
@@ -146,7 +178,7 @@ var MtsSalesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		$scope.showFileUpload = true;
 		$scope.showFileProcessing = false;
 		// $scope.showToast(response.message);
-		$scope.showAlert(status,response.message);
+		$scope.showAlert(status, response.message);
 	};
 	uploader.onErrorItem = function(fileItem, response, status, headers) {
 		$scope.showFileUpload = true;
@@ -175,23 +207,18 @@ var MtsSalesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 
 	//Donwload File
 	$scope.downloadFile = function() {
-		$scope.getFile($scope.staffId,$scope.dateRange)
+		$scope.getFile($scope.staffId, $scope.dateRange)
 			.success(function(data, status, headers, config) {
-				file = new Blob([data], {
-					// type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' //XLSX
-					type: 'application/vnd.ms-excel; ' //XLS
+				var fileData = new Blob([data], {
+					type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;' //XLSX
+						//type: 'application/vnd.ms-excel;' //XLS
 				});
-				var fileURL = URL.createObjectURL(file);
-				var fileName = "NewAccounts";
-				// var anchor = angular.element('<a/>');
-				var anchor = angular.element('#fileDownload');
-				anchor.attr({
-					href: fileURL,
-					target: '_blank',
-					download: fileName
-				})[0].click();
+				var fileConfig = {
+					"data": fileData,
+					"filename": "NewAccounts.xlsx"
+				};
+				FileSaver.saveAs(fileConfig);
 			})
-			// download: fileName
 			.error(function(data, status, headers, config) {
 				$scope.handleError(data, status, headers, config);
 			});
@@ -229,83 +256,6 @@ var MtsSalesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		$location.path("/mk-ambassadors-file-details/" + uploadId);
 	};
 
-	//Uploads Table
-	$scope.uploadParams = new ngTableParams({
-		page: 1, //Show First page
-		count: 10 //count per page
-	}, {
-		total: 0, //length of data
-		getData: function($defer, params) {
-			//Ajax Request to API
-			$scope.getUploads(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					var uploads = rData.content;
-					console.log(uploads);
-					params.total(rData.totalElements);
-					//set New Data
-					$defer.resolve(uploads);
-				})
-				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
-				});
-		}
-	});
-
-
-	//Upload File Details Table
-	$scope.fileDetailsParams = new ngTableParams({
-		page: 1, //Show First page
-		count: 10 //count per page
-	}, {
-		total: 0, //length of data
-		getData: function($defer, params) {
-			//Ajax Request to API
-			$scope.getFileDetails(params, $routeParams.uploadId)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					var fileDetails = rData.content;
-					console.log(fileDetails);
-					params.total(rData.totalElements);
-					//set New Data
-					$defer.resolve(fileDetails);
-				})
-				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
-				});
-		}
-	});
-
-	//Opened Accounts File Details Table
-	$scope.openedAccountsParams = new ngTableParams({
-		page: 1, //Show First page
-		count: 10 //count per page
-	}, {
-		total: 0, //length of data
-		getData: function($defer, params) {
-			$scope.showSearchProgress = true;
-			//Ajax Request to API
-			$scope.getOpenedAccounts(params, $scope.staffId, $scope.dateRange)
-				.success(function(data, status, headers, config) {
-					$scope.showSearchProgress = false;
-					var rData = {};
-					rData = data.payload;
-					// console.log(data);
-					var fileDetails = rData.content;
-					params.total(rData.totalElements);
-					//set New Data
-					$defer.resolve(fileDetails);
-				})
-				.error(function(data, status, headers, config) {
-					$scope.showSearchProgress = false;
-					$scope.handleError(data, status, headers, config);
-				});
-		}
-	});
 };
-
-
 
 module.exports = MtsSalesController;

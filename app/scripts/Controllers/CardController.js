@@ -1,22 +1,36 @@
 /*jslint node: true */
 /* global angular: false */
-var CardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, CardService) {
-	//Get User menu based on roles
+var CardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, CardService, AlertUtils) {
+	//Inject service methods
 	$scope.getUserMenu = LoginService.loadMenu();
+	$scope.saveCard = CardService.save();
+	$scope.getCard = CardService.getCard();
+	$scope.updateCard = CardService.updateCard();
+	$scope.getCards = CardService.listCards();
+	$scope.approveRequest = CardService.approveRequest();
+	$scope.rejectRequest = CardService.rejectRequest();
+	$scope.isSessionActive = TokenStorage.isSessionActive();
+	$scope.showToast = AlertUtils.showToast();
+	$scope.showAlert = AlertUtils.showAlert();
+	$scope.handleError = AlertUtils.handleError();
 
-	//check authentication
+	//Get User Token
 	var token = TokenStorage.retrieve();
+
+	//User Roles Variables
 	$rootScope.authenticated = false;
 	$scope.isPaybillChecker = false;
 	$rootScope.authenticated = false;
-	if (token) {
-		token = JSON.parse(atob(token.split('.')[0]));
+
+
+	if ($scope.isSessionActive(token) === true) {
+		var user = JSON.parse(atob(token.split('.')[0]));
 		$rootScope.authenticated = true;
-		$rootScope.loggedInUser = token.usrName;
+		$rootScope.loggedInUser = user.usrName;
 		$scope.getUserMenu();
 
 		//Check if is Paybill Maker or checker
-		var authorities = token.authorities;
+		var authorities = user.authorities;
 		var auths = [];
 		for (var i in authorities) {
 			// console.log(authorities[i].authority);
@@ -27,7 +41,44 @@ var CardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 		$scope.isPaybillMaker = auths.indexOf('ROLE_PAYBILL_MAKER') > -1;
 		$scope.isPaybillChecker = auths.indexOf('ROLE_PAYBILL_CHECKER') > -1;
 
+		//initialize Card
+		if ($routeParams.cardId !== undefined) {
+			//Get Company
+			$scope.getCard($routeParams.cardId)
+				.success(function(data, status, headers, config) {
+					$scope.card = data.payload;
+					$scope.showToast(data.message);
+				})
+				.error(function(data, status, headers, config) {
+					$scope.handleError(data, status, headers, config);
+				});
+		}
+
+		//Card Table
+		$scope.tableParams = new ngTableParams({
+			page: 1, //Show First page
+			count: 10 //count per page
+		}, {
+			total: 0, //length of data
+			getData: function($defer, params) {
+				//Ajax Request to API
+				$scope.getCards(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						var cards = rData.content;
+						params.total(rData.totalElements);
+						//set New Data
+						$defer.resolve(cards);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config);
+					});
+			}
+		});
 	} else {
+		TokenStorage.clear();
+		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
 		$location.path('/login');
 	}
 
@@ -35,82 +86,8 @@ var CardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	$rootScope.hamburgerAvailable = true;
 	$rootScope.menuAvailable = true;
 
-	//Inject service methods
-	$scope.saveCard = CardService.save();
-	$scope.getCard = CardService.getCard();
-	$scope.updateCard = CardService.updateCard();
-	$scope.getCards = CardService.listCards();
-	$scope.approveRequest = CardService.approveRequest();
-	$scope.rejectRequest = CardService.rejectRequest();
-
 	//Form
 	$scope.form = {};
-
-	//initialize Card
-	if ($routeParams.cardId !== undefined) {
-		//Get Company
-		$scope.getCard($routeParams.cardId)
-			.success(function(data, status, headers, config) {
-				$scope.card = data.payload;
-				$scope.showToast(data.message);
-			})
-			.error(function(data, status, headers, config) {
-				$scope.handleError(data, status, headers, config);
-			});
-	}
-
-
-	$scope.toastPosition = {
-		bottom: false,
-		top: true,
-		left: false,
-		right: true
-	};
-
-	//Get Toast
-	$scope.getToastPosition = function() {
-		return Object.keys($scope.toastPosition)
-			.filter(function(pos) {
-				return $scope.toastPosition[pos];
-			})
-			.join(' ');
-	};
-
-	//Show Toast
-	$scope.showToast = function(message) {
-		$mdToast.show(
-			$mdToast.simple()
-			.content(message)
-			.position($scope.getToastPosition())
-			.hideDelay(5000)
-		);
-	};
-
-	//Alerts
-	$scope.alert = "";
-	$scope.showAlert = function(status, message) {
-		$mdDialog.show(
-			$mdDialog.alert()
-			.title("Error " + status)
-			.content(message)
-			.ariaLabel('Error Notification')
-			.ok('Ok')
-			// .targetEvent(ev)
-		);
-	};
-
-	//Error Handling
-	$scope.handleError = function(data, status, headers, config) {
-		var msg = data === null ? "Message Unavailable" : data.message;
-		if (status === 401) { //unauthorized
-			$scope.showAlert(status, msg + redirectMsg);
-			location.path('/login');
-		} else if (status === 403) { //forbidden
-			$scope.showAlert(status, msg + ". You Are Not Authorized To Use This Resource.");
-		} else {
-			$scope.showAlert(status, msg);
-		}
-	};
 
 	//Save Card
 	$scope.save = function(card) {
@@ -140,35 +117,9 @@ var CardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 		}
 	};
 
-
-
 	$scope.resetForm = function() {
 		$scope.card = {};
 	};
-
-
-	//Card Table
-	$scope.tableParams = new ngTableParams({
-		page: 1, //Show First page
-		count: 10 //count per page
-	}, {
-		total: 0, //length of data
-		getData: function($defer, params) {
-			//Ajax Request to API
-			$scope.getCards(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					var cards = rData.content;
-					params.total(rData.totalElements);
-					//set New Data
-					$defer.resolve(cards);
-				})
-				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config);
-				});
-		}
-	});
 
 	//Approve card
 	$scope.approveCard = function(ev, card) {
@@ -217,7 +168,6 @@ var CardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 			// $scope.status = 'You decided to keep your debt.';
 		});
 	};
-
 
 };
 

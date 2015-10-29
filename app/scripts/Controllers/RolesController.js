@@ -1,17 +1,99 @@
 /*jslint node: true */
 /* global angular: false */
 
-var RolesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, RolesService, PermissionsService, TokenStorage, $location,LoginService) {
+var RolesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, RolesService, PermissionsService, TokenStorage, $location, LoginService, AlertUtils) {
+	//Inject Services To Scope
 	$scope.getUserMenu = LoginService.loadMenu();
+	$scope.getRoles = RolesService.list();
+	$scope.getRole = RolesService.find();
+	$scope.saveRole = RolesService.save();
+	$scope.getPermissions = PermissionsService.list();
+	$scope.isSessionActive = TokenStorage.isSessionActive();
+	$scope.showToast = AlertUtils.showToast();
+	$scope.showAlert = AlertUtils.showAlert();
+	$scope.handleError = AlertUtils.handleError();
+
+
 	//check authentication
 	var token = TokenStorage.retrieve();
 	$rootScope.authenticated = false;
-	if (token) {
-		token = JSON.parse(atob(token.split('.')[0]));
+
+	//Tabs
+	$scope.roleDetailsTabDisabled = false;
+	$scope.permissionTabDisabled = true;
+	$scope.selectedTab = 0;
+
+	//Selected Permissions
+	$scope.selectedPermissions = [];
+
+	if ($scope.isSessionActive(token) === true) {
+		var user = JSON.parse(atob(token.split('.')[0]));
 		$rootScope.authenticated = true;
-		$rootScope.loggedInUser = token.usrName;
+		$rootScope.loggedInUser = user.usrName;
 		$scope.getUserMenu();
+
+		//Roles Table
+		$scope.tableParams = new ngTableParams({
+			page: 1, //Show first page
+			count: 10, //count per page
+		}, {
+			total: 0,
+			getData: function($defer, params) {
+				//ajax request to api
+				$scope.getRoles(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						// console.log(JSON.stringify(rData));
+
+						var roles = rData.content;
+
+						params.total(rData.totalElements);
+						//set New data
+						$defer.resolve(roles);
+					})
+					.error(function(data, status, headers, config) {
+						var msg = "N/A";
+						if (data !== null) {
+							msg = data.error + " : " + data.message;
+						}
+						$scope.showAlert(status, msg);
+					});
+			}
+		});
+
+		//Permissions Table
+		$scope.permissionTableParams = new ngTableParams({
+			page: 1, //Show first page
+			count: 10, //count per page
+		}, {
+			total: 0,
+			getData: function($defer, params) {
+				//ajax request to api
+				$scope.getPermissions(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						// console.log(JSON.stringify(rData));
+
+						var permissions = rData.content;
+
+						params.total(rData.totalElements);
+						//set New data
+						$defer.resolve(permissions);
+					})
+					.error(function(data, status, headers, config) {
+						var msg = "N/A";
+						if (data !== null) {
+							msg = data.error + " : " + data.message;
+						}
+						$scope.showAlert(status, msg);
+					});
+			}
+		});
 	} else {
+		TokenStorage.clear();
+		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
 		$location.path('/login');
 	}
 
@@ -19,60 +101,8 @@ var RolesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 	$rootScope.hamburgerAvailable = true;
 	$rootScope.menuAvailable = true;
 
-	//Tabs
-	$scope.roleDetailsTabDisabled = false;
-	$scope.permissionTabDisabled = true;
-	$scope.selectedTab = 0;
-
 	//Role Form
 	$scope.form = {};
-
-	//Selected Permissions
-	$scope.selectedPermissions = [];
-
-	//Inject Services To Scope
-	$scope.getRoles = RolesService.list();
-	$scope.getRole = RolesService.find();
-	$scope.saveRole = RolesService.save();
-	$scope.getPermissions = PermissionsService.list();
-
-
-	//Toast Position
-	$scope.toastPosition = {
-		bottom: false,
-		top: true,
-		left: false,
-		right: true
-	};
-
-	//Get Toast
-	$scope.getToastPosition = function() {
-		return Object.keys($scope.toastPosition).filter(function(pos) {
-			return $scope.toastPosition[pos];
-		}).join(' ');
-	};
-
-	//Show Toast
-	$scope.showToast = function(message) {
-		$mdToast.show(
-			$mdToast.simple()
-			.content(message)
-			.position($scope.getToastPosition())
-			.hideDelay(5000));
-	};
-
-	//Alerts
-	$scope.alert = "";
-	$scope.showAlert = function(status, message) {
-		$mdDialog.show(
-			$mdDialog.alert()
-			.title("Error " + status)
-			.content(message)
-			.ariaLabel('Error Notification')
-			.ok('Ok')
-			// .targetEvent(ev)
-		);
-	};
 
 	$scope.setRole = function(role) {
 		if ($scope.form.roleForm.$valid) {
@@ -104,66 +134,6 @@ var RolesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 			});
 	};
 
-	//Roles Table
-	$scope.tableParams = new ngTableParams({
-		page: 1, //Show first page
-		count: 10, //count per page
-	}, {
-		total: 0,
-		getData: function($defer, params) {
-			//ajax request to api
-			$scope.getRoles(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					// console.log(JSON.stringify(rData));
-
-					var roles = rData.content;
-
-					params.total(rData.totalElements);
-					//set New data
-					$defer.resolve(roles);
-				})
-				.error(function(data, status, headers, config) {
-					var msg = "N/A";
-					if (data !== null) {
-						msg = data.error + " : " + data.message;
-					}
-					$scope.showAlert(status, msg);
-				});
-		}
-	});
-
-	//Permissions Table
-	$scope.permissionTableParams = new ngTableParams({
-		page: 1, //Show first page
-		count: 10, //count per page
-	}, {
-		total: 0,
-		getData: function($defer, params) {
-			//ajax request to api
-			$scope.getPermissions(params)
-				.success(function(data, status, headers, config) {
-					var rData = {};
-					rData = data.payload;
-					// console.log(JSON.stringify(rData));
-
-					var permissions = rData.content;
-
-					params.total(rData.totalElements);
-					//set New data
-					$defer.resolve(permissions);
-				})
-				.error(function(data, status, headers, config) {
-					var msg = "N/A";
-					if (data !== null) {
-						msg = data.error + " : " + data.message;
-					}
-					$scope.showAlert(status, msg);
-				});
-		}
-	});
-
 	$scope.toggleSelectedPermission = function(permission) {
 		var idx = $scope.selectedPermissions.indexOf(permission);
 
@@ -185,7 +155,6 @@ var RolesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 		$scope.roleDetailsTabDisabled = false;
 		$scope.selectedTab = 0;
 	};
-
 };
 
 module.exports = RolesController;

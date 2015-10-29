@@ -57,6 +57,7 @@ var MtsSalesService = function($http, dumaSettings) {
 			url: apiUrl + "/accounts/download/",
 			// headers: {
 			// 	'Content-Type': 'application/json',
+			// 	'Accept':'application/vnd.ms-excel'
 			// },
 			params: {
 				"staffId": staffId,

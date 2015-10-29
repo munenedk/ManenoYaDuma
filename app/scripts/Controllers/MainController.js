@@ -199,6 +199,7 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 
 
 	$scope.logout = function() {
+		$scope.selectedElement = "";
 		TokenStorage.clear();
 		$location.path('/login');
 	};
