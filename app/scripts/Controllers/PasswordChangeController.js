@@ -1,6 +1,6 @@
 /*jslint node: true */
 /* global angular: false */
-var PasswordChangeController = function($scope, $rootScope, $mdDialog, $mdToast, dumaSettings, PasswordChangeService, TokenStorage, $location, $routeParams, AlertUtils) {
+var PasswordChangeController = function($scope, $rootScope, $mdDialog, $mdToast, dumaSettings, PasswordChangeService, TokenStorage, $location, $routeParams, LoginService, AlertUtils) {
   //Inject service methods to scope
   $scope.submitPassword = PasswordChangeService.changePassword();
   $scope.passwordReset = PasswordChangeService.resetPassword();
@@ -15,6 +15,7 @@ var PasswordChangeController = function($scope, $rootScope, $mdDialog, $mdToast,
     $rootScope.authenticated = false;
     if ($scope.isSessionActive(token) === true) {
       var usr = JSON.parse(atob(token.split('.')[0]));
+      console.log(JSON.stringify(usr));
       $rootScope.authenticated = true;
       $rootScope.loggedInUser = usr.usrName;
 
@@ -53,6 +54,8 @@ var PasswordChangeController = function($scope, $rootScope, $mdDialog, $mdToast,
       } else {
         $scope.showAlert('100', "Password Mismatch");
       }
+    } else {
+      AlertUtils.showAlert("03", "Fill Out Missing Fields");
     }
   };
 

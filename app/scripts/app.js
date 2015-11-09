@@ -89,9 +89,9 @@ app.controller('MtnPaymentsController', ['$scope', '$rootScope', '$mdDialog', '$
 
 //Constants
 app.constant('dumaSettings', {
-	"backendUrl": "http://localhost:8282/api/v1/",
+	// "backendUrl": "http://localhost:8282/api/v1/",
 	// "backendUrl": "http://172.16.17.191:8282/api/v1/",
-	// "backendUrl": "http://172.17.74.91:8282/api/v1/",
+	"backendUrl": "http://172.17.74.91:8282/api/v1/",
 
 	/****S ession Timeout *************/
 	"session_timeout": 1800000

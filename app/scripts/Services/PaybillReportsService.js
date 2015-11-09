@@ -40,6 +40,16 @@ var PaybillReportsService = function($http, dumaSettings) {
 		});
 	};
 
+	// Lipa Karo Report
+	var getLipaKaroReport = function(searchParams){
+		return $http({
+			method:"GET",
+			url:apiUrl+"/lipakaro",
+			responseType: "arraybuffer",
+			data:JSON.stringify(searchParams)
+		});
+	};
+
 	return {
 		getBizNos: function() {
 			return getBusinessNumbers;
@@ -49,6 +59,9 @@ var PaybillReportsService = function($http, dumaSettings) {
 		},
 		downloadReport: function() {
 			return downloadReport;
+		},
+		getLipaKaroReport:function(){
+			return getLipaKaroReport;
 		}
 	};
 

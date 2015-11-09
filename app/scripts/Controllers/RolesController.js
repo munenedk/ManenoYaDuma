@@ -13,7 +13,6 @@ var RolesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 	$scope.showAlert = AlertUtils.showAlert();
 	$scope.handleError = AlertUtils.handleError();
 
-
 	//check authentication
 	var token = TokenStorage.retrieve();
 	$rootScope.authenticated = false;

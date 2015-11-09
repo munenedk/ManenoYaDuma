@@ -1,12 +1,13 @@
 /*jslint node: true */
 /* global angular: false */
 
-var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, FileSaver, Blob, LoginService, $window, PaybillReportsService,AlertUtils) {
+var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, FileSaver, Blob, LoginService, $window, PaybillReportsService, AlertUtils) {
 	//Inject Service Methods into scope
 	$scope.getUserMenu = LoginService.loadMenu();
 	$scope.getBusinessNumbers = PaybillReportsService.getBizNos();
 	$scope.getReport = PaybillReportsService.getReport();
 	$scope.downloadReport = PaybillReportsService.downloadReport();
+	$scope.getLipaKaroReport = PaybillReportsService.getLipaKaroReport();
 	$scope.isSessionActive = TokenStorage.isSessionActive();
 	$scope.showToast = AlertUtils.showToast();
 	$scope.showAlert = AlertUtils.showAlert();
@@ -85,7 +86,7 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 						$scope.showSearchProgress = false;
 						$scope.showAlert(status, "No Report Available For Given Parameters");
 					});
-			} else { //PDF or EXCEL
+			} else if (searchParams.format == 'pdf' || searchParams.format == 'xls') { //PDF or EXCEL
 				var format = searchParams.format == 'pdf' ? 'application/pdf;' : 'application/vnd.ms-excel;';
 				$scope.downloadReport(searchParams)
 					.success(function(data, status, headers, config) {
@@ -97,6 +98,24 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 						var fileConfig = {
 							data: fileData,
 							filename: 'C2BReport.' + searchParams.format
+						};
+						FileSaver.saveAs(fileConfig);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.showSearchProgress = false;
+						$scope.showAlert(status, "No Report Available For Given Parameters");
+					});
+			} else { //Lipa Karo
+				$scope.getLipaKaroReport(searchParams)
+					.success(function(data, status, headers, config) {
+						$scope.showSearchProgress = false;
+						$scope.showToast("Report Generated Successfully");
+						var fileData = new Blob([data], {
+							type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;"
+						});
+						var fileConfig = {
+							data: fileData,
+							filename: 'C2BReport.xlsx'
 						};
 						FileSaver.saveAs(fileConfig);
 					})
