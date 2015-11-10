@@ -1,9 +1,10 @@
 /*jslint node: true */
 /* global angular: false */
-var MtsPaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, LoginService, MtnPaymentsService, AlertUtils) {
+var MtsPaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, LoginService, MtnPaymentsService, FileSaver, Blob, AlertUtils) {
 	//Inject service methods into scope
 	$scope.getUserMenu = LoginService.loadMenu();
 	$scope.getPayments = MtnPaymentsService.getPayments();
+	$scope.downloadPayments = MtnPaymentsService.downloadPayments();
 	$scope.isSessionActive = TokenStorage.isSessionActive();
 	$scope.showToast = AlertUtils.showToast();
 	$scope.showAlert = AlertUtils.showAlert();
@@ -18,6 +19,26 @@ var MtsPaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ng
 		$rootScope.authenticated = true;
 		$rootScope.loggedInUser = user.usrName;
 		$scope.getUserMenu();
+
+		//Download File
+		$scope.downloadFile = function() {
+			var filter = $scope.tableParams.$params.filter;
+			console.log(filter);
+			$scope.downloadPayments(filter)
+				.success(function(data, status, headers, config) {
+					var fileData = new Blob([data], {
+						type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;"
+					});
+					var fileConfig = {
+						data: fileData,
+						filename: 'MTNReport.xlsx'
+					};
+					FileSaver.saveAs(fileConfig);
+				})
+				.error(function(data, status, headers, config) {
+					$scope.showAlert(status, "No Report Available For Given Parameters");
+				});
+		};
 
 		//MTN Payments
 		$scope.tableParams = new ngTableParams({

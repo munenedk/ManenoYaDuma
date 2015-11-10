@@ -18,10 +18,24 @@ var MtnPaymentsService = function($http, dumaSettings) {
 		});
 	};
 
+	var downloadPayments = function(filter) {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/download",
+			responseType: "arraybuffer",
+			params: {
+				"filter": filter
+			}
+		});
+	};
+
 
 	return {
 		getPayments: function() {
 			return getPayments;
+		},
+		downloadPayments: function() {
+			return downloadPayments;
 		}
 	};
 

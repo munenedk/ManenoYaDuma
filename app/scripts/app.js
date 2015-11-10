@@ -85,13 +85,13 @@ app.controller('BillingCompanyController', ['$scope', '$rootScope', '$mdDialog',
 app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'CardService', 'AlertUtils', CardController]);
 app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', '$window', 'LoginService', 'BillingCompanyService', 'PaymentsService', 'AlertUtils', PaymentsController]);
 app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'FileSaver', 'Blob', 'LoginService', '$window', 'PaybillReportsService', 'AlertUtils', PaybillReportsController]);
-app.controller('MtnPaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'MtnPaymentsService', 'AlertUtils', MtnPaymentsController]);
+app.controller('MtnPaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'MtnPaymentsService', 'FileSaver', 'Blob', 'AlertUtils', MtnPaymentsController]);
 
 //Constants
 app.constant('dumaSettings', {
-	// "backendUrl": "http://localhost:8282/api/v1/",
+	"backendUrl": "http://localhost:8282/api/v1/",
 	// "backendUrl": "http://172.16.17.191:8282/api/v1/",
-	"backendUrl": "http://172.17.74.91:8282/api/v1/",
+	// "backendUrl": "http://172.17.74.91:8282/api/v1/",
 
 	/****S ession Timeout *************/
 	"session_timeout": 1800000
