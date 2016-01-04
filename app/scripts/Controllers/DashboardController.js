@@ -1,12 +1,14 @@
 /*jslint node: true */
 /* global angular: false */
-var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, dumaSettings, DashboardService, LoginService,AlertUtils) {
+var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, dumaSettings, DashboardService, LoginService, AlertUtils) {
 	//Inject Service methods to scope
 	$scope.getUserMenu = LoginService.loadMenu();
 	$scope.getTopAmbassadors = DashboardService.topAmbassadors();
 	$scope.getTopRegions = DashboardService.topRegions();
 	$scope.getTxStatus = DashboardService.getTxStatus();
 	$scope.getTxTotals = DashboardService.getTxTotals();
+
+	$scope.getThirdPartyTxTotals = DashboardService.getThirdPartyTxTotals();
 	$scope.isSessionActive = TokenStorage.isSessionActive();
 	$scope.showToast = AlertUtils.showToast();
 	$scope.showAlert = AlertUtils.showAlert();
@@ -41,9 +43,21 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 
 	};
 
+	//Third Party Totals chart variables
+	$scope.thirdPartyTxTotalLabels = [];
+	$scope.thirdPartyTxTotalData = [];
+	$scope.thirdPartyTxTotalSeries = ["Total"];
+	$scope.thirdPartyTxTotalColours = ["#00CC00"];
+	$scope.thirdPartyTxTotalOptions = {
+		scaleLabel: "<%=Number(value).toLocaleString('en')%>",
+		multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= Number(value).toLocaleString('en') %>"
+
+	};
+
 	//Dashboard Selectors
 	$scope.showMobiSalesDashboard = false;
 	$scope.showPaybillDashboard = false;
+	$scope.showThirdPartyDashboard = false;
 
 	//Get user token
 	var token = TokenStorage.retrieve();
@@ -57,6 +71,7 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 
 		var mobiRoles = ["ROLE_MTS_ADMINISTRATOR", "ROLE_MTS_SALES_MANAGER", "ROLE_MK_AMBASSADOR", "ROLE_MOBI_DSR", "ROLE_MOBI_STAFF"];
 		var paybillRoles = ["ROLE_PAYBILL_MAKER", "ROLE_PAYBILL_CHECKER", "ROLE_PAYBILL_AUDITOR", "ROLE_ADMINISTRATOR"];
+		var thirdPartyRoles = ["ROLE_BILLER_USER"];
 
 		var auths = user.authorities;
 
@@ -69,6 +84,11 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 			//Evaluate Paybill Roles
 			if (paybillRoles.indexOf(auths[i].authority) > -1) {
 				$scope.showPaybillDashboard = true;
+			}
+
+			//Evaluatute Third Party Roles
+			if (thirdPartyRoles.indexOf(auths[i].authority) > -1) {
+				$scope.showThirdPartyDashboard = true;
 			}
 		}
 
@@ -150,6 +170,25 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 					$scope.handleError(data, status, headers, config);
 				});
 
+		}
+
+		// Populate Third Party Dashboard
+		if ($scope.showThirdPartyDashboard === true) {
+			//Get Third Party Transaction Totals Summary
+			$scope.getThirdPartyTxTotals()
+				.success(function(data, status, headers, config) {
+					var res = data.payload;
+					var amountArray = [];
+					for (var i in res) {
+						$scope.thirdPartyTxTotalLabels.push(res[i].tranDate);
+						var amount = Number(res[i].amount);
+						amountArray.push(amount);
+					}
+					$scope.thirdPartyTxTotalData.push(amountArray);
+				})
+				.error(function(data, status, headers, config) {
+					$scope.handleError(data, status, headers, config);
+				});
 		}
 	} else {
 		TokenStorage.clear();

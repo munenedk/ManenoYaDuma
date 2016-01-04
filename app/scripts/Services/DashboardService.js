@@ -45,6 +45,17 @@ var DashboardService = function($http, dumaSettings) {
 		});
 	};
 
+	//Get Third Party Tx Total  Summary
+	var getThirdPartyTxTotals = function() {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/thirdPartyTxTotals",
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+	};
+
 
 	//Return Values
 	return {
@@ -59,6 +70,9 @@ var DashboardService = function($http, dumaSettings) {
 		},
 		getTxTotals: function() {
 			return getTxTotals;
+		},
+		getThirdPartyTxTotals: function() {
+			return getThirdPartyTxTotals;
 		}
 	};
 

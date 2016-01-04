@@ -17,8 +17,8 @@
 			<tbody>
 				<tr ng-repeat="user in $data">
 					<td filter="{'name':'text'}" data-title="'Name'">{{user.usrName}}</td>
-					<td data-title="'Username'">{{user.usrUsername}}</td>
-					<td data-title="'Email'">{{user.usrEmail}}</td>
+					<td filter="{'username':'text'}" data-title="'Username'">{{user.usrUsername}}</td>
+					<td filter="{'email':'text'}" data-title="'Email'">{{user.usrEmail}}</td>
 					<td data-title="'Date Created'">{{user.usrDateCreated}}</td>
 					<td data-title="'Last Password Change'">{{user.usrLastPasswordChange}}</td>
 					<td data-title="'status'" ng-style="{{user.usrStatus}} == 1?{'color':'green'}:{{user.usrStatus}} == 0 ? {'color':'blue'} : {'color':'red'}">

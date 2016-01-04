@@ -26,7 +26,8 @@ var MtsSalesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 		//Initialize Date Pickers
 		angular.element(".datepicker").pickadate({
 			selectMonths: true,
-			selectYears: 15
+			selectYears: 15,
+			max:true
 		});
 
 		//Uploads Table

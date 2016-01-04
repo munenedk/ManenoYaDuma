@@ -46,8 +46,23 @@
 		<label>Collection Account</label>
 		<input ng-model="company.collectionAccount" required type="text"/>
 		</md-input-container>
+		<!-- Short Code -->
+		<md-input-container flex>
+		<label>Short Code</label>
+		<input ng-model="company.shortCode" type="text"/>
+		</md-input-container>
+		<!-- Short Code Override-->
+		<!-- <md-input-container flex> -->
+		<div flex>
+		<md-checkbox 
+		ng-model="company.shortCodeOverride"
+		aria-label="Short Code Override"><span style="vertical-align:bottom">override</span>
+		</md-checkbox>
+	</div>
+		<!-- </md-input-container> -->
+	</div>
+	<div layout layout-sm="column">
 		<!-- Account Number -->
-		
 		<md-input-container flex>
 		<label>Account Number</label>
 		<input ng-model="company.accountNumber" required type="text" ng-blur="validateAccount(company.accountNumber)"/>

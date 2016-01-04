@@ -73,7 +73,7 @@ app.factory('AlertUtils', AlertUtils);
 app.controller('MainController', ['$scope', '$rootScope', '$location', '$mdSidenav', 'TokenStorage', 'LoginService', MainController]);
 app.controller('LoginController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'LoginService', 'TokenStorage', '$location', '$mdSidenav', 'AlertUtils', LoginController]);
 app.controller('CustomerController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'CustomerService', '$routeParams', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', CustomerController]);
-app.controller('UserController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'UserService', 'RolesService', '$routeParams', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', UserController]);
+app.controller('UserController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'UserService', 'RolesService', '$routeParams', 'TokenStorage', '$location', 'LoginService', 'BillingCompanyService','AlertUtils', UserController]);
 app.controller('RolesController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'RolesService', 'PermissionsService', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', RolesController]);
 app.controller('PermissionsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'PermissionsService', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', PermissionsController]);
 app.controller('ReconController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'FileUploader', 'dumaSettings', 'ReconService', 'TokenStorage', '$location', '$routeParams', 'FileSaver', 'Blob', 'LoginService', 'AlertUtils', ReconController]);
@@ -89,11 +89,11 @@ app.controller('MtnPaymentsController', ['$scope', '$rootScope', '$mdDialog', '$
 
 //Constants
 app.constant('dumaSettings', {
-	"backendUrl": "http://localhost:8282/api/v1/",
+	// "backendUrl": "http://localhost:8282/api/v1/",
 	// "backendUrl": "http://172.16.17.191:8282/api/v1/",
-	// "backendUrl": "http://172.17.74.91:8282/api/v1/",
+	"backendUrl": "http://172.17.74.91:8282/api/v1/",
 
-	/****S ession Timeout *************/
+	/****Session Timeout *************/
 	"session_timeout": 1800000
 });
 
@@ -122,7 +122,6 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 		'A200': '00456A', //Accent - primary Color
 		// 'A100':'00456A', //hue-1
 		'contrastDefaultColor': 'light'
-
 	});
 
 	$mdThemingProvider.definePalette('kcbGreen', kcbGreenMap);
@@ -319,6 +318,11 @@ app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpP
 	.when('/payments/:paymentId', {
 		templateUrl: "views/Payments/partial-payments-edit-failed-transactions.html",
 		controller: "PaymentsController"
+	})
+
+	.when('/biller-payments',{
+		templateUrl:"views/Payments/partial-biller-payments.html",
+		controller:"PaymentsController"
 	})
 
 	.when('/pending-adjustments', {

@@ -17,6 +17,14 @@
 <md-content class="md-padding">
 <!-- ng-controller="UserController as ctrl" -->
 <form name="form.userForm" style="padding:24px" class="duma-form" >
+	
+	{{user.category}}
+	<!-- Staff or Biller Radio -->
+	<md-radio-group ng-model="user.category" layout="row">
+	<md-radio-button value="staff" class="md-primary" ng-checked="true" flex>Staff</md-radio-button>
+	<md-radio-button value="biller" flex> Biller </md-radio-button>
+	</md-radio-group>
+	
 	<div layout layout-sm="column">
 		<!-- Name -->
 		<md-input-container flex>
@@ -33,7 +41,7 @@
 	<div layout layout-sm="column">
 		<!-- Username -->
 		<md-input-container flex>
-		<label><icon class="fa fa-windows"></icon>&emsp;Windows Username</label>
+		<label><icon class="fa fa-windows"></icon>&emsp;Username (Hercules Username for Staff)</label>
 		<input ng-model="user.usrUsername" required type="text">
 		</md-input-container>
 		<!-- Email -->
@@ -49,10 +57,12 @@
 		<label><icon class="fa fa-phone"></icon>&emsp;Phone</label>
 		<input ng-model="user.usrPhoneNo" required type="text">
 		</md-input-container>
+
 		<!-- Select Branch -->
-		<md-autocomplete required flex
+		<md-autocomplete flex
+		required
 		md-input-name="branch"
-		ng-disabled="acSsDisabled"
+		ng-if="user.category == 'staff'"
 		md-no-cache="acNoCache"
 		md-selected-item = "acSelectedItem"
 		md-search-text-change = "acSearchTextChange(acSearchText)"
@@ -69,12 +79,37 @@
 		No matches found for "{{acSearchText}}".
 		</md-not-found>
 		</md-autocomplete>
+
+	<!-- Select Biller -->
+		<md-autocomplete flex
+		required
+		md-input-name="biller"
+		ng-if="user.category == 'biller'"
+		md-no-cache="billerNoCache"
+		md-selected-item = "billerSelectedItem"
+		md-search-text-change = "billerSearchTextChange(billerSearchText)"
+		md-search-text="billerSearchText"
+		md-selected-item-change="billerSelectedItemChange(item)"
+		md-items="item in billerQuerySearch(billerSearchText)"
+		md-item-text="item.display"
+		md-min-length="0"
+		md-floating-label="Biller (Third Party Users Only)">
+		<md-item-template>
+		<span md-highlight-text="billerSearchText" md-highlight-flags="^i">{{item.display}}</span>
+		</md-item-template>
+		<md-not-found>
+		No matches found for "{{billerSearchText}}".
+		</md-not-found>
+		</md-autocomplete>
 	</div>
+	
+	
+	
 	
 	<!-- Submit Button -->
 	<div layout="row" layout-align="end center">
 		<button class="btn grey" ng-click="resetForm();">Clear <icon class="fa fa-eraser"></icon></button>&emsp;
-		<button class="btn" ng-click="setUser(user);">Next <icon class="fa fa-arrow-circle-right"></icon></button>
+		<button class="btn" ng-disabled="user.category == null" ng-click="setUser(user);">Next <icon class="fa fa-arrow-circle-right"></icon></button>
 	</div>
 </form>
 </md-content>

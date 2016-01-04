@@ -17,6 +17,17 @@ var BillingCompanyService = function($http, dumaSettings) {
 		});
 	};
 
+	//Get all billing companies
+	var getAllBillingCompanies = function() {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/all",
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+	};
+
 	//Save Billing Company
 	var saveBillingCompany = function(company) {
 		return $http({
@@ -79,10 +90,10 @@ var BillingCompanyService = function($http, dumaSettings) {
 	};
 
 	var validateAccountNumber = function(accNo) {
-		console.log("Service ACCNO: "+accNo);
+		console.log("Service ACCNO: " + accNo);
 		return $http({
 			method: "GET",
-			url: apiUrl + "/validateAccount/"+accNo,
+			url: apiUrl + "/validateAccount/" + accNo,
 			headers: {
 				'Content-Type': 'application/json',
 			}
@@ -92,6 +103,9 @@ var BillingCompanyService = function($http, dumaSettings) {
 	return {
 		listCompanies: function() {
 			return getBillingCompanies;
+		},
+		getAllBillingCompanies: function() {
+			return getAllBillingCompanies;
 		},
 		save: function() {
 			return saveBillingCompany;

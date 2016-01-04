@@ -1,6 +1,6 @@
 /*jslint node: true */
 /* global angular: false */
-var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, UserService, RolesService, $routeParams, TokenStorage, $location, LoginService, AlertUtils) {
+var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, UserService, RolesService, $routeParams, TokenStorage, $location, LoginService, BillingCompanyService, AlertUtils) {
 	//Inject Service methods to scope
 	$scope.getUserMenu = LoginService.loadMenu();
 	$scope.getUsers = UserService.list();
@@ -8,12 +8,14 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	$scope.saveUser = UserService.save();
 	$scope.getRoles = RolesService.list();
 	$scope.getAllBranches = UserService.listAllBranches();
+	$scope.getAllBillers = BillingCompanyService.getAllBillingCompanies();
 	$scope.updateUser = UserService.updateUser();
 	$scope.updateUsrRoles = UserService.updateUserRoles();
 	$scope.isSessionActive = TokenStorage.isSessionActive();
 	$scope.showToast = AlertUtils.showToast();
 	$scope.showAlert = AlertUtils.showAlert();
 	$scope.handleError = AlertUtils.handleError();
+
 
 	//check authentication
 	var token = TokenStorage.retrieve();
@@ -39,6 +41,12 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	$scope.acNoCache = false;
 	var allBranches = "'";
 
+
+	/***##### BILLING COMPANY SEARCH ####***/
+	$scope.billerSimulateQuery = false;
+	$scope.billerIsDisabled = false;
+	$scope.billerNoCache = false;
+	var allBillers = "'";
 
 	//Check if there's an active session
 	if ($scope.isSessionActive(token) === true) {
@@ -133,6 +141,15 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 		$scope.acSelectedItemChange = selectedItemChange;
 		$scope.acSearchTextChange = searchTextChange;
 
+
+		//Load the billers
+		getBillers();
+		// console.log("Load All Method: " + loadAll());
+		// console.log(self.branches);
+		$scope.billerQuerySearch = billerQuerySearch;
+		$scope.billerSelectedItemChange = billerSelectedItemChange;
+		$scope.billerSearchTextChange = billerSearchTextChange;
+
 	} else {
 		TokenStorage.clear();
 		$scope.showToast("Your Session has exprired. You have been redirected to the login page.");
@@ -147,13 +164,17 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 	$scope.form = {};
 
 	$scope.setUser = function(user) {
+		console.log("SETTING USER....");
 		if ($scope.form.userForm.$valid) {
 			$scope.userDetailsTabDisabled = true;
 			$scope.userRolesTabDisabled = false;
 			$scope.user = user;
 			$scope.user.branchName = $scope.selectedBranch;
+			$scope.user.billingCompanyName = $scope.selectedBiller;
 			// console.log("Selected Branch Name: "+$scope.user.branchName);
 			$scope.selectedTab = 1;
+		}else{
+			$scope.showAlert("01","Select All Required Fields");
 		}
 	};
 
@@ -313,6 +334,71 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 		return function filterFn(branch) {
 			// console.log("Branch ID: "+JSON.stringify(branch));
 			return (branch.value.indexOf(lowercaseQuery) === 0);
+		};
+	}
+
+
+	// biller Query Search
+	function billerQuerySearch(query) {
+		var results = query ? $scope.billers.filter(billerCreateFilterFor(query)) : $scope.billers,
+			deferred;
+		if (self.simulateQuery) {
+			deferred = $q.defer();
+			$timeout(function() {
+				deferred.resolve(results);
+			}, Math.random() * 1000, false);
+			return deferred.promise;
+		} else {
+			return results;
+		}
+	}
+
+	function billerSearchTextChange(text) {
+		console.log('Text changed to ' + text);
+	}
+
+	function billerSelectedItemChange(item) {
+		console.log('Item changed to ' + item.value);
+		$scope.selectedBiller = item.value;
+	}
+
+	function getBillers() {
+		$scope.getAllBillers()
+			.success(function(data, status, headers, config) {
+				var res = data.payload;
+				// console.log(JSON.stringify(res));
+				for (var i in res) {
+					allBillers += res[i].companyName + ",";
+				}
+				allBillers += "'";
+				// console.log(allBillers);
+				$scope.billers = loadAllBillers();
+			})
+			.error(function(data, status, headers, config) {
+				$scope.handleError(data, status, headers, config);
+			});
+	}
+
+	function loadAllBillers() {
+		if (allBillers != "'") {
+			return allBillers.split(/,+/g).map(function(biller) {
+				// return allBranches.split(",").map(function(branch) {
+				// console.log("Branch Is: "+branch);
+				return {
+					value: biller.toLowerCase(),
+					display: biller
+				};
+			});
+		} else {
+			return null;
+		}
+	}
+
+	function billerCreateFilterFor(query) {
+		var lowercaseQuery = angular.lowercase(query);
+		return function filterFn(biller) {
+			// console.log("Biller: "+JSON.stringify(biller));
+			return (biller.value.indexOf(lowercaseQuery) === 0);
 		};
 	}
 };

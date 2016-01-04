@@ -20,37 +20,43 @@
 							<select name="report_type" ng-model="rpt.report_type" required class="browser-default">
 								<option value="" disabled>Select Report Type</option>
 								<option value="detailed">Detailed Transaction Report</option>
-								<option value="lipakaro">Lipa Karo</option>
+								<option value="lk_summary">Lipa Karo Summary</option>
+								<option value="lk_performance">Lipa Karo Performance</option>
 								<option value="summary">Daily Summary Report</option>
 							</select>
 						</div>
 						<!-- From Date -->
-						<div class="input-field col s12" ng-show = "rpt.report_type != 'lipakaro'">
+						<div class="input-field col s12">
 							<input id="dateFrom" type="text" class="datepicker"
-							ng-required="rpt.report_type != 'lipakaro'"
+							ng-required="true"
 							ng-model="rpt.from_date"/>
 							<label for="dateFrom"><span style="color:red">*</span> Date From</label>
 						</div>
 						<!-- To Date -->
-						<div class="input-field col s12" ng-show = "rpt.report_type != 'lipakaro'">
+						<div class="input-field col s12">
 							<input id="dateTo" type="text" class="datepicker"
-							ng-required="rpt.report_type != 'lipakaro'"
+							ng-required="true"
 							ng-model="rpt.to_date"/>
 							<label for="dateTo"><span style="color:red">*</span> Date To</label>
 						</div>
 						<!-- Business Number -->
-						<div class="col s12" ng-show = "rpt.report_type != 'lipakaro'">
+						<!-- {{['lk_summary','lk_performance'].indexOf(rpt.report_type)}} {{rpt.report_type}} -->
+						<div class="col s12" ng-show = "['lk_summary','lk_performance'].indexOf(rpt.report_type) < 0">
 							<label><span style="color:red">*</span> Business Number</label>
-							<select ng-model="rpt.bizNo" ng-required="rpt.report_type != 'lipakaro'" class="browser-default">
+							<select ng-model="rpt.bizNo"
+								ng-required="['lk_summary','lk_performance'].indexOf(rpt.report_type) < 0"
+								class="browser-default">
 								<option value="" disabled>Business Number</option>
 								<option value="all">All</option>
 								<option value="{{bizNo.bzNo}}" ng-repeat="bizNo in bizNos">{{bizNo.bzName}} - {{bizNo.bzNo}}</option>
 							</select>
 						</div>
 						<!-- Filter By -->
-						<div class="col s6" ng-show = "rpt.report_type != 'lipakaro'">
+						<div class="col s6" ng-show = "['lk_summary','lk_performance'].indexOf(rpt.report_type) < 0">
 							<label><span style="color:red">*</span> Filter By</label>
-							<select ng-model="rpt.filter_by" ng-required="rpt.report_type != 'lipakaro'" class="browser-default">
+							<select ng-model="rpt.filter_by"
+								ng-required="['lk_summary','lk_performance'].indexOf(rpt.report_type) < 0"
+								class="browser-default">
 								<option value="" disabled>Filter By</option>
 								<option value="none">None</option>
 								<option value="accno">Account Number</option>
@@ -65,13 +71,16 @@
 								<option value="retries">T24 Upload Trials</option>
 							</select>
 						</div>
-						<div class="input-field col s6" ng-show = "rpt.report_type != 'lipakaro'">
+						<div class="input-field col s6"
+							ng-show = "['lk_summary','lk_performance'].indexOf(rpt.report_type) < 0">
 							<input type="text" placeholder="Filter Value" ng-model="rpt.filterValue">
 						</div>
 						<!-- Order By -->
-						<div class="col s6" ng-show = "rpt.report_type != 'lipakaro'">
+						<div class="col s6" ng-show = "['lk_summary','lk_performance'].indexOf(rpt.report_type) < 0">
 							<label><span style="color:red">*</span> Order By</label>
-							<select ng-model="rpt.order_by" ng-required="rpt.report_type != 'lipakaro'" class="browser-default">
+							<select ng-model="rpt.order_by"
+								ng-required="['lk_summary','lk_performance'].indexOf(rpt.report_type) < 0"
+								class="browser-default">
 								<option value="" disabled>Order By</option>
 								<option value="transactionDate" selected>Mpesa Transaction Date</option>
 								<option value="t24uploadDate">T24 Upload Date</option>
@@ -82,9 +91,11 @@
 							</select>
 						</div>
 						<!-- Report Format -->
-						<div class="col s6" ng-show = "rpt.report_type != 'lipakaro'">
+						<div class="col s6" ng-show = "['lk_summary','lk_performance'].indexOf(rpt.report_type) < 0">
 							<label><span style="color:red">*</span> Format</label>
-							<select ng-model="rpt.format" ng-required="rpt.report_type != 'lipakaro'" class="browser-default">
+							<select ng-model="rpt.format"
+								ng-required="['lk_summary','lk_performance'].indexOf(rpt.report_type) < 0"
+								class="browser-default">
 								<option value="" disabled>Select Format</option>
 								<option value="html">Html</option>
 								<option value="pdf">Pdf</option>

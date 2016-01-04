@@ -65,7 +65,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 					$scope.showToast(data.message);
 				})
 				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+					$scope.handleError(data, status, headers, config);
 				});
 		}
 
@@ -87,7 +87,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 						$defer.resolve(companies);
 					})
 					.error(function(data, status, headers, config) {
-						$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+						$scope.handleError(data, status, headers, config);
 					});
 			}
 		});
@@ -134,8 +134,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 					$scope.resetForm();
 				})
 				.error(function(data, status, headers, config) {
-					// console.log("Result: "+ data+"status: "+status);
-					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+					$scope.handleError(data, status, headers, config);
 				});
 		}
 	};
@@ -150,7 +149,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 					$scope.showToast(data.message);
 				})
 				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+					$scope.handleError(data, status, headers, config);
 				});
 		}
 	};
@@ -168,7 +167,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 						$scope.company.accountTitle = data.payload.accountTitle;
 					})
 					.error(function(data, status, headers, config) {
-						$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+						$scope.handleError(data, status, headers, config);
 						$scope.company.accountNumber = null;
 						$scope.company.accountTitle = null;
 					});
@@ -223,7 +222,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 				$scope.bnBizNos = loadAllBizNos();
 			})
 			.error(function(data, status, headers, config) {
-				$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+				$scope.handleError(data, status, headers, config);
 			});
 	}
 
@@ -265,7 +264,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 					$scope.tableParams.reload();
 				})
 				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+					$scope.handleError(data, status, headers, config);
 				});
 		}, function() {
 			// $scope.status = 'You decided to keep your debt.';
@@ -289,7 +288,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 					$scope.tableParams.reload();
 				})
 				.error(function(data, status, headers, config) {
-					$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+					$scope.handleError(data, status, headers, config);
 				});
 		}, function() {
 			// $scope.status = 'You decided to keep your debt.';
@@ -333,7 +332,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 				$scope.branches = loadAllBranches();
 			})
 			.error(function(data, status, headers, config) {
-				$scope.handleError(data, status, headers, config, $scope.isSessionActive(token));
+				$scope.handleError(data, status, headers, config);
 			});
 	}
 

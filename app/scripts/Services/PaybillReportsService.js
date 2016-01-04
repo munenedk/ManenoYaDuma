@@ -41,12 +41,13 @@ var PaybillReportsService = function($http, dumaSettings) {
 	};
 
 	// Lipa Karo Report
-	var getLipaKaroReport = function(searchParams){
+	var getLipaKaroReport = function(searchParams) {
+		// console.log(JSON.stringify(searchParams));
 		return $http({
-			method:"GET",
-			url:apiUrl+"/lipakaro",
+			method: "POST",
+			url: apiUrl + "/lipakaro",
 			responseType: "arraybuffer",
-			data:JSON.stringify(searchParams)
+			data: JSON.stringify(searchParams)
 		});
 	};
 
@@ -60,7 +61,7 @@ var PaybillReportsService = function($http, dumaSettings) {
 		downloadReport: function() {
 			return downloadReport;
 		},
-		getLipaKaroReport:function(){
+		getLipaKaroReport: function() {
 			return getLipaKaroReport;
 		}
 	};

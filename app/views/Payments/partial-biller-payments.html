@@ -1,0 +1,50 @@
+<md-content class="md-padding">
+<div>
+	<!-- 	<section layout="row" layout-sm="column" layout-align="end center">
+			<a href="#/new-card">
+						<md-button class="md-fab" aria-label="New Card">
+						<icon class="fa fa-plus" style="color:white"></icon>
+						</md-button>
+			</a>
+	</section> -->
+</div>
+<md-card>
+<md-card-content>
+<h5 class="md-title">Payments</h5>
+<div loading-container="tableBillerPayments.settings().$loading">
+	<div class="responsive-table">
+		<table ng-table="tableBillerPayments" show-filter="true" class="table bordered striped hoverable" ng-style="{'table-layout':'fixed'}">
+			<tbody>
+				<tr ng-repeat="payment in $data">
+					<td filter="{'mpesaTxCode':'text'}" data-title="'Mpesa Tx Code'">{{payment.mpesatransactioncode}}</td>
+					<td filter="{'txDate':'text'}" data-title="'Tx Date'">{{payment.transactionDate}}</td>
+					<td filter="{'bizNo':'text'}" data-title="'Business Number'">{{payment.billerBusinessNumber}}</td>
+					<td data-title="'Account Number'" ng-style="{'word-wrap':'break-word'}">{{payment.accountNumber}}</td>
+					<td data-title="'Account Name'" ng-style="{'word-wrap':'break-word'}">{{payment.accountName}}</td>
+					<td filter="{'msisdn':'text'}" data-title="'Sender Phone(254)'">{{payment.senderMsisdn.substring(3,12)}}</td>
+					<td filter="{'senderName':'text'}" data-title="'Sender Name'" ng-style="{'word-wrap':'break-word'}">{{payment.senderFirstName}}</td>
+					<td filter="{'amount':'text'}" data-title="'Amount'">{{payment.amount | number:2}}</td>
+					<td filter="{'pStatus':'text'}" data-title="'Status'"
+						ng-style="'{{payment.status}}' == 'success' ? {'color':'green'} : '{{payment.status.toLowerCase()}}' == 'approval pending' ? {'color':'orange'} : {'color':'red'}"
+						ng-style="'{'word-wrap':'break-word'}'">
+						{{payment.status.toUpperCase()}}
+					</td>
+				<!-- 	<td data-title="'Action'">
+						<a href="#/payments/{{payment.mpTransactionId}}"
+							ng-show="['success','approval pending','reversed'].indexOf(payment.status.toLowerCase()) < 0 && isPaybillMaker">
+							<icon class="fa fa-pencil" style="color:#333"></icon> 
+							<md-tooltip>Edit</md-tooltip>
+						</a>
+						<!-- {{payment.status.toLowerCase()}} {{['success','approval pending'].indexOf(payment.status.toLowerCase())}} -->
+						<!-- <a ng-show="['success','approval pending','reversed'].indexOf(payment.status.toLowerCase()) > -1 || !isPaybillMaker">
+							<icon class="fa fa-ban" style="color:orange">
+						</a> 
+					</td>  -->
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</md-card-content>
+</md-card>
+</md-content>

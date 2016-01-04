@@ -38,6 +38,23 @@ var PaymentsService = function($http, dumaSettings) {
 		});
 	};
 
+	//Get Payments
+	var getBillerPayments = function(params) {
+		return $http({
+			method: "GET",
+			url: apiUrl + "/billerPayments",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			params: {
+				"page": params.page() - 1,
+				"size": params.count(),
+				"filter": params.filter()
+			}
+		});
+	};
+
+
 	//Update Payment
 	var updatePayment = function(payment) {
 		return $http({
@@ -115,6 +132,9 @@ var PaymentsService = function($http, dumaSettings) {
 		},
 		getPayments: function() {
 			return getPayments;
+		},
+		getBillerPayments: function() {
+			return getBillerPayments;
 		},
 		updatePayment: function() {
 			return updatePayment;

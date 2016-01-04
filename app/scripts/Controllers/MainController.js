@@ -158,6 +158,14 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"visible": $scope.linkVisible(["PAYBILL_MAKER", "PAYBILL_CHECKER", "PAYBILL_AUDITOR", "ADMINISTRATOR"]),
 				"active": $scope.isActive("link_c2b_payments")
 			}, {
+				"id":"link_biller_payments",
+				"name":"Biller Payments",
+				"url":"/biller-payments",
+				"icon":"fa fa-money",
+				"ic_color":darkBlue,
+				"visible":$scope.linkVisible(["BILLER_USER","ADMINISTRATOR"]),
+				"active":$scope.isActive("link_biller_payments")
+			},{
 				"id": "link_pending_changes",
 				"name": "Pending Changes",
 				"url": "/pending-adjustments",
@@ -190,7 +198,6 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"ic_color": darkBlue,
 				"visible": $scope.linkVisible(["MTN_AUDITOR", "ADMINISTRATOR"]),
 				"active": $scope.isActive("link_mtn_payments")
-
 			}
 			// {"name":"Reports","url":"/reports","icon":"fa fa-file","ic_color":"brown"}
 		];

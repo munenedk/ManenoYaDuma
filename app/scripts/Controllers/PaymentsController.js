@@ -1,6 +1,6 @@
 /*jslint node: true */
 /* global angular: false */
-var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, $window, LoginService, BillingCompanyService, PaymentsService,AlertUtils) {
+var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, $window, LoginService, BillingCompanyService, PaymentsService, AlertUtils) {
 	//Inject Service Methods into scope
 	$scope.getUserMenu = LoginService.loadMenu();
 	$scope.getPayments = PaymentsService.getPayments();
@@ -12,6 +12,7 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 	$scope.confirmApproval = PaymentsService.approveRequest();
 	$scope.rejectApproval = PaymentsService.rejectRequest();
 	$scope.validateAccountNumber = BillingCompanyService.validateAccountNumber();
+	$scope.getBillerPayments = PaymentsService.getBillerPayments();
 	$scope.isSessionActive = TokenStorage.isSessionActive();
 	$scope.showToast = AlertUtils.showToast();
 	$scope.showAlert = AlertUtils.showAlert();
@@ -64,6 +65,28 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 			getData: function($defer, params) {
 				//Ajax Request to API
 				$scope.getPayments(params)
+					.success(function(data, status, headers, config) {
+						var rData = {};
+						rData = data.payload;
+						var payments = rData.content;
+						params.total(rData.totalElements);
+						//set New Data
+						$defer.resolve(payments);
+					})
+					.error(function(data, status, headers, config) {
+						$scope.handleError(data, status, headers, config);
+					});
+			}
+		});
+
+		$scope.tableBillerPayments = new ngTableParams({
+			page: 1, //Show First page
+			count: 10 //count per page
+		}, {
+			total: 0, //length of data
+			getData: function($defer, params) {
+				//Ajax Request to API
+				$scope.getBillerPayments(params)
 					.success(function(data, status, headers, config) {
 						var rData = {};
 						rData = data.payload;
