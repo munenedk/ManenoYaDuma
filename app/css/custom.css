@@ -78,6 +78,25 @@ h5{
   padding: 10px;
 }
 
+/*Global Table CSS*/
+td, th {
+  padding: 5px 5px !important;
+}
+
+/*Global materialize button styles*/
+.btn, .btn-large {
+  text-decoration: none;
+  color: #fff;
+  background-color: #8CC63F !important;
+  text-align: center;
+  letter-spacing: .5px;
+  transition: .2s ease-out;
+  cursor: pointer;
+}
+.btn:hover{
+  background-color: #8CC63F !important;
+}
+
 /*Font Icons*/
 /*md-icon {
   padding:40px;

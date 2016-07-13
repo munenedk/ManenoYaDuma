@@ -1,36 +1,52 @@
 <md-content class="md-padding">
-<div>
-	<section layout="row" layout-sm="column" layout-align="start center">
-		<a href="#/bizNos">
-			<md-button class="md-fab" aria-label="Business Numbers">
-			<icon class="fa fa-chevron-left" style="color:white"></icon>
-			</md-button>
-		</a>
-		
-	</section>
-</div>
-<md-card>
-<md-card-content>
-<h5 class="md-title">New Business Number</h5>
-<form name="form.bizNoForm" style="padding:24px">
-	
-	<!-- Business Number -->
-	<md-input-container>
-	<label>Business Number</label>
-	<input ng-model="biz.businessNumber" required type="text"/>
-	</md-input-container>
-	<!-- Business Name -->
-	<md-input-container>
-	<label>Business Name</label>
-	<input ng-model="biz.accountName" required type="text"/>
-	</md-input-container>
-	
-	<!-- Submit Button -->
-	<div layout="row" layout-align="end center">
-		<button class="btn grey" ng-click="resetForm();">Clear <icon class="fa fa-times"></icon></button>&emsp;
-		<button class="btn" ng-click="save(biz);">Submit <icon class="fa fa-check"></icon></button>
-	</div>
-</form>
-</md-card-content>
-</md-card>
+    <div>
+        <section layout="row" layout-sm="column" layout-align="start center">
+            <a href="#/bizNos">
+                <md-button class="md-fab" aria-label="Business Numbers">
+                    <icon class="fa fa-chevron-left" style="color:white"></icon>
+                </md-button>
+            </a>
+
+        </section>
+    </div>
+    <md-card>
+        <md-card-content>
+            <h5 class="md-title">New Business Number</h5>
+            <form name="form.bizNoForm" style="padding:24px">
+
+                <!-- Business Number -->
+                <md-input-container>
+                    <label>Business Number</label>
+                    <input ng-model="biz.businessNumber" required type="text"/>
+                </md-input-container>
+                <!-- Business Name -->
+                <md-input-container>
+                    <label>Business Name</label>
+                    <input ng-model="biz.accountName" required type="text"/>
+                </md-input-container>
+
+             
+
+
+
+                <!-- <md-input-container>
+                    <md-checkbox ng-model="biz.shared" aria-label="Chargeable">
+                        Shared? {{ biz.shared}}
+                    </md-checkbox>
+                </md-input-container>
+
+                <md-input-container>
+                   <md-checkbox ng-model="biz.Chargeable" aria-label="Chargeable">
+                        Chargeable? {{ biz.Chargeable}}
+                    </md-checkbox>
+                </md-input-container> -->
+
+                <!-- Submit Button -->
+                <div layout="row" layout-align="end center">
+                    <button class="btn grey" ng-click="resetForm();">Clear <icon class="fa fa-times"></icon></button>&emsp;
+                    <button class="btn" ng-click="save(biz);">Submit <icon class="fa fa-check"></icon></button>
+                </div>
+            </form>
+        </md-card-content>
+    </md-card>
 </md-content>

@@ -198,6 +198,15 @@ var MainController = function($scope, $rootScope, $location, $mdSidenav, TokenSt
 				"ic_color": darkBlue,
 				"visible": $scope.linkVisible(["MTN_AUDITOR", "ADMINISTRATOR"]),
 				"active": $scope.isActive("link_mtn_payments")
+			},
+			{
+				"id": "link_account_closure",
+				"name": "AccountClosure",
+				"url": "/account-closure",
+				"icon": "fa fa-times",
+				"ic_color": darkBlue,
+				"visible": $scope.linkVisible(["ADMINISTRATOR"]),
+				"active": $scope.isActive("link_account_closure")
 			}
 			// {"name":"Reports","url":"/reports","icon":"fa fa-file","ic_color":"brown"}
 		];

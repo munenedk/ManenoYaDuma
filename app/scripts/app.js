@@ -28,6 +28,7 @@ var CardController = require('./Controllers/CardController.js');
 var PaymentsController = require('./Controllers/PaymentsController.js');
 var PaybillReportsController = require('./Controllers/PaybillReportsController.js');
 var MtnPaymentsController = require('./Controllers/MtnPaymentsController.js');
+var AccountClosure = require('./Controllers/AccountClosure.js');
 
 //services
 var LoginService = require('./Services/LoginService.js');
@@ -48,6 +49,7 @@ var PaymentsService = require('./Services/PaymentsService.js');
 var PaybillReportsService = require('./Services/PaybillReportsService.js');
 var MtnPaymentsService = require('./Services/MtnPaymentsService.js');
 var AlertUtils = require('./Services/AlertUtils.js');
+var AccountClosureService = require('./Services/AccountClosureService.js');
 
 //Factories
 app.factory('CustomerService', CustomerService);
@@ -68,12 +70,13 @@ app.factory('PaymentsService', PaymentsService);
 app.factory('PaybillReportsService', PaybillReportsService);
 app.factory('MtnPaymentsService', MtnPaymentsService);
 app.factory('AlertUtils', AlertUtils);
+app.factory('AccountClosureService', AccountClosureService);
 
 //Inject Controllers
 app.controller('MainController', ['$scope', '$rootScope', '$location', '$mdSidenav', 'TokenStorage', 'LoginService', MainController]);
 app.controller('LoginController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'LoginService', 'TokenStorage', '$location', '$mdSidenav', 'AlertUtils', LoginController]);
 app.controller('CustomerController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'CustomerService', '$routeParams', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', CustomerController]);
-app.controller('UserController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'UserService', 'RolesService', '$routeParams', 'TokenStorage', '$location', 'LoginService', 'BillingCompanyService','AlertUtils', UserController]);
+app.controller('UserController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'UserService', 'RolesService', '$routeParams', 'TokenStorage', '$location', 'LoginService', 'BillingCompanyService', 'AlertUtils', UserController]);
 app.controller('RolesController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'RolesService', 'PermissionsService', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', RolesController]);
 app.controller('PermissionsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'PermissionsService', 'TokenStorage', '$location', 'LoginService', 'AlertUtils', PermissionsController]);
 app.controller('ReconController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'FileUploader', 'dumaSettings', 'ReconService', 'TokenStorage', '$location', '$routeParams', 'FileSaver', 'Blob', 'LoginService', 'AlertUtils', ReconController]);
@@ -86,282 +89,292 @@ app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast
 app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', '$window', 'LoginService', 'BillingCompanyService', 'PaymentsService', 'AlertUtils', PaymentsController]);
 app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'FileSaver', 'Blob', 'LoginService', '$window', 'PaybillReportsService', 'AlertUtils', PaybillReportsController]);
 app.controller('MtnPaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'MtnPaymentsService', 'FileSaver', 'Blob', 'AlertUtils', MtnPaymentsController]);
+app.controller('AccountClosure', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'AccountClosureService', 'AlertUtils', AccountClosure]);
+
 
 //Constants
 app.constant('dumaSettings', {
-	// "backendUrl": "http://localhost:8282/api/v1/",
-	// "backendUrl": "http://172.16.17.191:8282/api/v1/",
-	"backendUrl": "http://172.17.74.91:8282/api/v1/",
+    // "backendUrl": "http://localhost:8282/api/v1/",
+    // "backendUrl": "http://172.16.17.191:8282/api/v1/",
+    //"backendUrl": "http://172.16.102.157:8282/api/v1/",
 
-	/****Session Timeout *************/
-	"session_timeout": 1800000
+    //"backendUrl": "http://172.17.74.91:8282/api/v1/",
+    "backendUrl": "http://localhost:8787/api/v1/",
+    //"backendUrl": "http://172.17.72.98:8787/api/v1/",
+    /****Session Timeout *************/
+    "session_timeout": 1800000
 });
 
 //Configuration
-app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpProvider', 'ChartJsProvider', function($routeProvider, $locationProvider, $mdThemingProvider, $httpProvider, ChartJsProvider) {
-	//Backend Url
-	var backendUrl = "";
+app.config(['$routeProvider', '$locationProvider', '$mdThemingProvider', '$httpProvider', 'ChartJsProvider', function ($routeProvider, $locationProvider, $mdThemingProvider, $httpProvider, ChartJsProvider) {
+        //Backend Url
+        var backendUrl = "";
 
-	//Allow CORS
-	$httpProvider.defaults.useXDomain = true;
-	// $httpProvider.defaults.withCredentials = true;
-	$httpProvider.interceptors.push("TokenAuthInterceptor");
-	// delete $httpProvider.defaults.headers.common["X-Requested-With"];
-	$httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
-	//Disable Caching
-	$httpProvider.defaults.headers.common["Cache-Control"] = "no-cache";
-	$httpProvider.defaults.headers.common.Pragma = "no-cache";
-	$httpProvider.defaults.headers.common["If-Modified-Since"] = "0";
+        //Allow CORS
+        $httpProvider.defaults.useXDomain = true;
+        // $httpProvider.defaults.withCredentials = true;
+        $httpProvider.interceptors.push("TokenAuthInterceptor");
+        // delete $httpProvider.defaults.headers.common["X-Requested-With"];
+        $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+        //Disable Caching
+        $httpProvider.defaults.headers.common["Cache-Control"] = "no-cache";
+        $httpProvider.defaults.headers.common.Pragma = "no-cache";
+        $httpProvider.defaults.headers.common["If-Modified-Since"] = "0";
 
-	// Custom Theme
-	var kcbGreenMap = $mdThemingProvider.extendPalette('light-green', {
-		'500': '8CC63F'
-	});
+        // Custom Theme
+        var kcbGreenMap = $mdThemingProvider.extendPalette('light-green', {
+            '500': '8CC63F'
+        });
 
-	var kcbBlueMap = $mdThemingProvider.extendPalette('light-blue', {
-		'A200': '00456A', //Accent - primary Color
-		// 'A100':'00456A', //hue-1
-		'contrastDefaultColor': 'light'
-	});
+        var kcbBlueMap = $mdThemingProvider.extendPalette('light-blue', {
+            'A200': '00456A', //Accent - primary Color
+            // 'A100':'00456A', //hue-1
+            'contrastDefaultColor': 'light'
+        });
 
-	$mdThemingProvider.definePalette('kcbGreen', kcbGreenMap);
-	$mdThemingProvider.definePalette('kcbBlue', kcbBlueMap);
-
-
-	//App Theme
-	$mdThemingProvider.theme('default')
-		.primaryPalette('kcbGreen')
-		.accentPalette('kcbBlue');
-
-	// Configure all charts
-	ChartJsProvider.setOptions({
-		colours: ['#FF5252', '#FF8A80'],
-		responsive: true
-	});
-	// Configure all line charts
-	ChartJsProvider.setOptions('Line', {
-		datasetFill: false
-	});
-	// Configure all doughnut charts
-	ChartJsProvider.setOptions('Doughnut', {
-		animateScale: true
-	});
-
-	//Routing
-	$routeProvider
-		.when('/home', {
-			templateUrl: 'views/partial-dashboard.html',
-			controller: "DashboardController"
-		})
-
-	.when('/login', {
-		templateUrl: 'views/partial-login.html',
-		controller: 'LoginController'
-	})
-
-	.when('/customers', {
-		templateUrl: 'views/Customer/partial-customers.html',
-		controller: 'CustomerController'
-	})
-
-	.when('/customer/:customerId', {
-		templateUrl: 'views/Customer/partial-customer.html',
-		controller: 'CustomerController'
-	})
-
-	.when('/users', {
-		templateUrl: 'views/User/partial-users.html',
-		controller: 'UserController'
-	})
-
-	.when('/user', {
-		templateUrl: 'views/User/partial-user.html',
-		controller: 'UserController'
-	})
-
-	.when('/user/:userId', {
-		templateUrl: 'views/User/partial-user.html',
-		controller: 'UserController'
-	})
-
-	.when('/new-user', {
-		templateUrl: 'views/User/partial-new-user.html',
-		controller: 'UserController'
-	})
-
-	.when('/roles', {
-		templateUrl: 'views/Role/partial-roles.html',
-		controller: 'RolesController'
-	})
-
-	.when('/new-role', {
-		templateUrl: 'views/Role/partial-new-role.html',
-		controller: 'RolesController'
-	})
-
-	.when('/permissions', {
-		templateUrl: 'views/Permission/partial-permissions.html',
-		controller: 'PermissionsController'
-	})
-
-	.when('/new-permission', {
-		templateUrl: 'views/Permission/partial-new-permission.html',
-		controller: 'PermissionsController'
-	})
-
-	.when('/mpesaRecon/:reconType', {
-		templateUrl: 'views/Mpesa/partial-mpesa-recon.html',
-		controller: 'ReconController'
-	})
-
-	.when('/mpesaRecon-new/:reconType', {
-		templateUrl: 'views/Mpesa/partial-new-mpesa-recon.html',
-		controller: 'ReconController'
-	})
-
-	.when('/mpesaRecon-file/:reconType/:uploadId', {
-		templateUrl: 'views/Mpesa/partial-mpesa-recon-file.html',
-		controller: 'ReconController'
-	})
-
-	.when('/mpesaRecon-requests/:reconType/:requestUploadId', {
-		templateUrl: 'views/Mpesa/partial-mpesa-recon-requests.html',
-		controller: 'ReconController'
-	})
-
-	.when('/mpesaRecon-status/:reconType/:uploadId', {
-		templateUrl: 'views/Mpesa/partial-mpesa-reversal-status.html',
-		controller: 'ReconController'
-	})
+        $mdThemingProvider.definePalette('kcbGreen', kcbGreenMap);
+        $mdThemingProvider.definePalette('kcbBlue', kcbBlueMap);
 
 
-	.when('/password-change/:user', {
-		templateUrl: 'views/Utils/partial-password-change.html',
-		controller: 'PasswordChangeController'
-	})
+        //App Theme
+        $mdThemingProvider.theme('default')
+                .primaryPalette('kcbGreen')
+                .accentPalette('kcbBlue');
 
-	.when('/forgot-password', {
-		templateUrl: 'views/Utils/partial-forgot-password.html',
-		controller: 'PasswordChangeController'
-	})
+        // Configure all charts
+        ChartJsProvider.setOptions({
+            colours: ['#FF5252', '#FF8A80'],
+            responsive: true
+        });
+        // Configure all line charts
+        ChartJsProvider.setOptions('Line', {
+            datasetFill: false
+        });
+        // Configure all doughnut charts
+        ChartJsProvider.setOptions('Doughnut', {
+            animateScale: true
+        });
 
-	.when('/mk-ambassadors', {
-		templateUrl: "views/MtsSales/partial-ambassador-dash.html",
-		controller: 'MtsSalesController'
-	})
+        //Routing
+        $routeProvider
+                .when('/home', {
+                    templateUrl: 'views/partial-dashboard.html',
+                    controller: "DashboardController"
+                })
 
-	.when('/mk-ambassadors-upload', {
-		templateUrl: "views/MtsSales/partial-ambassador-new-upload.html",
-		controller: "MtsSalesController"
-	})
+                .when('/login', {
+                    templateUrl: 'views/partial-login.html',
+                    controller: 'LoginController'
+                })
 
-	.when('/mk-ambassadors-file-details/:uploadId', {
-		templateUrl: "views/MtsSales/partial-ambassador-file-details.html",
-		controller: "MtsSalesController"
-	})
+                .when('/customers', {
+                    templateUrl: 'views/Customer/partial-customers.html',
+                    controller: 'CustomerController'
+                })
 
-	.when('/mts-sales-admin', {
-		templateUrl: "views/MtsSales/partial-mts-sales-admin.html",
-		controller: "MtsSalesController"
-	})
+                .when('/customer/:customerId', {
+                    templateUrl: 'views/Customer/partial-customer.html',
+                    controller: 'CustomerController'
+                })
 
-	.when('/bizNos', {
-		templateUrl: "views/BizNumbers/partial-biznos.html",
-		controller: 'BizNoController'
-	})
+                .when('/users', {
+                    templateUrl: 'views/User/partial-users.html',
+                    controller: 'UserController'
+                })
 
-	.when('/new-bizNo', {
-		templateUrl: "views/BizNumbers/partial-new-bizno.html",
-		controller: "BizNoController"
-	})
+                .when('/user', {
+                    templateUrl: 'views/User/partial-user.html',
+                    controller: 'UserController'
+                })
 
-	.when('/bizNo/:bizId', {
-		templateUrl: "views/BizNumbers/partial-bizno.html",
-		controller: "BizNoController"
-	})
+                .when('/user/:userId', {
+                    templateUrl: 'views/User/partial-user.html',
+                    controller: 'UserController'
+                })
 
-	.when('/companies', {
-		templateUrl: "views/BillingCompany/partial-billing_companies.html",
-		controller: "BillingCompanyController"
-	})
+                .when('/new-user', {
+                    templateUrl: 'views/User/partial-new-user.html',
+                    controller: 'UserController'
+                })
 
-	.when('/new-company', {
-		templateUrl: "views/BillingCompany/partial-new-billing_company.html",
-		controller: "BillingCompanyController"
-	})
+                .when('/roles', {
+                    templateUrl: 'views/Role/partial-roles.html',
+                    controller: 'RolesController'
+                })
 
-	.when('/company/:companyId', {
-		templateUrl: 'views/BillingCompany/partial-billing-company.html',
-		controller: 'BillingCompanyController'
-	})
+                .when('/new-role', {
+                    templateUrl: 'views/Role/partial-new-role.html',
+                    controller: 'RolesController'
+                })
 
-	.when('/cards', {
-		templateUrl: "views/Cards/partial-cards.html",
-		controller: "CardController"
-	})
+                .when('/permissions', {
+                    templateUrl: 'views/Permission/partial-permissions.html',
+                    controller: 'PermissionsController'
+                })
 
-	.when('/new-card', {
-		templateUrl: "views/Cards/partial-new-card.html",
-		controller: "CardController"
-	})
+                .when('/new-permission', {
+                    templateUrl: 'views/Permission/partial-new-permission.html',
+                    controller: 'PermissionsController'
+                })
 
-	.when('/card/:cardId', {
-		templateUrl: "views/Cards/partial-card.html",
-		controller: "CardController"
-	})
+                .when('/mpesaRecon/:reconType', {
+                    templateUrl: 'views/Mpesa/partial-mpesa-recon.html',
+                    controller: 'ReconController'
+                })
 
-	.when('/payments', {
-		templateUrl: "views/Payments/partial-payments.html",
-		controller: "PaymentsController"
-	})
+                .when('/mpesaRecon-new/:reconType', {
+                    templateUrl: 'views/Mpesa/partial-new-mpesa-recon.html',
+                    controller: 'ReconController'
+                })
 
-	.when('/payments/:paymentId', {
-		templateUrl: "views/Payments/partial-payments-edit-failed-transactions.html",
-		controller: "PaymentsController"
-	})
+                .when('/mpesaRecon-file/:reconType/:uploadId', {
+                    templateUrl: 'views/Mpesa/partial-mpesa-recon-file.html',
+                    controller: 'ReconController'
+                })
 
-	.when('/biller-payments',{
-		templateUrl:"views/Payments/partial-biller-payments.html",
-		controller:"PaymentsController"
-	})
+                .when('/mpesaRecon-requests/:reconType/:requestUploadId', {
+                    templateUrl: 'views/Mpesa/partial-mpesa-recon-requests.html',
+                    controller: 'ReconController'
+                })
 
-	.when('/pending-adjustments', {
-		templateUrl: "views/Payments/partial-payments-pending-adjustments.html",
-		controller: "PaymentsController"
-	})
+                .when('/mpesaRecon-status/:reconType/:uploadId', {
+                    templateUrl: 'views/Mpesa/partial-mpesa-reversal-status.html',
+                    controller: 'ReconController'
+                })
 
-	.when('/closed-adjustments', {
-		templateUrl: "views/Payments/partial-payments-closed-adjustments.html",
-		controller: "PaymentsController"
-	})
 
-	.when('/payment-reports', {
-		templateUrl: "views/PaybillReports/partial-paybill-reports.html",
-		controller: "PaybillReportsController"
-	})
+                .when('/password-change/:user', {
+                    templateUrl: 'views/Utils/partial-password-change.html',
+                    controller: 'PasswordChangeController'
+                })
 
-	.when('/mtn-payments', {
-		templateUrl: "views/Mtn/partial-mtn-payments.html",
-		controller: "MtnPaymentsController"
-	})
+                .when('/forgot-password', {
+                    templateUrl: 'views/Utils/partial-forgot-password.html',
+                    controller: 'PasswordChangeController'
+                })
 
-	.otherwise({
-		redirectTo: '/login'
-	});
+                .when('/mk-ambassadors', {
+                    templateUrl: "views/MtsSales/partial-ambassador-dash.html",
+                    controller: 'MtsSalesController'
+                })
 
-}]);
+                .when('/mk-ambassadors-upload', {
+                    templateUrl: "views/MtsSales/partial-ambassador-new-upload.html",
+                    controller: "MtsSalesController"
+                })
+
+                .when('/mk-ambassadors-file-details/:uploadId', {
+                    templateUrl: "views/MtsSales/partial-ambassador-file-details.html",
+                    controller: "MtsSalesController"
+                })
+
+                .when('/mts-sales-admin', {
+                    templateUrl: "views/MtsSales/partial-mts-sales-admin.html",
+                    controller: "MtsSalesController"
+                })
+
+                .when('/bizNos', {
+                    templateUrl: "views/BizNumbers/partial-biznos.html",
+                    controller: 'BizNoController'
+                })
+
+                .when('/new-bizNo', {
+                    templateUrl: "views/BizNumbers/partial-new-bizno.html",
+                    controller: "BizNoController"
+                })
+
+                .when('/bizNo/:bizId', {
+                    templateUrl: "views/BizNumbers/partial-bizno.html",
+                    controller: "BizNoController"
+                })
+
+                .when('/companies', {
+                    templateUrl: "views/BillingCompany/partial-billing_companies.html",
+                    controller: "BillingCompanyController"
+                })
+
+                .when('/new-company', {
+                    templateUrl: "views/BillingCompany/partial-new-billing_company.html",
+                    controller: "BillingCompanyController"
+                })
+
+                .when('/company/:companyId', {
+                    templateUrl: 'views/BillingCompany/partial-billing-company.html',
+                    controller: 'BillingCompanyController'
+                })
+
+                .when('/cards', {
+                    templateUrl: "views/Cards/partial-cards.html",
+                    controller: "CardController"
+                })
+
+                .when('/new-card', {
+                    templateUrl: "views/Cards/partial-new-card.html",
+                    controller: "CardController"
+                })
+
+                .when('/card/:cardId', {
+                    templateUrl: "views/Cards/partial-card.html",
+                    controller: "CardController"
+                })
+
+                .when('/payments', {
+                    templateUrl: "views/Payments/partial-payments.html",
+                    controller: "PaymentsController"
+                })
+
+                .when('/payments/:paymentId', {
+                    templateUrl: "views/Payments/partial-payments-edit-failed-transactions.html",
+                    controller: "PaymentsController"
+                })
+
+                .when('/biller-payments', {
+                    templateUrl: "views/Payments/partial-biller-payments.html",
+                    controller: "PaymentsController"
+                })
+
+                .when('/pending-adjustments', {
+                    templateUrl: "views/Payments/partial-payments-pending-adjustments.html",
+                    controller: "PaymentsController"
+                })
+
+                .when('/closed-adjustments', {
+                    templateUrl: "views/Payments/partial-payments-closed-adjustments.html",
+                    controller: "PaymentsController"
+                })
+
+                .when('/payment-reports', {
+                    templateUrl: "views/PaybillReports/partial-paybill-reports.html",
+                    controller: "PaybillReportsController"
+                })
+
+                .when('/mtn-payments', {
+                    templateUrl: "views/Mtn/partial-mtn-payments.html",
+                    controller: "MtnPaymentsController"
+                })
+
+                .when('/account-closure', {
+                    templateUrl: "views/AccountClosure/partial-account-closure.html",
+                    controller: "AccountClosure"
+                })
+
+                .otherwise({
+                    redirectTo: '/login'
+                });
+
+    }]);
 
 //Register listener to watch route changes
-app.run(function($rootScope, $location) {
-	$rootScope.$on("$routeChangeStart", function(event, next, current) {
-		if ($rootScope.loggedInUser === 'undefined' || $rootScope.loggedInUser === null) {
+app.run(function ($rootScope, $location) {
+    $rootScope.$on("$routeChangeStart", function (event, next, current) {
+        if ($rootScope.loggedInUser === 'undefined' || $rootScope.loggedInUser === null) {
 
-			if (next.templateUrl == "views/partial-login.html") {
+            if (next.templateUrl == "views/partial-login.html") {
 
-			} else {
-				$location.path("/login");
-			}
-		}
+            } else {
+                $location.path("/login");
+            }
+        }
 
-	});
+    });
 });

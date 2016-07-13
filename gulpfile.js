@@ -99,7 +99,7 @@ gulp.task('linked_scripts', function() {
 	gulp.src(['app/linked_scripts/**/*.js',
 			'bower_components/ng-table/dist/ng-table.js',
 			'bower_components/ng-table/dist/ng-table.min.js.map',
-			'bower_components/angular-file-upload/angular-file-upload.js',
+			'bower_components/angular-file-upload/dist/angular-file-upload.js',
 			'node_modules/jquery/dist/jquery.js',
 			'node_modules/materialize-css/bin/materialize.js',
 			'bower_components/angular-material/angular-material.min.js',

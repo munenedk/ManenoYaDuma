@@ -1,3 +1,4 @@
+ 
 <md-content class="md-padding">
 <div>
 	<section layout="row" layout-sm="column" layout-align="start center">
@@ -31,7 +32,7 @@
 		md-selected-item-change="bnSelectedItemChange(item)"
 		md-items="item in bnQuerySearch(bnSearchText)"
 		md-item-text="item.display"
-		md-floating-label="Business Number">
+		md-floating-label="Business Name">
 		<md-item-template>
 		<span md-highlight-text="bnSearchText" md-highlight-flags="^i">{{item.display}}</span>
 		</md-item-template>
@@ -113,11 +114,41 @@
 		<input ng-model="company.companyEmail" type="email"/>
 		</md-input-container>
 	</div>
+
+	<!-- added stuff  -->
+
+	<md-radio-group required ng-model="company.businessType" ">
+       <md-radio-button value="payBill" class="md-primary"  ng-model="company.companyBusinesstype" >Pay Bill</md-radio-button>
+                <md-radio-button value="tillNumber" ng-model="company.companyBusinesstype" > Till Number </md-radio-button>
+            </md-radio-group>
+
+      <div ng-show="company.businessType == 'payBill'">
+          <p>Select Paybill Tarriff</p>
+          
+ 		 <div layout="column" style="max-width: 200px;">
+    		<md-select  placeholder="Select Tarrif" ng-model="company.charge" md-on-open="loadTarrifs()" >
+      		<md-option ng-repeat="theuser in tarrifsTypes track by $index" ng-value="theuser.tarrifid">{{theuser.tarrifname}}</md-option>
+    		</md-select>
+    		</div>
+	    </div>
+               
+
+          <div ng-show="company.businessType == 'tillNumber'">
+                <p>Select Till Number Charges</p>
+                <md-radio-group required ng-model="company.charge">
+                <md-radio-button value="0" >No Charge </md-radio-button>
+                <md-radio-button value="0.5-%" >0.5%</md-radio-button>
+                <md-radio-button value="1-%"  >1% </md-radio-button>
+                <md-radio-button value="1.5-%"  >1.5% </md-radio-button>
+                <md-radio-button value="2-%"  >2% </md-radio-button>
+               </md-radio-group>
+         </div>
+
 	
 	<!-- Submit Button -->
 	<div layout="row" layout-align="end center">
 		<button class="btn grey" ng-click="resetForm();">Clear <icon class="fa fa-times"></icon></button>&emsp;
-		<button class="btn" ng-click="save(company);">Submit <icon class="fa fa-check"></icon></button>
+		<button class="btn" ng-click="save(company,company.businessType);">Submit <icon class="fa fa-check"></icon></button>
 	</div>
 </form>
 </md-card-content>

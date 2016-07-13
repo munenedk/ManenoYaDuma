@@ -10,6 +10,7 @@ var LoginService = function($http, dumaSettings, $rootScope) {
 			apiUrl += "ldap_login";
 		}
 		console.log("URL: " + apiUrl);
+		console.log("Data being sent @ login"+ JSON.stringify(user))
 		var credentials = JSON.stringify(user);
 		return $http({
 			method: "POST",

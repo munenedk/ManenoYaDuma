@@ -1,5 +1,6 @@
 var BillingCompanyService = function($http, dumaSettings) {
 	var apiUrl = dumaSettings.backendUrl + "companies";
+	var apiUrl1 = dumaSettings.backendUrl + "tarrifs";
 
 	//Get Companies - paginated
 	var getBillingCompanies = function(params) {
@@ -29,15 +30,22 @@ var BillingCompanyService = function($http, dumaSettings) {
 	};
 
 	//Save Billing Company
-	var saveBillingCompany = function(company) {
+	var saveBillingCompany = function(company,bizTypes) {
+		
+		console.log(company);
 		return $http({
 			method: "POST",
 			url: apiUrl,
 			headers: {
 				'Content-Type': 'application/json',
 			},
+			params: {
+				"biztype": bizTypes
+				
+			},
 			data: JSON.stringify(company)
 		});
+
 	};
 
 
@@ -63,6 +71,19 @@ var BillingCompanyService = function($http, dumaSettings) {
 			data: JSON.stringify(company)
 		});
 	};
+
+
+	var getTarrif = function() {
+
+		return $http({
+			method: "GET",
+			url: apiUrl1,
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+	};
+
 
 
 	//Approve Request
@@ -94,7 +115,7 @@ var BillingCompanyService = function($http, dumaSettings) {
 		return $http({
 			method: "GET",
 			url: apiUrl + "/validateAccount/" + accNo,
-			headers: {
+				headers: {
 				'Content-Type': 'application/json',
 			}
 		});
@@ -115,6 +136,9 @@ var BillingCompanyService = function($http, dumaSettings) {
 		},
 		updateCompany: function() {
 			return updateBillingCompany;
+		},
+		getTarrif: function() {
+			return getTarrif;
 		},
 		approveRequest: function() {
 			return approveRequest;

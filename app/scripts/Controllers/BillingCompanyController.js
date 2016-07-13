@@ -7,6 +7,10 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 	$scope.saveBillingCompany = BillingCompanyService.save();
 	$scope.getBillingCompany = BillingCompanyService.getCompany();
 	$scope.updateBillingCompany = BillingCompanyService.updateCompany();
+
+	$scope.getTarrif = BillingCompanyService.getTarrif();
+
+
 	$scope.getAllBizNos = BizNoService.listAllBizNos();
 	$scope.approveRequest = BillingCompanyService.approveRequest();
 	$scope.rejectRequest = BillingCompanyService.rejectRequest();
@@ -122,13 +126,48 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 	$scope.company = {};
 
 
+	// added stuff
+  $scope.tarrifs=[];
+  $scope.tarrifsTypes = [];
+ 
+  $scope.loadTarrifs = function() {
+  	console.log("Called Here");
+  	
+			$scope.getTarrif().success(function(data, status, headers, config) {
+			 $scope.tarrifs = [];
+		
+			if(data.payload.length!=0) {
+			for (var i = 0; i < data.payload.length; i++) {
+			 	$scope.tarrifs.push(data.payload[i]);
+		
+				}
+			$scope.tarrifsTypes = $scope.tarrifs;
+      					
+			}
+				})
+				.error(function(data, status, headers, config) {
+					$scope.handleError(data, status, headers, config);
+				});
+		 
+	};  
+
+
+
+
+
+
 	//Save Billing Company
-	$scope.save = function(company) {
+	$scope.save = function(company,bizType) {
 		if ($scope.form.billingCompany.$valid) {
 			//Add Selected business number
 			company.fkbusinessnum = $scope.selectedBizNo;
 			company.branchName = $scope.selectedBranch;
-			$scope.saveBillingCompany(company)
+			
+			// company.charge = 1;
+			// company.chargetype = "COMMISION";
+			// company.charges ="1-%";
+
+			$scope.saveBillingCompany(company,bizType)
 				.success(function(data, status, headers, config) {
 					$scope.showToast(data.message);
 					$scope.resetForm();
@@ -136,6 +175,9 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 				.error(function(data, status, headers, config) {
 					$scope.handleError(data, status, headers, config);
 				});
+		}else
+		{
+			$scope.showToast("PLEASE FILL IN ALL FIELDS");
 		}
 	};
 
@@ -195,6 +237,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 			}, Math.random() * 1000, false);
 			return deferred.promise;
 		} else {
+			console.log(results[0].display);
 			return results;
 		}
 	}
@@ -214,7 +257,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 			.success(function(data, status, headers, config) {
 				var res = data.payload;
 				for (var i in res) {
-					// console.log(res[i]);
+					 console.log(res[i]);
 					var biz = res[i].accountName + "-" + res[i].businessNumber;
 					allBizNos += "," + biz;
 				}
@@ -229,7 +272,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 	function loadAllBizNos() {
 		if (allBizNos !== "") {
 			return allBizNos.split(/,+/g).map(function(bizNo) {
-				// console.log(bizNo);
+				//console.log(bizNo);
 				return {
 					value: bizNo.toLowerCase(),
 					display: bizNo

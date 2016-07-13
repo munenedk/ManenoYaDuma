@@ -1,4 +1,6 @@
-bower_components/*
+bower_components
 node_modules/*
 cordova_app/*
 dist/*
+/nbproject/private/
+/.idea

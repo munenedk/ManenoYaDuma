@@ -1,4 +1,7 @@
-var BizNoService = function ($http, dumaSettings) {
+/**
+ * Created by munenedk-pc on 13-Jul-16.
+ */
+var AccountClosureService = function ($http, dumaSettings) {
     var apiUrl = dumaSettings.backendUrl + "paybill";
 
     //Get Business Numbers
@@ -113,6 +116,8 @@ var BizNoService = function ($http, dumaSettings) {
             return rejectRequest;
         }
     };
+
+
 };
 
-module.exports = BizNoService;
+module.exports = AccountClosureService;

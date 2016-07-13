@@ -1,0 +1,78 @@
+<md-content class="md-padding">
+    <md-card>
+        <md-card-content>
+            <!--Header section-->
+            <h5 class="md-title md-primary">Account Closure</h5>
+            <h3 class="md-subhead">Please enter a phone number or upload a file</h3>
+            <div layout="row" layout-sm="column">
+                <div layout="row" layout-sm="column" flex="55" flex-sm="100">
+                    <md-input-container flex="35">
+                        <label>Phone number (2547...)</label>
+                        <input type="number" ng-model="account.number" ng>
+                    </md-input-container>
+                    <md-input-container style="margin-top: 16px" flex-offset="5">
+                        <label>Closure Type</label>
+                        <md-select ng-model="account.closeType" ng-change="closureTypeChanged(account.closeType)">
+                            <md-option value=""></md-option>
+                            <md-option value="1">Recycling</md-option>
+                            <md-option value="2">On Demand</md-option>
+                            <md-option value="3">Change Ownership</md-option>
+                        </md-select>
+                    </md-input-container>
+                    <md-button class="md-primary" style="height: 40px; margin-top: 30px">{{buttonText}}</md-button>
+                </div>
+                <div layout="row" flex="40" flex-sm="100" layout-sm="column">
+                    <form action="#" flex="90">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>Upload</span>
+                                <input type="file" id="bulkUpload">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text"
+                                       ng-model="account.file" ng-change="uploadFile()">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+           <!--Table section-->
+            <div loading-container="tableParams.settings().$loading">
+                <div layout="row">
+                    <span flex></span>
+                    <md-button class="md-primary md-raised">Approve</md-button>
+                    <md-button class="md-accent md-raised">Delete</md-button>
+                </div>
+                <div class="responsive-table">
+                    <table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
+                        <thead>
+                        <tr>
+                            <td><b>Name</b></td>
+                            <td><b>Phone Number</b></td>
+                            <td><b>Closure Type</b></td>
+                            <td><b>Status</b></td>
+                            <td><md-checkbox ng-model="selectAll" aria-label="SelectEverything" ng-click="selectAll($data)"></md-checkbox></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="biz in $data">
+                            <td>{{biz.accountName}}</td>
+                            <td>{{biz.businessNumber}}</td>
+                            <td ng-style="'{{biz.status}}' == '0' ? {'color':'blue'} : '{{biz.status}}' == '1' ? {'color':'green'} : {'color':'red'}">
+                                {{biz.status == 0 ? 'Pending Approval' : biz.status == 1 ? 'Active' : biz.status == 2 ? 'Rejected' : 'Disabled'}}
+                            </td>
+                            <td>{{biz.businessNumber}}</td>
+                            <td><md-checkbox ng-model="selectAll" aria-label="SelectIndividual" ng-click="selectIndividual(biz)"></md-checkbox></td>
+                            <!--<td><md-button class="md-primary" ng-click="approveBiz($event, biz);" ng-show="({{biz.status == '0'}} && isPaybillChecker)">Approve</md-button></td>-->
+                            <!--<td><md-button class="md-accent" ng-click="rejectBiz($event, biz);" ng-show="({{biz.status == '0'}} && isPaybillChecker)">Reject</md-button></td>-->
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </md-card-content>
+    </md-card>
+</md-content>
