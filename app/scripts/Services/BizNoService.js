@@ -55,6 +55,14 @@ var BizNoService = function ($http, dumaSettings) {
 
     //Update Business Number
     var updateBusinessNumber = function (biz) {
+        console.log(JSON.stringify({
+            method: "PUT",
+            url: apiUrl,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: JSON.stringify(biz)
+        }));
         return $http({
             method: "PUT",
             url: apiUrl,

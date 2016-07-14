@@ -3,6 +3,24 @@
  */
 var AccountClosureService = function ($http, dumaSettings) {
     var apiUrl = dumaSettings.backendUrl + "paybill";
+//---------------------------Dan Stuff-----------------------------------------------------
+    var endpoint = dumaSettings.backendUrl + "recycle";
+
+    //Get Account Closure details
+    var getClosureDetails = function(params){
+        return $http({
+            method: "GET",
+            url: endpoint,
+            headers:{'Content-Type': 'application/json'},
+            params: {
+                "page": params.page() - 1,
+                "size": params.count(),
+                "filter": params.filter()
+            }
+        });
+    };
+
+//---------------------------End of Dan Stuff---------------------------------------------------
 
     //Get Business Numbers
     var getBusinessNumbers = function (params) {
@@ -114,6 +132,9 @@ var AccountClosureService = function ($http, dumaSettings) {
         },
         rejectRequest: function () {
             return rejectRequest;
+        }, //Below are Dan additions
+        listClosureDetails: function () {
+            return getClosureDetails;
         }
     };
 

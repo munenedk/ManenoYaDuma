@@ -8,7 +8,7 @@
                 <div layout="row" layout-sm="column" flex="55" flex-sm="100">
                     <md-input-container flex="35">
                         <label>Phone number (2547...)</label>
-                        <input type="number" ng-model="account.number" ng>
+                        <input type="number" ng-model="account.number">
                     </md-input-container>
                     <md-input-container style="margin-top: 16px" flex-offset="5">
                         <label>Closure Type</label>
@@ -42,7 +42,7 @@
                 <div layout="row">
                     <span flex></span>
                     <md-button class="md-primary md-raised">Approve</md-button>
-                    <md-button class="md-accent md-raised">Delete</md-button>
+                    <md-button class="md-accent md-raised">Reject</md-button>
                 </div>
                 <div class="responsive-table">
                     <table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
@@ -56,16 +56,14 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="biz in $data">
-                            <td>{{biz.accountName}}</td>
-                            <td>{{biz.businessNumber}}</td>
-                            <td ng-style="'{{biz.status}}' == '0' ? {'color':'blue'} : '{{biz.status}}' == '1' ? {'color':'green'} : {'color':'red'}">
-                                {{biz.status == 0 ? 'Pending Approval' : biz.status == 1 ? 'Active' : biz.status == 2 ? 'Rejected' : 'Disabled'}}
+                        <tr ng-repeat="customer in $data">
+                            <td>{{customer.recName}}</td>
+                            <td>{{customer.recMisdn}}</td>
+                            <td>{{customer.recTypeDesc}}</td>
+                            <td ng-style="'{{customer.recStatus}}' == '5' ? {'color':'orange'} : '{{customer.recStatus}}' == '0' ? {'color':'green'} : {'color':'red'}">
+                                {{customer.recStatus == 5 ? 'Pending Approval' : customer.recStatus == 0 ? 'Approved' : customer.recStatus == 3 ? 'Rejected' : 'Disabled'}}
                             </td>
-                            <td>{{biz.businessNumber}}</td>
                             <td><md-checkbox ng-model="selectAll" aria-label="SelectIndividual" ng-click="selectIndividual(biz)"></md-checkbox></td>
-                            <!--<td><md-button class="md-primary" ng-click="approveBiz($event, biz);" ng-show="({{biz.status == '0'}} && isPaybillChecker)">Approve</md-button></td>-->
-                            <!--<td><md-button class="md-accent" ng-click="rejectBiz($event, biz);" ng-show="({{biz.status == '0'}} && isPaybillChecker)">Reject</md-button></td>-->
                             <td></td>
                             <td></td>
                         </tr>

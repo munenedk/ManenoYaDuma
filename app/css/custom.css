@@ -97,6 +97,10 @@ td, th {
   background-color: #8CC63F !important;
 }
 
+.pagination li.active {
+  background-color: #8CC63F !important;
+}
+
 /*Font Icons*/
 /*md-icon {
   padding:40px;
