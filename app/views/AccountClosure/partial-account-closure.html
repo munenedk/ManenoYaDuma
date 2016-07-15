@@ -3,23 +3,27 @@
         <md-card-content>
             <!--Header section-->
             <h5 class="md-title md-primary">Account Closure</h5>
+
             <h3 class="md-subhead">Please enter a phone number or upload a file</h3>
+
             <div layout="row" layout-sm="column">
-                <div layout="row" layout-sm="column" flex="55" flex-sm="100">
-                    <md-input-container flex="35">
-                        <label>Phone number (2547...)</label>
-                        <input type="number" ng-model="account.number">
-                    </md-input-container>
-                    <md-input-container style="margin-top: 16px" flex-offset="5">
-                        <label>Closure Type</label>
-                        <md-select ng-model="account.closeType" ng-change="closureTypeChanged(account.closeType)">
-                            <md-option value=""></md-option>
-                            <md-option value="1">Recycling</md-option>
-                            <md-option value="2">On Demand</md-option>
-                            <md-option value="3">Change Ownership</md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-button class="md-primary" style="height: 40px; margin-top: 30px">{{buttonText}}</md-button>
+                <div flex="55" flex-sm="100">
+                    <form name="form.closureForm" layout="row" layout-sm="column" ng-submit="searchOrSubmit(account,buttonText)">
+                        <md-input-container flex="35">
+                            <label>Phone number (MISDN)</label>
+                            <input type="number" ng-model="account.recMisdn" ng-minlength="12" ng-maxlength="12" required>
+                        </md-input-container>
+                        <md-input-container style="margin-top: 16px" flex-offset="5">
+                            <label>Closure Type</label>
+                            <md-select ng-model="account.recStatusDesc" ng-change="closureTypeChanged(account.recStatusDesc)">
+                                <md-option value=""></md-option>
+                                <md-option value="Recycle">Recycling</md-option>
+                                <md-option value="On Demand">On Demand</md-option>
+                                <md-option value="Change Ownership">Change Ownership</md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-button class="md-primary" style="height: 40px; margin-top: 30px" type="submit">{{buttonText}}</md-button>
+                    </form>
                 </div>
                 <div layout="row" flex="40" flex-sm="100" layout-sm="column">
                     <form action="#" flex="90">
@@ -37,7 +41,7 @@
                 </div>
             </div>
 
-           <!--Table section-->
+            <!--Table section-->
             <div loading-container="tableParams.settings().$loading">
                 <div layout="row">
                     <span flex></span>
@@ -52,7 +56,10 @@
                             <td><b>Phone Number</b></td>
                             <td><b>Closure Type</b></td>
                             <td><b>Status</b></td>
-                            <td><md-checkbox ng-model="selectAll" aria-label="SelectEverything" ng-click="selectAll($data)"></md-checkbox></td>
+                            <td>
+                                <md-checkbox ng-model="selectAll" aria-label="SelectEverything"
+                                             ng-click="selectAll($data)"></md-checkbox>
+                            </td>
                         </tr>
                         </thead>
                         <tbody>
@@ -61,9 +68,13 @@
                             <td>{{customer.recMisdn}}</td>
                             <td>{{customer.recTypeDesc}}</td>
                             <td ng-style="'{{customer.recStatus}}' == '5' ? {'color':'orange'} : '{{customer.recStatus}}' == '0' ? {'color':'green'} : {'color':'red'}">
-                                {{customer.recStatus == 5 ? 'Pending Approval' : customer.recStatus == 0 ? 'Approved' : customer.recStatus == 3 ? 'Rejected' : 'Disabled'}}
+                                {{customer.recStatus == 5 ? 'Pending Approval' : customer.recStatus == 0 ? 'Approved' :
+                                customer.recStatus == 3 ? 'Rejected' : 'Disabled'}}
                             </td>
-                            <td><md-checkbox ng-model="selectAll" aria-label="SelectIndividual" ng-click="selectIndividual(biz)"></md-checkbox></td>
+                            <td>
+                                <md-checkbox ng-model="selectAll" aria-label="SelectIndividual"
+                                             ng-click="selectIndividual(customer)"></md-checkbox>
+                            </td>
                             <td></td>
                             <td></td>
                         </tr>

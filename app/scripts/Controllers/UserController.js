@@ -158,7 +158,7 @@ var UserController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 
 	//form
 	$scope.form = {};

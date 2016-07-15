@@ -63,7 +63,7 @@ var PermissionsController = function($scope, $rootScope, $mdDialog, $mdToast, ng
 
 	//Menu
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 
 	//Save Role
 	$scope.save = function save(permission) {

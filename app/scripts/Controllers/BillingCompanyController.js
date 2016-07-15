@@ -119,7 +119,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 
 	//Billing Company Form
 	$scope.form = {};

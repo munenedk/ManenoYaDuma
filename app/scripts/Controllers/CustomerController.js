@@ -57,7 +57,7 @@ var CustomerController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 
   //Menu
   $rootScope.hamburgerAvailable = true;
-  $rootScope.menuAvailable = true;
+  $rootScope.menuAvailable = false;
 
   $scope.selectedCustomer = function() {
     var customerId = $routeParams.customerId;

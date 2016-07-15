@@ -89,7 +89,7 @@ app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast
 app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', '$window', 'LoginService', 'BillingCompanyService', 'PaymentsService', 'AlertUtils', PaymentsController]);
 app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'FileSaver', 'Blob', 'LoginService', '$window', 'PaybillReportsService', 'AlertUtils', PaybillReportsController]);
 app.controller('MtnPaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'MtnPaymentsService', 'FileSaver', 'Blob', 'AlertUtils', MtnPaymentsController]);
-app.controller('AccountClosure', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'AccountClosureService', 'AlertUtils', AccountClosure]);
+app.controller('AccountClosure', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'AccountClosureService', 'AlertUtils','$filter', AccountClosure]);
 
 
 //Constants

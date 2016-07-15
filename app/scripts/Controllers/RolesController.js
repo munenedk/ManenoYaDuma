@@ -98,7 +98,7 @@ var RolesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 
 	//Menu
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 
 	//Role Form
 	$scope.form = {};

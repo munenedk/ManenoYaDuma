@@ -113,7 +113,7 @@ var MtsSalesController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 
 	//Menu
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 
 	//Show upload div
 	$scope.showFileUpload = true;

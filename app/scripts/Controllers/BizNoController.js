@@ -86,7 +86,7 @@ var BizNoController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 
 	//Biz Controller Form
 	$scope.form = {};

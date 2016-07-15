@@ -84,7 +84,7 @@ var CardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 
 	//Form
 	$scope.form = {};

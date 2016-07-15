@@ -198,7 +198,7 @@ var DashboardController = function($scope, $rootScope, $mdDialog, $mdToast, ngTa
 
 	//Menu
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 };
 
 module.exports = DashboardController;

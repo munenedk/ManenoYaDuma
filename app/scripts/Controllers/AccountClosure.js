@@ -2,14 +2,15 @@
  * Created by munenedk-pc on 12-Jul-16.
  */
 
-var AccountClosure = function($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage, $location, $routeParams, LoginService, AccountClosureService, AlertUtils) {
+var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage,
+                               $location, $routeParams, LoginService, AccountClosureService, AlertUtils, $filter) {
     //Inject Service Methods in scope
     $scope.getUserMenu = LoginService.loadMenu();
 
     //$scope.getBusinessNumbers = AccountClosureService.listBusinessNumbers();
     //$scope.getBusinessNumber = AccountClosureService.getBizNumber();
     $scope.updateBusinessNumber = AccountClosureService.updateBizNumber();
-    $scope.saveBiz = AccountClosureService.save();
+    //$scope.saveBiz = AccountClosureService.save();
     $scope.approveRequest = AccountClosureService.approveRequest();
     $scope.rejectRequest = AccountClosureService.rejectRequest();
 
@@ -25,6 +26,7 @@ var AccountClosure = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
     $scope.buttonText = "Search";
     $scope.selectAll = false;
     $scope.getClosureDetails = AccountClosureService.listClosureDetails();
+    $scope.saveAccount = AccountClosureService.save();
 
     //Recycle request table code here
     //Get user token
@@ -55,17 +57,17 @@ var AccountClosure = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
             count: 10 //count per page
         }, {
             total: 0, //length of data
-            getData: function($defer, params) {
+            getData: function ($defer, params) {
                 //Ajax Request to API
                 $scope.getClosureDetails(params)
-                    .success(function(data, status, headers, config) {
+                    .success(function (data, status, headers, config) {
                         var rData = data.payload;
                         var closureDetails = rData.content;
                         params.total(rData.totalElements);
                         //set New Data
                         $defer.resolve(closureDetails);
                     })
-                    .error(function(data, status, headers, config) {
+                    .error(function (data, status, headers, config) {
                         $scope.handleError(data, status, headers, config);
                     });
             }
@@ -78,28 +80,28 @@ var AccountClosure = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
     }
 
 
-    $scope.closureTypeChanged = function(model){
-        if(angular.equals(model,"")){
+    $scope.closureTypeChanged = function (model) {
+        if (angular.equals(model, "")) {
             $scope.buttonText = "Search";
-        } else{
+        } else {
             $scope.buttonText = "Submit";
         }
     };
 
-    $scope.selectIndividual = function(row){
+    $scope.selectIndividual = function (row) {
         console.log(row);
     };
 
-    $scope.selectAll = function(rows){
-        for(row in rows){
-            console.log(rows[row].accountName);
+    $scope.selectAll = function (rows) {
+        for (row in rows) {
+            console.log(rows[row]);
         }
     };
 
-    $scope.uploadFile =  function(){
+    $scope.uploadFile = function () {
         var f = document.getElementById('bulkUpload').files[0],
             r = new FileReader();
-        r.onloadend = function(e){
+        r.onloadend = function (e) {
             var data = e.target.result;
             //send file data here
             console.log(data);
@@ -107,9 +109,37 @@ var AccountClosure = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
         r.readAsBinaryString(f);
     };
 
+    $scope.searchOrSubmit = function (account, buttonText) {
+        var number = account.recMisdn;
+        var prefix = $filter('limitTo')(number, 4, 0);
+        console.log(prefix);
+        if (prefix !== "2547") {
+            $scope.showToast("Please enter a 12 digit number beginning with 2547");
+        } else {
+            if (angular.equals(buttonText, "Search")) {
+                //Search for account
+                console.log("Perform search");
+            } else {
+                //Submit account
+                if ($scope.form.closureForm.$valid) {
+                    console.log(account);
+                    $scope.saveAccount(account)
+                        .success(function (data, status, headers, config) {
+                            $scope.showToast(data.message);
+                            $scope.resetForm();
+                            //Refresh table
+                            $scope.getClosureDetails = AccountClosureService.listClosureDetails();
+                        })
+                        .error(function (data, status, headers, config) {
+                            // console.log("Result: "+ data+"status: "+status);
+                            $scope.handleError(data, status, headers, config);
+                        });
+                }
+            }
+        }
+    };
+
     //------------------------------------------- End of Dan Additions---------------------------------
-
-
 
 
     ////Get user token
@@ -178,18 +208,18 @@ var AccountClosure = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
 
     //Show Menu Buttons
     $rootScope.hamburgerAvailable = true;
-    $rootScope.menuAvailable = true;
+    $rootScope.menuAvailable = false;
 
     //Save Business Number
-    $scope.save = function(biz) {
+    $scope.save = function (biz) {
         console.log($scope.form);
         if ($scope.form.bizNoForm.$valid) {
             $scope.saveBiz(biz)
-                .success(function(data, status, headers, config) {
+                .success(function (data, status, headers, config) {
                     $scope.showToast(data.message);
                     $scope.resetForm();
                 })
-                .error(function(data, status, headers, config) {
+                .error(function (data, status, headers, config) {
                     // console.log("Result: "+ data+"status: "+status);
                     $scope.handleError(data, status, headers, config);
                 });
@@ -197,25 +227,25 @@ var AccountClosure = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
     };
 
     //Update Business Number
-    $scope.update = function(biz) {
+    $scope.update = function (biz) {
         if ($scope.form.bizNoForm.$valid) {
             $scope.updateBusinessNumber(biz)
-                .success(function(data, status, headers, config) {
+                .success(function (data, status, headers, config) {
                     $scope.biz = data.payload;
                     $scope.showToast(data.message);
                 })
-                .error(function(data, status, headers, config) {
+                .error(function (data, status, headers, config) {
                     $scope.handleError(data, status, headers, config);
                 });
         }
     };
 
-    $scope.resetForm = function() {
-        $scope.biz = {};
+    $scope.resetForm = function () {
+        $scope.account = {};
     };
 
     //Approve Biz
-    $scope.approveBiz = function(ev, biz) {
+    $scope.approveBiz = function (ev, biz) {
         // Appending dialog to document.body to cover sidenav in docs app
         var confirm = $mdDialog.confirm()
             .title('Approve Business Number')
@@ -224,22 +254,22 @@ var AccountClosure = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
             .ok('Yes')
             .cancel('Cancel')
             .targetEvent(ev);
-        $mdDialog.show(confirm).then(function() {
+        $mdDialog.show(confirm).then(function () {
             $scope.approveRequest(biz)
-                .success(function(data, status, headers, config) {
+                .success(function (data, status, headers, config) {
                     $scope.showToast(data.message);
                     $scope.tableParams.reload();
                 })
-                .error(function(data, status, headers, config) {
+                .error(function (data, status, headers, config) {
                     $scope.handleError(data, status, headers, config);
                 });
-        }, function() {
+        }, function () {
             // $scope.status = 'You decided to keep your debt.';
         });
     };
 
     //Reject biz
-    $scope.rejectBiz = function(ev, biz) {
+    $scope.rejectBiz = function (ev, biz) {
         // Appending dialog to document.body to cover sidenav in docs app
         var confirm = $mdDialog.confirm()
             .title('Reject Company')
@@ -248,20 +278,19 @@ var AccountClosure = function($scope, $rootScope, $mdDialog, $mdToast, ngTablePa
             .ok('Yes')
             .cancel('Cancel')
             .targetEvent(ev);
-        $mdDialog.show(confirm).then(function() {
+        $mdDialog.show(confirm).then(function () {
             $scope.rejectRequest(biz)
-                .success(function(data, status, headers, config) {
+                .success(function (data, status, headers, config) {
                     $scope.showToast(data.message);
                     $scope.tableParams.reload();
                 })
-                .error(function(data, status, headers, config) {
+                .error(function (data, status, headers, config) {
                     $scope.handleError(data, status, headers, config);
                 });
-        }, function() {
+        }, function () {
             // $scope.status = 'You decided to keep your debt.';
         });
     };
-
 
 
 };

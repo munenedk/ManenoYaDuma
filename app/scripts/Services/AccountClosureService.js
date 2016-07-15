@@ -20,59 +20,71 @@ var AccountClosureService = function ($http, dumaSettings) {
         });
     };
 
+    //Save Account Number
+    var saveAccount = function (account) {
+        return $http({
+            method: "POST",
+            url: dumaSettings.backendUrl + "customers/save",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            data: JSON.stringify(account)
+        });
+    };
+
 //---------------------------End of Dan Stuff---------------------------------------------------
 
     //Get Business Numbers
-    var getBusinessNumbers = function (params) {
-        return $http({
-            method: "GET",
-            url: apiUrl,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            params: {
-                "page": params.page() - 1,
-                "size": params.count(),
-                "filter": params.filter()
-            }
-        });
-    };
+    //var getBusinessNumbers = function (params) {
+    //    return $http({
+    //        method: "GET",
+    //        url: apiUrl,
+    //        headers: {
+    //            'Content-Type': 'application/json'
+    //        },
+    //        params: {
+    //            "page": params.page() - 1,
+    //            "size": params.count(),
+    //            "filter": params.filter()
+    //        }
+    //    });
+    //};
 
     //Get All Business Numbers
-    var getAllBusinessNumbers = function () {
-        return $http({
-            method: "GET",
-            url: apiUrl + "/all",
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-    };
+    //var getAllBusinessNumbers = function () {
+    //    return $http({
+    //        method: "GET",
+    //        url: apiUrl + "/all",
+    //        headers: {
+    //            'Content-Type': 'application/json'
+    //        }
+    //    });
+    //};
 
     //Save Business Number
-    var saveBiz = function (biz) {
-        console.log(JSON.stringify(biz))
-        return $http({
-            method: "POST",
-            url: apiUrl,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(biz)
-        });
-    };
+    //var saveBiz = function (biz) {
+    //    console.log(JSON.stringify(biz))
+    //    return $http({
+    //        method: "POST",
+    //        url: apiUrl,
+    //        headers: {
+    //            'Content-Type': 'application/json',
+    //        },
+    //        data: JSON.stringify(biz)
+    //    });
+    //};
 
 
     //Get Business Number
-    var getBusinessNumber = function (bizId) {
-        return $http({
-            method: "GET",
-            url: apiUrl + "/" + bizId,
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-    };
+    //var getBusinessNumber = function (bizId) {
+    //    return $http({
+    //        method: "GET",
+    //        url: apiUrl + "/" + bizId,
+    //        headers: {
+    //            'Content-Type': 'application/json',
+    //        }
+    //    });
+    //};
 
     //Update Business Number
     var updateBusinessNumber = function (biz) {
@@ -112,18 +124,18 @@ var AccountClosureService = function ($http, dumaSettings) {
 
 
     return {
-        listBusinessNumbers: function () {
-            return getBusinessNumbers;
-        },
-        save: function () {
-            return saveBiz;
-        },
-        listAllBizNos: function () {
-            return getAllBusinessNumbers;
-        },
-        getBizNumber: function () {
-            return getBusinessNumber;
-        },
+        //listBusinessNumbers: function () {
+        //    return getBusinessNumbers;
+        //},
+        //save: function () {
+        //    return saveBiz;
+        //},
+        //listAllBizNos: function () {
+        //    return getAllBusinessNumbers;
+        //},
+        //getBizNumber: function () {
+        //    return getBusinessNumber;
+        //},
         updateBizNumber: function () {
             return updateBusinessNumber;
         },
@@ -135,6 +147,9 @@ var AccountClosureService = function ($http, dumaSettings) {
         }, //Below are Dan additions
         listClosureDetails: function () {
             return getClosureDetails;
+        },
+        save : function(){
+            return saveAccount;
         }
     };
 

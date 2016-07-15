@@ -155,7 +155,7 @@ var PaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ngTab
 
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 
 	//form
 	$scope.form = {};

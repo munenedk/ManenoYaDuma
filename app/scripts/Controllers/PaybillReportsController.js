@@ -62,7 +62,7 @@ var PaybillReportsController = function($scope, $rootScope, $mdDialog, $mdToast,
 
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 
 	//form
 	$scope.form = {};

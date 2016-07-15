@@ -148,7 +148,7 @@ var ReconController = function($scope, $rootScope, $mdDialog, $mdToast, ngTableP
   
   //Show Menu Buttons
   $rootScope.hamburgerAvailable = true;
-  $rootScope.menuAvailable = true;
+  $rootScope.menuAvailable = false;
 
   //Error Messages
   var redirectMsg = ". Your session has expired. You will now be redirected";

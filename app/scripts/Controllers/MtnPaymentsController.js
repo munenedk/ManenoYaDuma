@@ -74,7 +74,7 @@ var MtsPaymentsController = function($scope, $rootScope, $mdDialog, $mdToast, ng
 
 	//Show Menu Buttons
 	$rootScope.hamburgerAvailable = true;
-	$rootScope.menuAvailable = true;
+	$rootScope.menuAvailable = false;
 };
 
 module.exports = MtsPaymentsController;
