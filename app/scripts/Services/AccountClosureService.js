@@ -31,6 +31,23 @@ var AccountClosureService = function ($http, dumaSettings) {
             data: JSON.stringify(account)
         });
     };
+    
+    //Save Account Number
+    var searchMsidn = function (msidn) {
+        return $http({
+            method: "GET",
+            url: endpoint+"/search?msidn="+msidn,
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+    };
+    
+    
+    
+    
+    
+    
 
 //---------------------------End of Dan Stuff---------------------------------------------------
 
@@ -150,6 +167,9 @@ var AccountClosureService = function ($http, dumaSettings) {
         },
         save : function(){
             return saveAccount;
+        },
+        getMisdn: function(){
+            return searchMsidn;
         }
     };
 
