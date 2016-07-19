@@ -1,5 +1,6 @@
 <md-content class="md-padding">
     <md-card>
+        <md-progress-linear md-mode="indeterminate" ng-show="showUploadProgress"></md-progress-linear>
         <md-card-content>
             <!--Header section-->
             <h5 class="md-title md-primary">Account Closure</h5>
@@ -30,7 +31,7 @@
                         <div class="file-field input-field">
                             <div class="btn">
                                 <span>Upload</span>
-                                <input type="file" id="bulkUpload">
+                                <input type="file" id="bulkUpload" accept=".csv">
                             </div>
                             <div class="file-path-wrapper">
                                 <input class="file-path validate" type="text"
@@ -45,8 +46,10 @@
             <div loading-container="tableParams.settings().$loading">
                 <div layout="row">
                     <span flex></span>
-                    <md-button class="md-primary md-raised">Approve</md-button>
-                    <md-button class="md-accent md-raised">Reject</md-button>
+                    <md-button class="md-primary md-raised" ng-show="!showList" ng-click="refreshTable()">Refresh</md-button>
+                    <md-button class="md-primary md-raised" ng-click="approveAccounts($event)" 
+                               ng-disabled="disableActions">Approve</md-button>
+                    <md-button class="md-accent md-raised" ng-disabled="disableActions">Reject</md-button>
                 </div>
                 <div class="responsive-table">
                     <table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
@@ -58,12 +61,27 @@
                             <td><b>Status</b></td>
                             <td>
                                 <md-checkbox ng-model="selectAll" aria-label="SelectEverything"
-                                             ng-click="selectAllAccounts($data)"></md-checkbox>
+                                             ng-click="selectAllAccounts($data)" ng-show="showList"></md-checkbox>
                             </td>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="customer in $data">
+                        <tr ng-repeat="customer in data" ng-show="showList">
+                            <td>{{customer.recName}}</td>
+                            <td>{{customer.recMisdn}}</td>
+                            <td>{{customer.recTypeDesc}}</td>
+                            <td ng-style="'{{customer.recStatus}}' == '5' ? {'color':'orange'} : '{{customer.recStatus}}' == '0' ? {'color':'green'} : {'color':'red'}">
+                                {{customer.recStatus == 5 ? 'Pending Approval' : customer.recStatus == 0 ? 'Approved' :
+                                customer.recStatus == 3 ? 'Rejected' : 'Disabled'}}
+                            </td>
+                            <td>
+                                <md-checkbox ng-model="selectAll" aria-label="SelectIndividual"
+                                             ng-click="selectIndividual(customer)"></md-checkbox>
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr ng-repeat="customer in searchStuff" ng-show="!showList">
                             <td>{{customer.recName}}</td>
                             <td>{{customer.recMisdn}}</td>
                             <td>{{customer.recTypeDesc}}</td>
