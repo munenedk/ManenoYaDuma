@@ -2,8 +2,7 @@
  * Created by munenedk-pc on 13-Jul-16.
  */
 var AccountClosureService = function ($http, dumaSettings) {
-    var apiUrl = dumaSettings.backendUrl + "paybill";
-//---------------------------Dan Stuff-----------------------------------------------------
+    
     var endpoint = dumaSettings.backendUrl + "recycle";
 
     //Get Account Closure details
@@ -40,49 +39,36 @@ var AccountClosureService = function ($http, dumaSettings) {
     };
     
      //Approve Closures
-    var submitClosures = function (numberList) {
+    var submitClosures = function (list) {
         return $http({
             method: "POST",
             url: endpoint + "/approve",
             headers: {'Content-Type': 'application/json'},
-            data: JSON.stringify(numberList)
+            data: JSON.stringify(list)
         });
-    };   
-
-//---------------------------End of Dan Stuff---------------------------------------------------
-
-    //Update Business Number
-    var updateBusinessNumber = function (biz) {
+    }; 
+    
+    //Reject Cosures
+    var submitRejections = function (list) {
         return $http({
-            method: "PUT",
-            url: apiUrl,
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(biz)
+            method: "POST",
+            url: endpoint + "/reject",
+            headers: {'Content-Type': 'application/json'},
+            data: JSON.stringify(list)
         });
     };
-
-    //Reject Request
-    var rejectRequest = function (biz) {
+    
+    //Approve Bulk Closures
+    var submitBulkClosures = function (dataArray) {
         return $http({
-            method: "PUT",
-            url: apiUrl + "/rejectRequest",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(biz)
+            method: "POST",
+            url: endpoint + "/bulk",
+            headers: {'Content-Type': 'application/json'},
+            data: JSON.stringify(dataArray)
         });
     };
-
 
     return {
-        updateBizNumber: function () {
-            return updateBusinessNumber;
-        },
-        rejectRequest: function () {
-            return rejectRequest;
-        }, //Below are Dan additions
         listClosureDetails: function () {
             return getClosureDetails;
         },
@@ -94,6 +80,12 @@ var AccountClosureService = function ($http, dumaSettings) {
         },
         sendClosureList : function (){
             return submitClosures;
+        },
+        sendRejectionList : function(){
+            return submitRejections;
+        },
+        sendBulkList : function (){
+            return submitBulkClosures;
         }
     };
 

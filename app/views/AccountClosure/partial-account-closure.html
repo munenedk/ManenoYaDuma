@@ -9,7 +9,7 @@
 
             <div layout="row" layout-sm="column">
                 <div flex="55" flex-sm="100">
-                    <form name="form.closureForm" layout="row" layout-sm="column" ng-submit="searchOrSubmit(account,buttonText)">
+                    <form name="form.closureForm" layout="row" layout-sm="column" ng-submit="searchOrSubmit(account, buttonText)">
                         <md-input-container flex="35">
                             <label>Phone number (MISDN)</label>
                             <input type="number" ng-model="account.recMisdn" ng-minlength="12" ng-maxlength="12" required>
@@ -18,9 +18,9 @@
                             <label>Closure Type</label>
                             <md-select ng-model="account.recStatusDesc" ng-change="closureTypeChanged(account.recStatusDesc)">
                                 <md-option value=""></md-option>
-                                <md-option value="Recycle">Recycling</md-option>
-                                <md-option value="On Demand">On Demand</md-option>
-                                <md-option value="Change Ownership">Change Ownership</md-option>
+                                <md-option value="RECYCLING">Recycling</md-option>
+                                <md-option value="ON DEMAND">On Demand</md-option>
+                                <md-option value="CHANGE OF OWNERSHIP">Change Ownership</md-option>
                             </md-select>
                         </md-input-container>
                         <md-button class="md-primary" style="height: 40px; margin-top: 30px" type="submit">{{buttonText}}</md-button>
@@ -49,52 +49,67 @@
                     <md-button class="md-primary md-raised" ng-show="!showList" ng-click="refreshTable()">Refresh</md-button>
                     <md-button class="md-primary md-raised" ng-click="approveAccounts($event)" 
                                ng-disabled="disableActions">Approve</md-button>
-                    <md-button class="md-accent md-raised" ng-disabled="disableActions">Reject</md-button>
+                    <md-button class="md-accent md-raised" ng-click="rejectAccounts($event)" 
+                               ng-disabled="disableActions">Reject</md-button>
                 </div>
                 <div class="responsive-table">
                     <table ng-table="tableParams" show-filter="true" class="table bordered striped hoverable">
                         <thead>
-                        <tr>
-                            <td><b>Name</b></td>
-                            <td><b>Phone Number</b></td>
-                            <td><b>Closure Type</b></td>
-                            <td><b>Status</b></td>
-                            <td>
-                                <md-checkbox ng-model="selectAll" aria-label="SelectEverything"
-                                             ng-click="selectAllAccounts($data)" ng-show="showList"></md-checkbox>
-                            </td>
+                            <tr>
+                                <td><b>Name</b></td>
+                                <td><b>Phone Number</b></td>
+                                <td><b>Closure Type</b></td>
+                                <td><b>Status</b></td>
+                                <td>
+                        <md-checkbox ng-model="selectAll" aria-label="SelectEverything"
+                                     ng-click="selectAllAccounts($data)" ng-show="showList"></md-checkbox>
+                        </td>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="customer in data" ng-show="showList">
-                            <td>{{customer.recName}}</td>
-                            <td>{{customer.recMisdn}}</td>
-                            <td>{{customer.recTypeDesc}}</td>
-                            <td ng-style="'{{customer.recStatus}}' == '5' ? {'color':'orange'} : '{{customer.recStatus}}' == '0' ? {'color':'green'} : {'color':'red'}">
-                                {{customer.recStatus == 5 ? 'Pending Approval' : customer.recStatus == 0 ? 'Approved' :
-                                customer.recStatus == 3 ? 'Rejected' : 'Disabled'}}
-                            </td>
-                            <td>
-                                <md-checkbox ng-model="selectAll" aria-label="SelectIndividual"
-                                             ng-click="selectIndividual(customer)"></md-checkbox>
-                            </td>
-                            <td></td>
-                            <td></td>
+                            <tr ng-repeat="customer in data" ng-show="showList">
+                                <td>{{customer.recName}}</td>
+                                <td>{{customer.recMisdn}}</td>
+                                <td>{{customer.recTypeDesc}}</td>
+                                <td ng-style="'{{customer.recStatus}}' ==    '5' ? {'color':'orange'} :
+                                            '{{customer.recStatus}}' ==    '0' ? {'color':'green'} :
+                                                        '{{customer.recStatus}}' == '2' ? {'color':'green'} :
+                                                            {'color':'red'}">
+                                    {{customer.recStatus == 5 ? 'Pending Approval' : 
+                                  customer.recStatus == 0 ? 'Authorised' :
+                                  customer.recStatus == 2 ? 'Approved' :
+                                  customer.recStatus == 3 ? 'Rejected' : 
+                                  'Disabled'}}
+                                </td>
+                                <td>
+                        <md-checkbox ng-model="selectAll" aria-label="SelectIndividual"
+                                     ng-click="selectIndividual(customer)"
+                                     ng-disabled="!({{customer.recStatus}} == '5')"></md-checkbox>
+                        </td>
+                        <td></td>
+                        <td></td>
                         </tr>
                         <tr ng-repeat="customer in searchStuff" ng-show="!showList">
                             <td>{{customer.recName}}</td>
                             <td>{{customer.recMisdn}}</td>
                             <td>{{customer.recTypeDesc}}</td>
-                            <td ng-style="'{{customer.recStatus}}' == '5' ? {'color':'orange'} : '{{customer.recStatus}}' == '0' ? {'color':'green'} : {'color':'red'}">
-                                {{customer.recStatus == 5 ? 'Pending Approval' : customer.recStatus == 0 ? 'Approved' :
-                                customer.recStatus == 3 ? 'Rejected' : 'Disabled'}}
+                            <td ng-style="'{{customer.recStatus}}' ==    '5' ? {'color':'orange'} :
+                                '{{customer.recStatus}}' ==    '0' ? {'color':'green'} :
+                                '{{customer.recStatus}}' == '2' ? {'color':'green'} :
+                                                        {'color':'red'}">
+                                {{customer.recStatus == 5 ? 'Pending Approval' : 
+                                  customer.recStatus == 0 ? 'Authorised' :
+                                  customer.recStatus == 2 ? 'Approved' :
+                                  customer.recStatus == 3 ? 'Rejected' : 
+                                  'Disabled'}}
                             </td>
                             <td>
-                                <md-checkbox ng-model="selectAll" aria-label="SelectIndividual"
-                                             ng-click="selectIndividual(customer)"></md-checkbox>
-                            </td>
-                            <td></td>
-                            <td></td>
+                        <md-checkbox ng-model="selectAll" aria-label="SelectIndividual"
+                                     ng-click="selectIndividual(customer)"
+                                     ng-disabled="!({{customer.recStatus}} == '5')"></md-checkbox>
+                        </td>
+                        <td></td>
+                        <td></td>
                         </tr>
                         </tbody>
                     </table>

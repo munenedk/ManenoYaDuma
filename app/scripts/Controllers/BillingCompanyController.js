@@ -131,7 +131,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
   $scope.tarrifsTypes = [];
  
   $scope.loadTarrifs = function() {
-  	console.log("Called Here");
+//  	console.log("Called Here");
   	
 			$scope.getTarrif().success(function(data, status, headers, config) {
 			 $scope.tarrifs = [];
@@ -198,12 +198,12 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 
 	//Validate Account
 	$scope.validateAccount = function(accNo) {
-		console.log("ACCNO: " + accNo);
+//		console.log("ACCNO: " + accNo);
 		if (accNo !== null) {
 			if (accNo.length >= 10) {
 				$scope.validateAccountNumber(accNo)
 					.success(function(data, status, headers, config) {
-						console.log("Response: " + data);
+//						console.log("Response: " + data);
 						$scope.showToast(data.message);
 						$scope.company.accountNumber = data.payload.accountNumber;
 						$scope.company.accountTitle = data.payload.accountTitle;
@@ -237,7 +237,7 @@ var BillingCompanyController = function($scope, $rootScope, $mdDialog, $mdToast,
 			}, Math.random() * 1000, false);
 			return deferred.promise;
 		} else {
-			console.log(results[0].display);
+//			console.log(results[0].display);
 			return results;
 		}
 	}
