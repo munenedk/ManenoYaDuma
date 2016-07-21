@@ -4,7 +4,7 @@
 
 var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage,
         $location, $routeParams, LoginService, AccountClosureService, AlertUtils, $filter) {
-    
+
     //Inject Service Methods in scope
     $scope.getUserMenu = LoginService.loadMenu();
     $scope.isSessionActive = TokenStorage.isSessionActive();
@@ -14,7 +14,7 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 
     //Account Closure Data and config variables
     $scope.account = {};
-    $scope.account.closeType = "";
+    $scope.account.recStatusDesc = "";
     $scope.buttonText = "Search";
     $scope.selectAll = false;
     $scope.getClosureDetails = AccountClosureService.listClosureDetails();
@@ -25,10 +25,9 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
     $scope.searchMobileNo = AccountClosureService.getMisdn();
     $scope.accountsForAuth = [];
     $scope.data = [];
-    $scope.searchData = {};
     $scope.searchStuff = [];
     $scope.showList = true;
-    $scope.showUploadProgress = false;
+    $scope.showMaterialProgress = false;
     $scope.disableActions = true;
     $scope.fileData = [];
 
@@ -55,7 +54,6 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
             auths.push(authorities[i].authority);
         }
 
-//        console.log(auths);
         //Evaluate Roles
         $scope.isClosureMaker = auths.indexOf('ROLE_ACCOUNT_CLOSURE_MAKER') > -1;
         $scope.isClosureChecker = auths.indexOf('ROLE_ACCOUNT_CLOSURE_CHECKER') > -1;
@@ -117,7 +115,6 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
                 $scope.disableActions = true;
             }
         }
-//        console.log($scope.accountsForAuth);
     };
 
     $scope.selectAllAccounts = function (rows) {
@@ -141,11 +138,10 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
             $scope.accountsForAuth = [];
             $scope.disableActions = true;
         }
-//        console.log($scope.accountsForAuth);
     };
 
     $scope.uploadFile = function () {
-        $scope.showUploadProgress = true;
+        $scope.showMaterialProgress = true;
         var f = document.getElementById('bulkUpload').files[0],
                 r = new FileReader();
         r.onloadend = function (e) {
@@ -164,12 +160,12 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
             //send array of objects
             $scope.uploadBulkClosures($scope.fileData)
                     .success(function (data, status, headers, config) {
-                        $scope.showUploadProgress = false;
+                        $scope.showMaterialProgress = false;
                         $scope.showToast(data.message);
                         $scope.tableParams.reload();
                     })
                     .error(function (data, status, headers, config) {
-                        $scope.showUploadProgress = false;
+                        $scope.showMaterialProgress = false;
                         $scope.handleError(data, status, headers, config);
                     });
         };
@@ -179,7 +175,6 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
     $scope.searchOrSubmit = function (account, buttonText) {
         var number = account.recMisdn;
         var prefix = $filter('limitTo')(number, 4, 0);
-//        console.log(prefix);
         if (prefix !== "2547") {
             $scope.showToast("Please enter a 12 digit number beginning with 2547");
         } else {
@@ -188,8 +183,7 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
                         .success(function (data, status, headers, config) {
                             $scope.showList = false;
                             $scope.searchStuff = [];
-                            $scope.searchData = data.payload;
-                            $scope.searchStuff.push($scope.searchData);
+                            $scope.searchStuff.push(data.payload);
                             $scope.showToast(data.message);
                         })
                         .error(function (data, status, headers, config) {
@@ -198,7 +192,6 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
             } else {
                 //Submit account
                 if ($scope.form.closureForm.$valid) {
-//                    console.log(account);
                     $scope.saveAccount(account)
                             .success(function (data, status, headers, config) {
                                 $scope.showToast(data.message);
@@ -207,7 +200,6 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
                                 $scope.tableParams.reload();
                             })
                             .error(function (data, status, headers, config) {
-                                // console.log("Result: "+ data+"status: "+status);
                                 $scope.handleError(data, status, headers, config);
                             });
                 }
@@ -226,19 +218,23 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
                 .cancel('Cancel')
                 .targetEvent(ev);
         $mdDialog.show(confirm).then(function () {
+            $scope.showMaterialProgress = true;
             $scope.approveClosures($scope.accountsForAuth)
                     .success(function (data, status, headers, config) {
                         $scope.showToast(data.message);
                         $scope.tableParams.reload();
+                        $scope.refreshTable();
+                        $scope.showMaterialProgress = false;
                     })
                     .error(function (data, status, headers, config) {
                         $scope.handleError(data, status, headers, config);
+                        $scope.showMaterialProgress = false;
                     });
         }, function () {
             // Do nothing basically
         });
     };
-    
+
     //Reject Closures
     $scope.rejectAccounts = function (ev) {
         // Appending dialog to document.body to cover sidenav in docs app
@@ -250,13 +246,17 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
                 .cancel('Cancel')
                 .targetEvent(ev);
         $mdDialog.show(confirm).then(function () {
+            $scope.showMaterialProgress = true;
             $scope.rejectClosures($scope.accountsForAuth)
                     .success(function (data, status, headers, config) {
                         $scope.showToast(data.message);
                         $scope.tableParams.reload();
+                        $scope.refreshTable();
+                        $scope.showMaterialProgress = false;
                     })
                     .error(function (data, status, headers, config) {
                         $scope.handleError(data, status, headers, config);
+                        $scope.showMaterialProgress = false;
                     });
         }, function () {
             // Do nothing basically
@@ -271,7 +271,7 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
         $scope.account = {};
     };
 
-    
+
 
 
 };
