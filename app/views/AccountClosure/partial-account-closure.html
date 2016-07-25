@@ -61,19 +61,19 @@
                                 <td><b>Closure Type</b></td>
                                 <td><b>Status</b></td>
                                 <td>
-                        <md-checkbox ng-model="selectAll" aria-label="SelectEverything"
-                                     ng-click="selectAllAccounts($data)" ng-show="showList"></md-checkbox>
+                        <md-checkbox ng-model="select.all" aria-label="SelectEverything"
+                                     ng-change="selectAllAccounts(data)" ng-show="showList"></md-checkbox>
                         </td>
                         </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="customer in data" ng-show="showList">
+                            <tr ng-repeat="customer in data track by $index" ng-show="showList">
                                 <td>{{customer.recName}}</td>
                                 <td>{{customer.recMisdn}}</td>
                                 <td>{{customer.recTypeDesc}}</td>
-                                <td ng-style="'{{customer.recStatus}}' ==    '5' ? {'color':'orange'} :
-                                            '{{customer.recStatus}}' ==    '0' ? {'color':'green'} :
-                                                        '{{customer.recStatus}}' == '2' ? {'color':'green'} :
+                                <td ng-style="'{{customer.recStatus}}' ==           '5' ? {'color':'orange'} :
+                                    '{{customer.recStatus}}' ==           '0' ? {'color':'green'} :
+                                    '{{customer.recStatus}}' == '2' ? {'color':'green'} :
                                                             {'color':'red'}">
                                     {{customer.recStatus == 5 ? 'Pending Approval' : 
                                   customer.recStatus == 0 ? 'Authorised' :
@@ -82,20 +82,18 @@
                                   'Disabled'}}
                                 </td>
                                 <td>
-                        <md-checkbox ng-model="selectAll" aria-label="SelectIndividual"
-                                     ng-click="selectIndividual(customer)"
+                        <md-checkbox ng-model="select.individual[$index]" aria-label="SelectIndividual"
+                                     ng-change="selectIndividual(customer, $index)"
                                      ng-disabled="!({{customer.recStatus}} == '5')"></md-checkbox>
                         </td>
-                        <td></td>
-                        <td></td>
                         </tr>
-                        <tr ng-repeat="customer in searchStuff" ng-show="!showList">
+                        <tr ng-repeat="customer in searchStuff track by $index" ng-show="!showList">
                             <td>{{customer.recName}}</td>
                             <td>{{customer.recMisdn}}</td>
                             <td>{{customer.recTypeDesc}}</td>
-                            <td ng-style="'{{customer.recStatus}}' ==    '5' ? {'color':'orange'} :
-                                '{{customer.recStatus}}' ==    '0' ? {'color':'green'} :
-                                '{{customer.recStatus}}' == '2' ? {'color':'green'} :
+                            <td ng-style="'{{customer.recStatus}}' ==           '5' ? {'color':'orange'} :
+                                        '{{customer.recStatus}}' ==           '0' ? {'color':'green'} :
+                                                    '{{customer.recStatus}}' == '2' ? {'color':'green'} :
                                                         {'color':'red'}">
                                 {{customer.recStatus == 5 ? 'Pending Approval' : 
                                   customer.recStatus == 0 ? 'Authorised' :
@@ -104,12 +102,10 @@
                                   'Disabled'}}
                             </td>
                             <td>
-                        <md-checkbox ng-model="selectAll" aria-label="SelectIndividual"
-                                     ng-click="selectIndividual(customer)"
+                        <md-checkbox ng-model="select.individual[$index]" aria-label="SelectIndividual"
+                                     ng-change="selectIndividual(customer, $index)"
                                      ng-disabled="!({{customer.recStatus}} == '5')"></md-checkbox>
                         </td>
-                        <td></td>
-                        <td></td>
                         </tr>
                         </tbody>
                     </table>

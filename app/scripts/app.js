@@ -89,7 +89,7 @@ app.controller('CardController', ['$scope', '$rootScope', '$mdDialog', '$mdToast
 app.controller('PaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', '$window', 'LoginService', 'BillingCompanyService', 'PaymentsService', 'AlertUtils', PaymentsController]);
 app.controller('PaybillReportsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'FileSaver', 'Blob', 'LoginService', '$window', 'PaybillReportsService', 'AlertUtils', PaybillReportsController]);
 app.controller('MtnPaymentsController', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', 'LoginService', 'MtnPaymentsService', 'FileSaver', 'Blob', 'AlertUtils', MtnPaymentsController]);
-app.controller('AccountClosure', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'AccountClosureService', 'AlertUtils','$filter', AccountClosure]);
+app.controller('AccountClosure', ['$scope', '$rootScope', '$mdDialog', '$mdToast', 'ngTableParams', 'TokenStorage', '$location', '$routeParams', 'LoginService', 'AccountClosureService', 'AlertUtils','$filter','$route', AccountClosure]);
 
 
 //Constants
@@ -99,7 +99,8 @@ app.constant('dumaSettings', {
     //"backendUrl": "http://172.16.102.157:8282/api/v1/",
 
     //"backendUrl": "http://172.17.74.91:8282/api/v1/",
-    "backendUrl": "http://localhost:8787/api/v1/",
+//    "backendUrl": "http://localhost:8787/api/v1/",
+    "backendUrl": "http://172.17.74.91:8787/api/v1/",
     //"backendUrl": "http://172.17.72.98:8787/api/v1/",
     /****Session Timeout *************/
     "session_timeout": 1800000

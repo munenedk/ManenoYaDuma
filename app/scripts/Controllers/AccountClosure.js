@@ -3,7 +3,7 @@
  */
 
 var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableParams, TokenStorage,
-        $location, $routeParams, LoginService, AccountClosureService, AlertUtils, $filter) {
+        $location, $routeParams, LoginService, AccountClosureService, AlertUtils, $filter, $route) {
 
     //Inject Service Methods in scope
     $scope.getUserMenu = LoginService.loadMenu();
@@ -16,7 +16,9 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
     $scope.account = {};
     $scope.account.recStatusDesc = "";
     $scope.buttonText = "Search";
-    $scope.selectAll = false;
+    $scope.select = {};
+    $scope.select.all = false;
+    $scope.select.individual = [];
     $scope.getClosureDetails = AccountClosureService.listClosureDetails();
     $scope.saveAccount = AccountClosureService.save();
     $scope.approveClosures = AccountClosureService.sendClosureList();
@@ -95,9 +97,9 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
         }
     };
 
-    $scope.selectIndividual = function (row) {
+    $scope.selectIndividual = function (row, id) {
         //Insert row if it does not exist
-        if ($scope.accountsForAuth.indexOf(row) === -1) {
+        if ($scope.accountsForAuth.indexOf(row) === -1 && $scope.select.individual[id] === true) {
             //Add only pending approvals
             if (row.recStatus === '5') {
                 $scope.accountsForAuth.push(row);
@@ -106,7 +108,7 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
                     $scope.disableActions = false;
                 }
             }
-        } else {
+        } else if ($scope.accountsForAuth.indexOf(row) > -1 && $scope.select.individual[id] === false) {
             //Remove it if it exists
             var index = $scope.accountsForAuth.indexOf(row);
             $scope.accountsForAuth.splice(index, 1);
@@ -119,12 +121,14 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
 
     $scope.selectAllAccounts = function (rows) {
         //If array is empty it knows you want to select all
-        if ($scope.accountsForAuth.length === 0) {
+        if ($scope.accountsForAuth.length === 0 || $scope.select.all) {
             for (var row in rows) {
                 //Insert rows if they dont exist
                 if ($scope.accountsForAuth.indexOf(rows[row]) === -1) {
                     //Add only pending approvals
                     if (rows[row].recStatus === '5') {
+                        //Mark row as selected
+                        $scope.select.individual[row] = true;
                         $scope.accountsForAuth.push(rows[row]);
                         //Check if checker
                         if ($scope.isClosureChecker) {
@@ -133,10 +137,14 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
                     }
                 }
             }
-        } else {
+        } else if ($scope.accountsForAuth.length > 0 && $scope.select.all === false) {
             //Otherwise it knows you want to remove everything
+            for (var i in rows) {
+                $scope.select.individual[i] = false;
+            }
             $scope.accountsForAuth = [];
             $scope.disableActions = true;
+
         }
     };
 
@@ -162,7 +170,7 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
                     .success(function (data, status, headers, config) {
                         $scope.showMaterialProgress = false;
                         $scope.showToast(data.message);
-                        $scope.tableParams.reload();
+                        $route.reload();
                     })
                     .error(function (data, status, headers, config) {
                         $scope.showMaterialProgress = false;
@@ -221,14 +229,21 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
             $scope.showMaterialProgress = true;
             $scope.approveClosures($scope.accountsForAuth)
                     .success(function (data, status, headers, config) {
+                        $scope.accountsForAuth = [];
+                        for (var i in $scope.select.individual) {
+                            $scope.select.individual[i] = false;
+                        }
+                        $route.reload();
                         $scope.showToast(data.message);
-                        $scope.tableParams.reload();
-                        $scope.refreshTable();
                         $scope.showMaterialProgress = false;
                     })
                     .error(function (data, status, headers, config) {
-                        $scope.handleError(data, status, headers, config);
+                        $scope.accountsForAuth = [];
+                        for (var i in $scope.select.individual) {
+                            $scope.select.individual[i] = false;
+                        }
                         $scope.showMaterialProgress = false;
+                        $scope.handleError(data, status, headers, config);
                     });
         }, function () {
             // Do nothing basically
@@ -239,7 +254,7 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
     $scope.rejectAccounts = function (ev) {
         // Appending dialog to document.body to cover sidenav in docs app
         var confirm = $mdDialog.confirm()
-                .title('Approve Closure')
+                .title('Reject Closure')
                 .content('Are you sure you want to reject the selected closures?')
                 .ariaLabel('reject')
                 .ok('Yes')
@@ -249,14 +264,21 @@ var AccountClosure = function ($scope, $rootScope, $mdDialog, $mdToast, ngTableP
             $scope.showMaterialProgress = true;
             $scope.rejectClosures($scope.accountsForAuth)
                     .success(function (data, status, headers, config) {
+                        $scope.accountsForAuth = [];
+                        for (var i in $scope.select.individual) {
+                            $scope.select.individual[i] = false;
+                        }
+                        $route.reload();
                         $scope.showToast(data.message);
-                        $scope.tableParams.reload();
-                        $scope.refreshTable();
                         $scope.showMaterialProgress = false;
                     })
                     .error(function (data, status, headers, config) {
-                        $scope.handleError(data, status, headers, config);
+                        $scope.accountsForAuth = [];
+                        for (var i in $scope.select.individual) {
+                            $scope.select.individual[i] = false;
+                        }
                         $scope.showMaterialProgress = false;
+                        $scope.handleError(data, status, headers, config);
                     });
         }, function () {
             // Do nothing basically
